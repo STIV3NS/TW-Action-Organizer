@@ -20,7 +20,7 @@ public class NobleAssigner implements Runnable {
         this.players = players;
         this.center = center;
         this.fake = fake;
-        this.maxNobleDistance = maxNobleDistance;
+        this.maxNobleDistance = (int) Math.pow(maxNobleDistance, 2) -1;
     }
 
     private void sortTargets() {
@@ -69,6 +69,9 @@ public class NobleAssigner implements Runnable {
                 }
                 processingList.removeAll(uselessVillages);
 
+                if (maxNobleDistance < closestVil.getRelativeDistance()) {
+                    break;
+                }
 
                 if ( players.get(closestVil.getOwner()).hasNoble() ) { //make sure that closestVil can send noble
                     if (fake) {
