@@ -37,7 +37,7 @@ public class NobleAssigner implements Runnable {
         List<Village> processingList = new LinkedList<>();
 
         Village closestVil;
-        double distance;
+        int distance;
 
         List<VillageAssignment> assignmentsList;
 

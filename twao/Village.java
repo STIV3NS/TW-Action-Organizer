@@ -31,8 +31,8 @@ public class Village implements Cloneable {
         this.owner = "enemy";
     }
 
-    public double computeDistanceTo(Village vil) {
-        return Math.pow(this.getX() - vil.getX(), 2) + Math.pow(this.getY() - vil.getY(), 2);
+    public int computeDistanceTo(Village vil) {
+        return (int) (Math.pow(this.getX() - vil.getX(), 2) + Math.pow(this.getY() - vil.getY(), 2));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Village implements Cloneable {
     public int getId() { return id; }
 
     public void setRelativeDistance(Village vil) {
-        relativeDistance = (int) computeDistanceTo(vil);
+        relativeDistance = computeDistanceTo(vil);
     }
 
     public int getRelativeDistance() { return relativeDistance; }

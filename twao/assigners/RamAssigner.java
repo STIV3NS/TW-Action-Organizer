@@ -35,7 +35,7 @@ public class RamAssigner implements Runnable {
         List<Village> usedVillages = new LinkedList<>();
 
         Village closestVil;
-        double distance;
+        int distance;
 
         List<VillageAssignment> assignmentsList;
 

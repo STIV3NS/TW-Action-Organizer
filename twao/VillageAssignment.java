@@ -3,9 +3,9 @@ package twao;
 public final class VillageAssignment {
     private final Village departure;
     private final Village destination;
-    private final double squaredDistance;
+    private final int squaredDistance;
 
-    public VillageAssignment(Village departure, Village destination, double squaredDistance) {
+    public VillageAssignment(Village departure, Village destination, int squaredDistance) {
         this.departure = departure;
         this.destination = destination;
         this.squaredDistance = squaredDistance;
@@ -22,7 +22,7 @@ public final class VillageAssignment {
      * -----------------------------------------------------------
      */
 
-    public double getSquaredDistance() { return squaredDistance; }
+    public int getSquaredDistance() { return squaredDistance; }
 
     public Village getDeparture() { return departure; }
 
