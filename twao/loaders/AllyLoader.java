@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AllyLoader {
-    private final HashMap<String, Player> players = new HashMap<>();
+    private final List<Player> players = new LinkedList<>();
     private final List<Village> villages = new LinkedList<>();
 
     private final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\)\\sK\\d{1,3}"); // (XXX|YYY) K..
@@ -23,16 +23,22 @@ public class AllyLoader {
         Reader in = new FileReader(filePath);
         Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
 
-        String name, rawVillages, tmp;
+        String nick, rawVillages, tmp;
         Matcher matcher, innerMatcher;
         int noblesAvailable, x, y;
 
+        Player previousPlayer, player;
+        previousPlayer = new Player("-#dummy#-", 0);
+
         for (CSVRecord record : records) {
-            name = record.get("nick");
+            nick = record.get("nick");
             noblesAvailable = Integer.parseInt(record.get("nobleAvailable"));
 
-            if (players.get(name) == null) {
-                players.put(name, new Player(name, noblesAvailable));
+            if (nick.equals(previousPlayer.getNick()) == false) {
+                player = new Player(nick, noblesAvailable);
+                players.add(player);
+            } else {
+                player = previousPlayer;
             }
 
             rawVillages = record.get("villages");
@@ -47,8 +53,8 @@ public class AllyLoader {
                 innerMatcher.find();
                 y = Integer.parseInt(innerMatcher.group());
 
-                villages.add(new Village(name, x, y));
-                players.get(name).increaseVillagesAmount();
+                villages.add(new Village(player, x, y));
+                player.increaseNumberOfVillages();
             }
         }
     }
@@ -60,6 +66,7 @@ public class AllyLoader {
         for (Village vil : villages) {
             if ( knownVillages.contains(vil.toString()) ) {
                 duplicates.add(vil);
+                vil.getOwner().decreaseNumberOfVillaes();
             }
             else {
                 knownVillages.add(vil.toString());
@@ -75,7 +82,7 @@ public class AllyLoader {
      * -----------------------------------------------------------
      */
 
-    public HashMap<String, Player> getPlayers() { return players; }
+    public List<Player> getPlayers() { return players; }
 
     public List<Village> getVillages() {
         removeDuplicates();

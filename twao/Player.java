@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public class Player {
     private final String nick;
-    private int villagesAmount = 0;
+    private int numberOfVillages = 0;
     private int noblesAvailable;
     private final List<VillageAssignment> offAssignments = new LinkedList<>();
     private final List<VillageAssignment> fakeAssignments = new LinkedList<>();
@@ -24,17 +24,17 @@ public class Player {
      * -----------------------------------------------------------
      */
 
-    public int getVillagesAmount() { return villagesAmount; }
+    public String getNick() { return nick; }
 
-    public void increaseVillagesAmount() {
-        villagesAmount++;
-    }
+    public int getNumberOfVillages() { return numberOfVillages; }
+
+    public void increaseNumberOfVillages() { numberOfVillages++; }
+
+    public void decreaseNumberOfVillaes() { numberOfVillages--; }
 
     public synchronized boolean hasNoble() { return (noblesAvailable > 0) ? true : false; }
 
-    public synchronized void decreaseNoblesAmount() {
-        noblesAvailable--;
-    }
+    public synchronized void decreaseNoblesAmount() { noblesAvailable--; }
 
     public int getNoblesAvailable() { return noblesAvailable; }
 

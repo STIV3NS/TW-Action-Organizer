@@ -9,14 +9,14 @@ import java.util.*;
 public class RamAssigner implements Runnable {
     private List<Village> targets;
     private List<Village> attackingVillages;
-    private HashMap<String, Player> players;
-    private Village center;
+
     private final boolean fake;
 
-    public RamAssigner(List<Village> targets, List<Village> attackingVillages, HashMap<String, Player> players, Village center, boolean fake) {
+    private Village center;
+
+    public RamAssigner(List<Village> targets, List<Village> attackingVillages, Village center, boolean fake) {
         this.targets = targets;
         this.attackingVillages = attackingVillages;
-        this.players = players;
         this.center = center;
         this.fake = fake;
     }
@@ -59,17 +59,17 @@ public class RamAssigner implements Runnable {
             }
 
             if (fake) {
-                assignmentsList = players.get( attacker.getOwner() ).getFakeAssignments();
+                assignmentsList = attacker.getOwner().getFakeAssignments();
             }
             else {
-                assignmentsList = players.get( attacker.getOwner() ).getOffAssignments();
+                assignmentsList = attacker.getOwner().getOffAssignments();
             }
 
             assignmentsList.add( new VillageAssignment(attacker, closestVil, distance) );
 
             usedVillages.add(attacker);
 
-            closestVil.decreaseAttacks();
+            closestVil.attack();
             if (closestVil.isAssignCompleted()) {
                 targets.remove(closestVil);
             }
