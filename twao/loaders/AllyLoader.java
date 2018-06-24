@@ -23,22 +23,23 @@ public class AllyLoader {
         Reader in = new FileReader(filePath);
         Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
 
+        Player player;
         String nick, rawVillages, tmp;
         Matcher matcher, innerMatcher;
         int noblesAvailable, x, y;
 
-        Player previousPlayer, player;
-        previousPlayer = new Player("-#dummy#-", 0);
+        final Map<String, Player> knownPlayers = new HashMap<>();
 
         for (CSVRecord record : records) {
             nick = record.get("nick");
             noblesAvailable = Integer.parseInt(record.get("nobleAvailable"));
 
-            if (nick.equals(previousPlayer.getNick()) == false) {
+            if (knownPlayers.get(nick) == null) {
                 player = new Player(nick, noblesAvailable);
+                knownPlayers.put(nick, player);
                 players.add(player);
             } else {
-                player = previousPlayer;
+                player = knownPlayers.get(nick);
             }
 
             rawVillages = record.get("villages");
