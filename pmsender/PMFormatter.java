@@ -3,117 +3,132 @@ package pmsender;
 import twao.Player;
 import twao.VillageAssignment;
 import twao.World;
-import twao.Village;
-
-import java.util.*;
 
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PMFormatter {
     private final World world;
-    private final int SECONDS_PER_MIN = 60;
-    private int previousDay = 0;
+
+    private int previousDay = -1; //flag init
+    private boolean nextDay = false; //flag init
+
+    private static final int SECONDS_PER_MIN        = 60;
+    private static final String OPEN_SPOILER        = "[spoiler]\n";
+    private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
+    private static final String NOBLE_HEADER        = "[unit]snob[/unit][unit]axe[/unit] [b]SZLACHTA[/b]\n";
+    private static final String RAM_HEADER          = "[unit]ram[/unit] [b]OFF[/b]\n";
+    private static final String FAKE_HEADER         = "[unit]spy[/unit] [b]FAKE[/b]\n";
+    private static final String FAKENOBLE_HEADER    = "[unit]snob[/unit][unit]spy[/unit] [b]FAKE SZLACHTA[/b]\n";
+    private static final String EXECUTION_TEXT      = "wykonaj";
+
+    private enum Unit {
+        RAM,
+        NOBLE
+    }
 
     public PMFormatter(World world) {
         this.world = world;
     }
 
+    public String get(Player player) {
+        StringBuilder sbuilder = new StringBuilder();
+
+        if (player.getNobleAssignments().size() > 0) {
+            sortAssignmentsList(player.getNobleAssignments());
+
+            sbuilder.append(NOBLE_HEADER);
+            generateCommandsList(sbuilder, player.getNobleAssignments(), getUnitSpeed(Unit.NOBLE));
+        }
+
+        if (player.getOffAssignments().size() > 0) {
+            sortAssignmentsList(player.getOffAssignments());
+
+            sbuilder.append(RAM_HEADER);
+            generateCommandsList(sbuilder, player.getOffAssignments(), getUnitSpeed(Unit.RAM));
+        }
+
+        if (player.getFakeAssignments().size() > 0) {
+            sortAssignmentsList(player.getFakeAssignments());
+
+            sbuilder.append(FAKE_HEADER);
+            generateCommandsList(sbuilder, player.getFakeAssignments(), getUnitSpeed(Unit.RAM));
+        }
+
+        if (player.getFakeNobleAssignments().size() > 0) {
+            sortAssignmentsList(player.getFakeNobleAssignments());
+
+            sbuilder.append(FAKENOBLE_HEADER);
+            generateCommandsList(sbuilder, player.getFakeNobleAssignments(), getUnitSpeed(Unit.NOBLE));
+        }
+
+        return sbuilder.toString();
+    }
+
+    private void generateCommandsList(StringBuilder sbuilder, List<VillageAssignment> assignmentsList, int speed) {
+        String departureTime;
+        int counter = 0;
+
+        sbuilder.append(OPEN_SPOILER);
+
+        for (VillageAssignment a : assignmentsList) {
+            departureTime = getDepartureTime(a.getSquaredDistance(), speed);
+
+            sbuilder.append(String.format("%s%d. %s %s\n", nextDay ? "\n\n\n" : "",
+                                                        ++counter,
+                                                        departureTime,
+                                                        a.toString()));
+
+            sbuilder.append(String.format("[url=%s/game.php?village=%d&screen=place&target=%d]%s[/url]\n", world.getDomain(),
+                                                                                                            a.getDeparture().getId(),
+                                                                                                            a.getDestination().getId(),
+                                                                                                            EXECUTION_TEXT));
+        }
+
+        sbuilder.append(CLOSE_SPOILER);
+    }
+
+    private void sortAssignmentsList(List<VillageAssignment> list) {
+        list.sort(Comparator.comparing(VillageAssignment::getSquaredDistance));
+        Collections.reverse(list);
+    }
+
+    private int getUnitSpeed(Unit type) {
+        int speed;
+        switch (type) {
+            case RAM:
+                speed = 30;
+                break;
+            case NOBLE:
+                speed = 35;
+                break;
+            default:
+                speed = 30;
+                break;
+        }
+        return speed;
+    }
+
+    //TODO implement custom dateOfArrival
     private String getDepartureTime(double squaredDistance, int standardTimePerUnit) {
         Calendar dateOfArrival = new GregorianCalendar(2018, Calendar.MAY, 21);
         dateOfArrival.add(Calendar.HOUR, 8);
 
         double distance = Math.sqrt(squaredDistance);
         double unitSpeed = standardTimePerUnit / world.getSpeed();
-        int travelTime = (int) (((distance * unitSpeed) * SECONDS_PER_MIN) * -1);
+        int travelTime = (int) ((distance * unitSpeed) * SECONDS_PER_MIN );
 
-        dateOfArrival.add(Calendar.SECOND, travelTime);
+        dateOfArrival.add(Calendar.SECOND, -travelTime);
 
         int dayOfMonth = dateOfArrival.get(Calendar.DAY_OF_MONTH);
 
-        String output = (dayOfMonth != previousDay ? "\n\n\n\n\n" : "") + new SimpleDateFormat("dd.MM | HH:mm:ss").format(dateOfArrival.getTime());
-
+        if (dayOfMonth != previousDay) {
+            nextDay = true;
+        } else {
+            nextDay = false;
+        }
         previousDay = dayOfMonth;
-        return output;
-    }
 
-    public String generateCommandsList(Player player) {
-        StringBuilder sbuilder = new StringBuilder();
-        HashMap<Village, Integer> noblesToRecruit = new HashMap<>();
-        int counter;
-
-        if (player.getNobleAssignments().size() > 0) {
-            player.getNobleAssignments().sort(Comparator.comparing(VillageAssignment::getSquaredDistance));
-            Collections.reverse(player.getNobleAssignments());
-
-            sbuilder.append("[unit]snob[/unit][unit]axe[/unit] [b]SZLACHTA[/b]\n");
-            sbuilder.append("[spoiler]\n");
-
-            counter = 0;
-            for (VillageAssignment a : player.getNobleAssignments()) {
-                noblesToRecruit.put(a.getDeparture(), 1);
-                sbuilder.append( String.format("%s\n %s. %s\n", getDepartureTime(a.getSquaredDistance(), 35), ++counter,  a.toString()) );
-                sbuilder.append( String.format("[url=%s/game.php?village=%s&screen=place&target=%s]Wykonaj[/url]\n", world.getDomain(), a.getDeparture().getId(), a.getDestination().getId()) );
-            }
-            sbuilder.append("[/spoiler]\n\n\n");
-        }
-
-        if (player.getOffAssignments().size() > 0) {
-            player.getOffAssignments().sort(Comparator.comparing(VillageAssignment::getSquaredDistance));
-            Collections.reverse(player.getOffAssignments());
-
-            sbuilder.append("[unit]ram[/unit] [b]OFF[/b]\n");
-            sbuilder.append("[spoiler]\n");
-
-            counter = 0;
-            for (VillageAssignment a : player.getOffAssignments()) {
-                try {
-                    a.getDeparture().setId(world);
-                    a.getDestination().setId(world);
-                } catch (Exception e) {
-                    System.out.println("Cannot set village id");
-                    System.out.println(a.getDeparture().toString());
-                    System.out.println(a.getDestination().toString());
-                }
-
-                sbuilder.append( String.format("%s. %s %s\n", ++counter, getDepartureTime(a.getSquaredDistance(), 30),  a.toString()) );
-                sbuilder.append( String.format("[url=%s/game.php?village=%s&screen=place&target=%s]Wykonaj[/url]\n", world.getDomain(), a.getDeparture().getId(), a.getDestination().getId()) );
-            }
-            sbuilder.append("[/spoiler]\n\n\n");
-        }
-        
-        if (player.getFakeAssignments().size() > 0) {
-            player.getFakeAssignments().sort(Comparator.comparing(VillageAssignment::getSquaredDistance));
-            Collections.reverse(player.getFakeAssignments());
-
-            sbuilder.append("[unit]spy[/unit] [b]FAKE[/b]\n");
-            sbuilder.append("[spoiler]\n");
-
-            counter = 0;
-            for (VillageAssignment a : player.getFakeAssignments()) {
-                try {
-                    a.getDeparture().setId(world);
-                    a.getDestination().setId(world);
-                } catch (Exception e) {
-                    System.out.println("Cannot set village id");
-                    System.out.println(a.getDeparture().toString());
-                    System.out.println(a.getDestination().toString());
-                }
-
-                sbuilder.append(String.format("%s. %s %s\n", ++counter, getDepartureTime(a.getSquaredDistance(), 30), a.toString()));
-                sbuilder.append(String.format("[url=%s/game.php?village=%s&screen=place&target=%s]Wykonaj[/url]\n", world.getDomain(), a.getDeparture().getId(), a.getDestination().getId()));
-            }
-            sbuilder.append("[/spoiler]\n\n\n");
-        }
-
-        if (player.getFakeNobleAssignments().size() > 0) {
-            //TODO
-        }
-
-        if (noblesToRecruit.size() > 0) {
-            //todo
-            //sbuilder.insert(0, str);
-        }
-
-        return sbuilder.toString();
+        return new SimpleDateFormat("dd.MM | HH:mm:ss").format(dateOfArrival.getTime());
     }
 }
