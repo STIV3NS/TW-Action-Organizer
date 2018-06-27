@@ -28,7 +28,7 @@ public class AllyLoader {
         records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
     }
 
-    private void load() throws UnspecifiedKeyException {
+    public void load() throws UnspecifiedKeyException {
         if (nicknameKey == null || nobleKey == null || villagesKey == null) {
             throw new UnspecifiedKeyException();
         }
