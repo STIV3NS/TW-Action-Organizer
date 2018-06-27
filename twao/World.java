@@ -1,11 +1,11 @@
 package twao;
 
 import org.w3c.dom.Document;
+import twao.villages.Village;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.URL;
-import java.net.HttpURLConnection;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,14 +1,15 @@
 package twao.assigners;
 
-import twao.Player;
-import twao.Village;
+import twao.villages.AllyVillage;
+import twao.villages.TargetVillage;
+import twao.villages.Village;
 import twao.VillageAssignment;
 
 import java.util.*;
 
 public class NobleAssigner implements Runnable {
-    private List<Village> targets;
-    private List<Village> attackingVillages;
+    private List<TargetVillage> targets;
+    private List<AllyVillage> attackingVillages;
 
     private Village center;
 
@@ -16,7 +17,7 @@ public class NobleAssigner implements Runnable {
 
     private final boolean fake;
 
-    public NobleAssigner(List<Village> targets, List<Village> attackingVillages, Village center, boolean fake, int maxNobleDistance) {
+    public NobleAssigner(List<TargetVillage> targets, List<AllyVillage> attackingVillages, Village center, boolean fake, int maxNobleDistance) {
         this.targets = targets;
         this.attackingVillages = attackingVillages;
         this.center = center;
@@ -34,10 +35,10 @@ public class NobleAssigner implements Runnable {
 
     @Override
     public void run() {
-        List<Village> usedVillages = new LinkedList<>();
-        List<Village> processingList = new LinkedList<>();
+        List<AllyVillage> usedVillages = new LinkedList<>();
+        List<AllyVillage> processingList = new LinkedList<>();
 
-        Village closestVil;
+        AllyVillage closestVil;
         int distance;
 
         List<VillageAssignment> assignmentsList;
@@ -46,9 +47,9 @@ public class NobleAssigner implements Runnable {
 
         processingList.addAll(attackingVillages);
 
-        for (Village target : targets) {
+        for (TargetVillage target : targets) {
             while (target.isAssignCompleted() == false) {
-                if (processingList.size() < 1) {
+                if (processingList.size() == 0) {
                     break;
                 }
 
@@ -57,8 +58,8 @@ public class NobleAssigner implements Runnable {
                 distance = target.computeDistanceTo(closestVil);
 
                 //search for closest village
-                List<Village> uselessVillages = new LinkedList<>();
-                for (Village attacker : processingList) {
+                List<AllyVillage> uselessVillages = new LinkedList<>();
+                for (AllyVillage attacker : processingList) {
                     if (attacker.getOwner().hasNoble() == false) {
                         uselessVillages.add(attacker);
                     }

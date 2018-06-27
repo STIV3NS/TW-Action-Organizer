@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 
 public class Player {
-    private final String nick;
+    private final String nickname;
     private int numberOfVillages = 0;
     private int noblesAvailable;
     private final List<VillageAssignment> offAssignments = new LinkedList<>();
@@ -13,8 +13,8 @@ public class Player {
     private final List<VillageAssignment> nobleAssignments = new LinkedList<>();
     private final List<VillageAssignment> fakeNobleAssignments = new LinkedList<>();
 
-    public Player(String nick, int noblesAvailable) {
-        this.nick = nick;
+    public Player(String nickname, int noblesAvailable) {
+        this.nickname = nickname;
         this.noblesAvailable = noblesAvailable;
     }
 
@@ -24,7 +24,7 @@ public class Player {
      * -----------------------------------------------------------
      */
 
-    public String getNick() { return nick; }
+    public String getNickname() { return nickname; }
 
     public int getNumberOfVillages() { return numberOfVillages; }
 

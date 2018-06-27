@@ -1,6 +1,6 @@
 package twao.loaders;
 
-import twao.Village;
+import twao.villages.TargetVillage;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import java.io.File;
 
 public class TargetsLoader {
-    public TargetsLoader(String filePath, int attacksPerVillage, List<Village> outputList) throws FileNotFoundException {
+    public TargetsLoader(String filePath, int attacksPerVillage, List<TargetVillage> outputList) throws FileNotFoundException {
         Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}");
         Matcher matcher;
 
@@ -25,7 +25,7 @@ public class TargetsLoader {
 
             while (matcher.find()) {
                 coordinates = matcher.group().split("\\|");
-                outputList.add(new Village(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]), attacksPerVillage));
+                outputList.add(new TargetVillage(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]), attacksPerVillage));
             }
         }
 

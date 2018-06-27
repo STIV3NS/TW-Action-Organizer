@@ -1,5 +1,7 @@
 package twao;
 
+import twao.villages.Village;
+
 public final class VillageAssignment {
     private final Village departure;
     private final Village destination;

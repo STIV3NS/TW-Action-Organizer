@@ -1,20 +1,21 @@
 package twao.assigners;
 
-import twao.Player;
-import twao.Village;
+import twao.villages.AllyVillage;
+import twao.villages.TargetVillage;
+import twao.villages.Village;
 import twao.VillageAssignment;
 
 import java.util.*;
 
 public class RamAssigner implements Runnable {
-    private List<Village> targets;
-    private List<Village> attackingVillages;
+    private List<TargetVillage> targets;
+    private List<AllyVillage> attackingVillages;
 
     private final boolean fake;
 
     private Village center;
 
-    public RamAssigner(List<Village> targets, List<Village> attackingVillages, Village center, boolean fake) {
+    public RamAssigner(List<TargetVillage> targets, List<AllyVillage> attackingVillages, Village center, boolean fake) {
         this.targets = targets;
         this.attackingVillages = attackingVillages;
         this.center = center;
@@ -32,17 +33,17 @@ public class RamAssigner implements Runnable {
 
     @Override
     public void run() {
-        List<Village> usedVillages = new LinkedList<>();
+        List<AllyVillage> usedVillages = new LinkedList<>();
 
-        Village closestVil;
+        TargetVillage closestVil;
         int distance;
 
         List<VillageAssignment> assignmentsList;
 
         sortAttackers();
 
-        for (Village attacker : attackingVillages) {
-            if (targets.size() < 1) {
+        for (AllyVillage attacker : attackingVillages) {
+            if (targets.size() == 0) {
                 break;
             }
 
@@ -51,7 +52,7 @@ public class RamAssigner implements Runnable {
             distance = attacker.computeDistanceTo(closestVil);
 
             //search for closest village
-            for (Village target : targets) {
+            for (TargetVillage target : targets) {
                 if (attacker.computeDistanceTo(target) < distance) {
                     distance = attacker.computeDistanceTo(target);
                     closestVil = target;
