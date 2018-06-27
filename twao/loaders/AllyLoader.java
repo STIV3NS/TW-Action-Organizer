@@ -3,9 +3,11 @@ package twao.loaders;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import twao.Player;
-import twao.Village;
+import twao.exceptions.UnspecifiedKeyException;
+import twao.villages.AllyVillage;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -13,36 +15,47 @@ import java.util.regex.Pattern;
 
 public class AllyLoader {
     private final List<Player> players = new LinkedList<>();
-    private final List<Village> villages = new LinkedList<>();
+    private final List<AllyVillage> villages = new LinkedList<>();
 
-    private final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\)\\sK\\d{1,3}"); // (XXX|YYY) K..
-    private final Pattern xyPattern = Pattern.compile("\\d{3}");
+    private String nicknameKey;
+    private String nobleKey;
+    private String villagesKey;
 
+    private Iterable<CSVRecord> records;
 
-    public AllyLoader(String filePath) throws Exception {
+    public AllyLoader(String filePath) throws IOException {
         Reader in = new FileReader(filePath);
-        Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+        records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+    }
+
+    private void load() throws UnspecifiedKeyException {
+        if (nicknameKey == null || nobleKey == null || villagesKey == null) {
+            throw new UnspecifiedKeyException();
+        }
+
+        final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\)\\sK\\d{1,3}"); // (XXX|YYY) K..
+        final Pattern xyPattern = Pattern.compile("\\d{3}");
 
         Player player;
-        String nick, rawVillages, tmp;
+        String nickname, rawVillages, tmp;
         Matcher matcher, innerMatcher;
-        int noblesAvailable, x, y;
+        int x, y, noblesAvailable;
 
         final Map<String, Player> knownPlayers = new HashMap<>();
 
         for (CSVRecord record : records) {
-            nick = record.get("nick");
-            noblesAvailable = Integer.parseInt(record.get("nobleAvailable"));
+            nickname = record.get(nicknameKey);
+            noblesAvailable = Integer.parseInt(record.get(nobleKey));
 
-            if (knownPlayers.get(nick) == null) {
-                player = new Player(nick, noblesAvailable);
-                knownPlayers.put(nick, player);
+            if (knownPlayers.get(nickname) == null) {
+                player = new Player(nickname, noblesAvailable);
+                knownPlayers.put(nickname, player);
                 players.add(player);
             } else {
-                player = knownPlayers.get(nick);
+                player = knownPlayers.get(nickname);
             }
 
-            rawVillages = record.get("villages");
+            rawVillages = record.get(villagesKey);
             matcher = coordinatesPattern.matcher(rawVillages);
 
             while (matcher.find()) {
@@ -54,17 +67,19 @@ public class AllyLoader {
                 innerMatcher.find();
                 y = Integer.parseInt(innerMatcher.group());
 
-                villages.add(new Village(player, x, y));
+                villages.add(new AllyVillage(x, y, player));
                 player.increaseNumberOfVillages();
             }
         }
+
+        removeDuplicates();
     }
 
     private void removeDuplicates() {
         HashSet<String> knownVillages = new HashSet<>();
-        List<Village> duplicates = new LinkedList<>();
+        List<AllyVillage> duplicates = new LinkedList<>();
 
-        for (Village vil : villages) {
+        for (AllyVillage vil : villages) {
             if ( knownVillages.contains(vil.toString()) ) {
                 duplicates.add(vil);
                 vil.getOwner().decreaseNumberOfVillaes();
@@ -83,10 +98,19 @@ public class AllyLoader {
      * -----------------------------------------------------------
      */
 
-    public List<Player> getPlayers() { return players; }
-
-    public List<Village> getVillages() {
-        removeDuplicates();
-        return villages;
+    public void setNicknameKey(String nicknameKey) {
+        this.nicknameKey = nicknameKey;
     }
+
+    public void setNobleKey(String nobleKey) {
+        this.nobleKey = nobleKey;
+    }
+
+    public void setVillagesKey(String villagesKey) {
+        this.villagesKey = villagesKey;
+    }
+
+    public List<AllyVillage> getVillages() { return villages; }
+
+    public List<Player> getPlayers() { return players; }
 }
