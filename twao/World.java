@@ -58,6 +58,11 @@ public class World {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("domain: %s | speed: %.2f (%.2f * %.2f) | max snob distance: %d", domain, getSpeed(), worldSPeed, unitSpeed, maxNobleDistance);
+    }
+
     /**
      * -----------------------------------------------------------
      * getters and setters
@@ -71,8 +76,4 @@ public class World {
     public int getNightEndHour() { return nightEndHour; }
 
     public double getSpeed() { return worldSPeed*unitSpeed; }
-
-    public String getWorldInfo() {
-        return String.format("domain: %s | speed: %sx(%s*%s) | max snob distance: %s", domain, getSpeed(), worldSPeed, unitSpeed, maxNobleDistance);
-    }
 }
