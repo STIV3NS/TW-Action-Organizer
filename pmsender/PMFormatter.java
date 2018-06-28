@@ -3,9 +3,11 @@ package pmsender;
 import twao.Player;
 import twao.VillageAssignment;
 import twao.World;
+import twao.villages.Village;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 public class PMFormatter {
     private final World world;
@@ -14,10 +16,12 @@ public class PMFormatter {
     private boolean nextDay = false; //flag init
 
     private static final int SECONDS_PER_MIN        = 60;
+    private static final int GROUP_SIZE             = 5;
     private static final String OPEN_SPOILER        = "[spoiler]\n";
     private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
+    private static final String REQUIREMENTS_HEADER = "Gdzie musisz postawić szlachciców:\n";
     private static final String NOBLE_HEADER        = "[unit]snob[/unit][unit]axe[/unit] [b]SZLACHTA[/b]\n";
-    private static final String RAM_HEADER          = "[unit]ram[/unit] [b]OFF[/b]\n";
+    private static final String OFF_HEADER          = "[unit]ram[/unit] [b]OFF[/b]\n";
     private static final String FAKE_HEADER         = "[unit]spy[/unit] [b]FAKE[/b]\n";
     private static final String FAKENOBLE_HEADER    = "[unit]snob[/unit][unit]spy[/unit] [b]FAKE SZLACHTA[/b]\n";
     private static final String EXECUTION_TEXT      = "wykonaj";
@@ -34,6 +38,11 @@ public class PMFormatter {
     public String get(Player player) {
         StringBuilder sbuilder = new StringBuilder();
 
+        if (player.getNobleAssignments().size() > 0 || player.getFakeNobleAssignments().size() >0) {
+            sbuilder.append(REQUIREMENTS_HEADER);
+            generateNobleRequirements(sbuilder, player);
+        }
+
         if (player.getNobleAssignments().size() > 0) {
             sortAssignmentsList(player.getNobleAssignments());
 
@@ -44,7 +53,7 @@ public class PMFormatter {
         if (player.getOffAssignments().size() > 0) {
             sortAssignmentsList(player.getOffAssignments());
 
-            sbuilder.append(RAM_HEADER);
+            sbuilder.append(OFF_HEADER);
             generateCommandsList(sbuilder, player.getOffAssignments(), getUnitSpeed(Unit.RAM));
         }
 
@@ -63,6 +72,41 @@ public class PMFormatter {
         }
 
         return sbuilder.toString();
+    }
+
+    private void generateNobleRequirements(StringBuilder sbuilder, Player player) {
+        HashMap<Village, Integer> requirements = new HashMap<>();
+
+        List<VillageAssignment> nobleAssignments = new LinkedList<>();
+        nobleAssignments.addAll(player.getNobleAssignments());
+        nobleAssignments.addAll(player.getFakeNobleAssignments());
+
+        sbuilder.append(OPEN_SPOILER);
+
+        int previousValue;
+        for (VillageAssignment a : nobleAssignments) {
+            if (requirements.get(a.getDeparture()) == null) {
+                requirements.put(a.getDeparture(), 1);
+            } else {
+                previousValue = requirements.get(a.getDeparture());
+                requirements.put(a.getDeparture(), ++previousValue);
+            }
+        }
+
+        HashMap<Integer, List<Village>> sortedMap = sortRequirements(requirements);
+
+        int iterator = 0;
+        for (int value : sortedMap.keySet()) {
+            for (Village vil : sortedMap.get(value)) {
+                sbuilder.append(String.format("%d || %s\n", value, vil.toString()));
+
+                if (++iterator % GROUP_SIZE == 0) {
+                    sbuilder.append("\n\n");
+                }
+            }
+        }
+
+        sbuilder.append(CLOSE_SPOILER);
     }
 
     private void generateCommandsList(StringBuilder sbuilder, List<VillageAssignment> assignmentsList, int speed) {
@@ -88,27 +132,6 @@ public class PMFormatter {
         sbuilder.append(CLOSE_SPOILER);
     }
 
-    private void sortAssignmentsList(List<VillageAssignment> list) {
-        list.sort(Comparator.comparing(VillageAssignment::getSquaredDistance));
-        Collections.reverse(list);
-    }
-
-    private int getUnitSpeed(Unit type) {
-        int speed;
-        switch (type) {
-            case RAM:
-                speed = 30;
-                break;
-            case NOBLE:
-                speed = 35;
-                break;
-            default:
-                speed = 30;
-                break;
-        }
-        return speed;
-    }
-
     //TODO implement custom dateOfArrival
     private String getDepartureTime(double squaredDistance, int standardTimePerUnit) {
         Calendar dateOfArrival = new GregorianCalendar(2018, Calendar.MAY, 21);
@@ -130,5 +153,45 @@ public class PMFormatter {
         previousDay = dayOfMonth;
 
         return new SimpleDateFormat("dd.MM | HH:mm:ss").format(dateOfArrival.getTime());
+    }
+
+    private int getUnitSpeed(Unit type) {
+        int speed;
+        switch (type) {
+            case RAM:
+                speed = 30;
+                break;
+            case NOBLE:
+                speed = 35;
+                break;
+            default:
+                speed = 30;
+                break;
+        }
+        return speed;
+    }
+
+    private void sortAssignmentsList(List<VillageAssignment> list) {
+        list.sort(Comparator.comparing(VillageAssignment::getSquaredDistance));
+        Collections.reverse(list);
+    }
+
+    private HashMap<Integer, List<Village>> sortRequirements(HashMap<Village, Integer> map) {
+        HashMap<Integer, List<Village>> sortedMap = new HashMap<>();
+
+        int value;
+        List<Village> vList;
+        for (Village vil : map.keySet()) {
+            value = map.get(vil);
+            if (sortedMap.get(value) == null) {
+                vList = new LinkedList<>();
+                vList.add(vil);
+                sortedMap.put(value, vList);
+            } else {
+                sortedMap.get(value).add(vil);
+            }
+        }
+
+        return sortedMap;
     }
 }
