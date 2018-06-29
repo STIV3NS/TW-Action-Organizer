@@ -19,12 +19,12 @@ public class PMFormatter {
     private static final int GROUP_SIZE             = 5;
     private static final String OPEN_SPOILER        = "[spoiler]\n";
     private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
-    private static final String REQUIREMENTS_HEADER = "Gdzie musisz postawić szlachciców:\n";
-    private static final String NOBLE_HEADER        = "[unit]snob[/unit][unit]axe[/unit] [b]SZLACHTA[/b]\n";
+    private static final String REQUIREMENTS_HEADER = "Villages in which you have to have certain number of nobles:\n";
+    private static final String NOBLE_HEADER        = "[unit]snob[/unit][unit]axe[/unit] [b]OFF + NOBLE[/b]\n";
     private static final String OFF_HEADER          = "[unit]ram[/unit] [b]OFF[/b]\n";
     private static final String FAKE_HEADER         = "[unit]spy[/unit] [b]FAKE[/b]\n";
-    private static final String FAKENOBLE_HEADER    = "[unit]snob[/unit][unit]spy[/unit] [b]FAKE SZLACHTA[/b]\n";
-    private static final String EXECUTION_TEXT      = "wykonaj";
+    private static final String FAKENOBLE_HEADER    = "[unit]snob[/unit][unit]spy[/unit] [b]FAKE NOBLE[/b]\n";
+    private static final String EXECUTION_TEXT      = "execute";
 
     private enum Unit {
         RAM,
@@ -110,23 +110,23 @@ public class PMFormatter {
     }
 
     private void generateCommandsList(StringBuilder sbuilder, List<VillageAssignment> assignmentsList, int speed) {
-        String departureTime;
-        int counter = 0;
+        String departureTime, possibleNewLine, assignment, domain;
+        int counter = 0, departureId, destinationId;
 
         sbuilder.append(OPEN_SPOILER);
 
         for (VillageAssignment a : assignmentsList) {
             departureTime = getDepartureTime(a.getSquaredDistance(), speed);
 
-            sbuilder.append(String.format("%s%d. %s %s\n", nextDay ? "\n\n\n" : "",
-                                                        ++counter,
-                                                        departureTime,
-                                                        a.toString()));
+            possibleNewLine = nextDay ? "\n\n\n" : "";
+            assignment = a.toString();
+            domain = world.getDomain();
+            departureId = a.getDeparture().getId();
+            destinationId = a.getDestination().getId();
 
-            sbuilder.append(String.format("[url=%s/game.php?village=%d&screen=place&target=%d]%s[/url]\n", world.getDomain(),
-                                                                                                            a.getDeparture().getId(),
-                                                                                                            a.getDestination().getId(),
-                                                                                                            EXECUTION_TEXT));
+            sbuilder.append( String.format("%s%d. %s %s\n", possibleNewLine, ++counter, departureTime, assignment) );
+
+            sbuilder.append( String.format("[url=%s/game.php?village=%d&screen=place&target=%d]%s[/url]\n", domain, departureId, destinationId, EXECUTION_TEXT) );
         }
 
         sbuilder.append(CLOSE_SPOILER);
