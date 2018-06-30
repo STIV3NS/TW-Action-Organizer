@@ -20,7 +20,7 @@ public class PMFormatter {
     private static final String OPEN_SPOILER        = "[spoiler]\n";
     private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
 
-    ResourceBundle bundle = ResourceBundle.getBundle("resources.bundles.pmformatter");
+    ResourceBundle bundle = ResourceBundle.getBundle("localization.pmformatter");
 
     private String REQUIREMENTS_HEADER = bundle.getString("REQUIREMENTS_HEADER");
     private String NOBLE_HEADER        = bundle.getString("NOBLE_HEADER");

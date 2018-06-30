@@ -14,7 +14,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("../resources/fxml/mainwindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("gui/fxml/mainwindow.fxml"));
         primaryStage.setTitle("TW Action Organizer");
         primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));

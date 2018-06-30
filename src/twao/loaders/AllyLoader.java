@@ -39,16 +39,16 @@ public class AllyLoader {
         Player player;
         String nickname, rawVillages, tmp;
         Matcher matcher, innerMatcher;
-        int x, y, noblesAvailable;
+        int x, y, numberOfNobles;
 
         final Map<String, Player> knownPlayers = new HashMap<>();
 
         for (CSVRecord record : records) {
             nickname = record.get(nicknameKey);
-           noblesAvailable = Integer.parseInt(record.get(nobleKey));
+           numberOfNobles = Integer.parseInt(record.get(nobleKey));
 
             if (knownPlayers.get(nickname) == null) {
-               player = new Player(nickname, noblesAvailable);
+               player = new Player(nickname, numberOfNobles);
                 knownPlayers.put(nickname, player);
                 players.add(player);
             } else {
