@@ -24,9 +24,9 @@ public final class VillageAssignment {
      * -----------------------------------------------------------
      */
 
-    public int getSquaredDistance() { return squaredDistance; }
-
     public Village getDeparture() { return departure; }
 
     public Village getDestination() { return destination; }
+
+    public int getSquaredDistance() { return squaredDistance; }
 }

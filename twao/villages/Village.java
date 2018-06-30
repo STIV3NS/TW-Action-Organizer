@@ -1,6 +1,5 @@
 package twao.villages;
 
-import twao.Player;
 import twao.World;
 
 import java.lang.Math;
@@ -17,7 +16,7 @@ public class Village implements Cloneable {
         this.y = y;
     }
 
-    public int computeDistanceTo(Village vil) {
+    public int getDistanceTo(Village vil) {
         return (int) (Math.pow(this.getX() - vil.getX(), 2) + Math.pow(this.getY() - vil.getY(), 2));
     }
 
@@ -32,7 +31,7 @@ public class Village implements Cloneable {
         try {
             clone = (Village) super.clone();
         } catch (CloneNotSupportedException e) {
-            System.out.println("Unable to clone Village object.");
+            e.printStackTrace();
         }
         return clone;
     }
@@ -55,5 +54,5 @@ public class Village implements Cloneable {
 
     public int getRelativeDistance() { return relativeDistance; }
 
-    public void setRelativeDistance(Village vil) { relativeDistance = computeDistanceTo(vil); }
+    public void setRelativeDistance(Village vil) { relativeDistance = getDistanceTo(vil); }
 }

@@ -1,6 +1,9 @@
 package twao;
 
 import org.w3c.dom.Document;
+
+import twao.exceptions.BadDomainException;
+import twao.exceptions.VillageNotFoundException;
 import twao.villages.Village;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,25 +17,29 @@ public class World {
     private final String domain;
     private final double worldSPeed;
     private final double unitSpeed;
-    private final int maxNobleDistance;
-    private final int nightEndHour;
+    private final int maxNobleRange;
+    private final int nightBonusEndHour;
     private String villagesList;
 
-    public World(String domain) throws Exception {
+    public World(String domain) throws BadDomainException {
         this.domain = "https://" + domain;
 
-        URL url = new URL(this.getDomain() +"/interface.php?func=get_config");
+        try {
+            URL url = new URL(this.getDomain() + "/interface.php?func=get_config");
 
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(url.openStream());
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(url.openStream());
 
-        doc.getDocumentElement().normalize();
+            doc.getDocumentElement().normalize();
 
-        worldSPeed = Double.parseDouble(doc.getElementsByTagName("speed").item(0).getTextContent());
-        unitSpeed = Double.parseDouble(doc.getElementsByTagName("unit_speed").item(0).getTextContent());
-        maxNobleDistance = Integer.parseInt(doc.getElementsByTagName("max_dist").item(0).getTextContent());
-        nightEndHour = Integer.parseInt(doc.getElementsByTagName("end_hour").item(0).getTextContent());
+            worldSPeed = Double.parseDouble(doc.getElementsByTagName("speed").item(0).getTextContent());
+            unitSpeed = Double.parseDouble(doc.getElementsByTagName("unit_speed").item(0).getTextContent());
+            maxNobleRange = Integer.parseInt(doc.getElementsByTagName("max_dist").item(0).getTextContent());
+            nightBonusEndHour = Integer.parseInt(doc.getElementsByTagName("end_hour").item(0).getTextContent());
+        } catch (Exception e) {
+            throw new BadDomainException();
+        }
     }
 
     public void loadVillageList() {
@@ -42,25 +49,25 @@ public class World {
             this.villagesList = sc.useDelimiter("\\Z").next();
             sc.close();
         } catch (Exception e) {
+            //should never happen unless user loses internet connection after world is loaded
             e.printStackTrace();
         }
     }
 
-    public int getVillageId(Village vil) throws Exception {
+    public int getVillageId(Village vil) throws VillageNotFoundException {
         Pattern pattern = Pattern.compile(String.format("^.*,%d,%d,.*$", vil.getX(), vil.getY()), Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(villagesList);
 
         if (matcher.find()) {
-            int id = Integer.parseInt(matcher.group().split(",")[0]);
-            return id;
+            return Integer.parseInt(matcher.group().split(",")[0]);
         } else {
-            throw new Exception();
+            throw new VillageNotFoundException();
         }
     }
 
     @Override
     public String toString() {
-        return String.format("domain: %s | speed: %.2f (%.2f * %.2f) | max snob distance: %d", domain, getSpeed(), worldSPeed, unitSpeed, maxNobleDistance);
+        return String.format("domain: %s | speed: %.2f (%.2f * %.2f) | max snob distance: %d", domain, getSpeed(), worldSPeed, unitSpeed, maxNobleRange);
     }
 
     /**
@@ -71,9 +78,9 @@ public class World {
 
     public String getDomain() { return domain; }
 
-    public int getMaxNobleDistance() { return maxNobleDistance; }
+    public int getMaxNobleRange() { return maxNobleRange; }
 
-    public int getNightEndHour() { return nightEndHour; }
+    public int getNightBonusEndHour() { return nightBonusEndHour; }
 
     public double getSpeed() { return worldSPeed*unitSpeed; }
 }

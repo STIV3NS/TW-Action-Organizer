@@ -19,6 +19,8 @@ public class PMFormatter {
     private static final int GROUP_SIZE             = 5;
     private static final String OPEN_SPOILER        = "[spoiler]\n";
     private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
+
+    //TODO add internationalization
     private static final String REQUIREMENTS_HEADER = "Villages in which you have to have certain number of nobles:\n";
     private static final String NOBLE_HEADER        = "[unit]snob[/unit][unit]axe[/unit] [b]OFF + NOBLE[/b]\n";
     private static final String OFF_HEADER          = "[unit]ram[/unit] [b]OFF[/b]\n";
@@ -38,7 +40,7 @@ public class PMFormatter {
     public String get(Player player) {
         StringBuilder sbuilder = new StringBuilder();
 
-        if (player.getNobleAssignments().size() > 0 || player.getFakeNobleAssignments().size() >0) {
+        if (player.getNobleAssignments().size() > 0 || player.getFakeNobleAssignments().size() > 0) {
             sbuilder.append(REQUIREMENTS_HEADER);
             generateNobleRequirements(sbuilder, player);
         }
@@ -93,6 +95,7 @@ public class PMFormatter {
             }
         }
 
+        // {1: [Village, Village], 2: [], 3: [], ... }
         HashMap<Integer, List<Village>> sortedMap = sortRequirements(requirements);
 
         int iterator = 0;
@@ -155,22 +158,6 @@ public class PMFormatter {
         return new SimpleDateFormat("dd.MM | HH:mm:ss").format(dateOfArrival.getTime());
     }
 
-    private int getUnitSpeed(Unit type) {
-        int speed;
-        switch (type) {
-            case RAM:
-                speed = 30;
-                break;
-            case NOBLE:
-                speed = 35;
-                break;
-            default:
-                speed = 30;
-                break;
-        }
-        return speed;
-    }
-
     private void sortAssignmentsList(List<VillageAssignment> list) {
         list.sort(Comparator.comparing(VillageAssignment::getSquaredDistance));
         Collections.reverse(list);
@@ -193,5 +180,21 @@ public class PMFormatter {
         }
 
         return sortedMap;
+    }
+
+    private int getUnitSpeed(Unit type) {
+        int speed;
+        switch (type) {
+            case RAM:
+                speed = 30;
+                break;
+            case NOBLE:
+                speed = 35;
+                break;
+            default:
+                speed = 30;
+                break;
+        }
+        return speed;
     }
 }

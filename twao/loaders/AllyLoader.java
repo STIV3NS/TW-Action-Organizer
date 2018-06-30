@@ -33,7 +33,7 @@ public class AllyLoader {
             throw new UnspecifiedKeyException();
         }
 
-        final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\)\\sK\\d{1,3}"); // (XXX|YYY) K..
+        final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\)"); // (XXX|YYY)
         final Pattern xyPattern = Pattern.compile("\\d{3}");
 
         Player player;

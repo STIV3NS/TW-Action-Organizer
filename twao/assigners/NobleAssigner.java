@@ -10,24 +10,21 @@ import java.util.*;
 public class NobleAssigner implements Runnable {
     private List<TargetVillage> targets;
     private List<AllyVillage> attackingVillages;
+    private Village relativityPoint;
+    private final int maxNobleRange;
+    private final boolean assigningFakes;
 
-    private Village center;
-
-    private final int maxNobleDistance;
-
-    private final boolean fake;
-
-    public NobleAssigner(List<TargetVillage> targets, List<AllyVillage> attackingVillages, Village center, boolean fake, int maxNobleDistance) {
+    public NobleAssigner(List<TargetVillage> targets, List<AllyVillage> attackingVillages, Village relativityPoint, boolean assigningFakes, int maxNobleRange) {
         this.targets = targets;
         this.attackingVillages = attackingVillages;
-        this.center = center;
-        this.maxNobleDistance = (int) Math.pow(maxNobleDistance, 2) -1;
-        this.fake = fake;
+        this.relativityPoint = relativityPoint;
+        this.maxNobleRange = (int) Math.pow(maxNobleRange, 2) -1;
+        this.assigningFakes = assigningFakes;
     }
 
     private void sortTargets() {
         for (Village vil : targets) {
-            vil.setRelativeDistance(center);
+            vil.setRelativeDistance(relativityPoint);
         }
 
         targets.sort(Comparator.comparing(Village::getRelativeDistance));
@@ -35,18 +32,16 @@ public class NobleAssigner implements Runnable {
 
     @Override
     public void run() {
-        List<AllyVillage> usedVillages = new LinkedList<>();
         List<AllyVillage> processingList = new LinkedList<>();
 
+        List<AllyVillage> uselessVillages;
+        List<VillageAssignment> assignmentsList;
         AllyVillage closestVil;
         int distance;
 
-        List<VillageAssignment> assignmentsList;
-
-        sortTargets();
-
         processingList.addAll(attackingVillages);
 
+        sortTargets();
         for (TargetVillage target : targets) {
             while (target.isAssignCompleted() == false) {
                 if (processingList.size() == 0) {
@@ -55,28 +50,28 @@ public class NobleAssigner implements Runnable {
 
                 //init closestVil and distance
                 closestVil = processingList.get(0);
-                distance = target.computeDistanceTo(closestVil);
+                distance = target.getDistanceTo(closestVil);
 
                 //search for closest village
-                List<AllyVillage> uselessVillages = new LinkedList<>();
+                uselessVillages = new LinkedList<>();
                 for (AllyVillage attacker : processingList) {
                     if (attacker.getOwner().hasNoble() == false) {
                         uselessVillages.add(attacker);
                     }
 
-                    else if (attacker.computeDistanceTo(target) < distance) {
+                    else if (attacker.getDistanceTo(target) < distance) {
                         closestVil = attacker;
-                        distance = closestVil.computeDistanceTo(target);
+                        distance = closestVil.getDistanceTo(target);
                     }
                 }
                 processingList.removeAll(uselessVillages);
 
-                if (maxNobleDistance < closestVil.getRelativeDistance()) {
+                if (maxNobleRange < closestVil.getRelativeDistance()) {
                     break;
                 }
 
                 if ( closestVil.getOwner().hasNoble() ) { //make sure that closestVil can send noble
-                    if (fake) {
+                    if (assigningFakes) {
                         assignmentsList = closestVil.getOwner().getFakeNobleAssignments();
                     }
                     else {
@@ -85,9 +80,9 @@ public class NobleAssigner implements Runnable {
 
                     assignmentsList.add( new VillageAssignment(closestVil, target, distance) );
 
-                    closestVil.getOwner().decreaseNoblesAmount();
+                    closestVil.getOwner().delegateNoble();
 
-                    usedVillages.add(closestVil);
+                    attackingVillages.remove(closestVil);
                     processingList.remove(closestVil);
 
                     target.attack();
@@ -97,7 +92,5 @@ public class NobleAssigner implements Runnable {
                 }
             }
         }
-        
-        attackingVillages.removeAll(usedVillages);
     }
 }

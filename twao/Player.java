@@ -7,15 +7,15 @@ import java.util.LinkedList;
 public class Player {
     private final String nickname;
     private int numberOfVillages = 0;
-    private int noblesAvailable;
+    private int numberOfNobles;
     private final List<VillageAssignment> offAssignments = new LinkedList<>();
     private final List<VillageAssignment> fakeAssignments = new LinkedList<>();
     private final List<VillageAssignment> nobleAssignments = new LinkedList<>();
     private final List<VillageAssignment> fakeNobleAssignments = new LinkedList<>();
 
-    public Player(String nickname, int noblesAvailable) {
+    public Player(String nickname, int numberOfNobles) {
         this.nickname = nickname;
-        this.noblesAvailable = noblesAvailable;
+        this.numberOfNobles = numberOfNobles;
     }
 
     /**
@@ -32,17 +32,17 @@ public class Player {
 
     public void decreaseNumberOfVillaes() { numberOfVillages--; }
 
-    public boolean hasNoble() { return (noblesAvailable > 0) ? true : false; }
+    public boolean hasNoble() { return (numberOfNobles > 0) ? true : false; }
 
-    public void decreaseNoblesAmount() { noblesAvailable--; }
+    public void delegateNoble() { numberOfNobles--; }
 
-    public int getNoblesAvailable() { return noblesAvailable; }
+    public int getNumberOfNobles() { return numberOfNobles; }
 
-    public List<VillageAssignment> getOffAssignments() { return offAssignments; }
+    public synchronized List<VillageAssignment> getOffAssignments() { return offAssignments; }
 
     public synchronized List<VillageAssignment> getFakeAssignments() { return fakeAssignments; }
 
-    public List<VillageAssignment> getNobleAssignments() { return nobleAssignments; }
+    public synchronized List<VillageAssignment> getNobleAssignments() { return nobleAssignments; }
 
-    public List<VillageAssignment> getFakeNobleAssignments() { return fakeNobleAssignments; }
+    public synchronized List<VillageAssignment> getFakeNobleAssignments() { return fakeNobleAssignments; }
 }

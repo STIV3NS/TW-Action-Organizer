@@ -10,21 +10,19 @@ import java.util.*;
 public class RamAssigner implements Runnable {
     private List<TargetVillage> targets;
     private List<AllyVillage> attackingVillages;
+    private Village relativityPoint;
+    private final boolean assigningFakes;
 
-    private final boolean fake;
-
-    private Village center;
-
-    public RamAssigner(List<TargetVillage> targets, List<AllyVillage> attackingVillages, Village center, boolean fake) {
+    public RamAssigner(List<TargetVillage> targets, List<AllyVillage> attackingVillages, Village relativityPoint, boolean assigningFakes) {
         this.targets = targets;
         this.attackingVillages = attackingVillages;
-        this.center = center;
-        this.fake = fake;
+        this.relativityPoint = relativityPoint;
+        this.assigningFakes = assigningFakes;
     }
 
     private void sortAttackers() {
         for (Village vil : attackingVillages) {
-            vil.setRelativeDistance(center);
+            vil.setRelativeDistance(relativityPoint);
         }
 
         attackingVillages.sort(Comparator.comparing(Village::getRelativeDistance));
@@ -35,13 +33,11 @@ public class RamAssigner implements Runnable {
     public void run() {
         List<AllyVillage> usedVillages = new LinkedList<>();
 
+        List<VillageAssignment> assignmentsList;
         TargetVillage closestVil;
         int distance;
 
-        List<VillageAssignment> assignmentsList;
-
         sortAttackers();
-
         for (AllyVillage attacker : attackingVillages) {
             if (targets.size() == 0) {
                 break;
@@ -49,17 +45,17 @@ public class RamAssigner implements Runnable {
 
             //init closestVil and distance
             closestVil = targets.get(0);
-            distance = attacker.computeDistanceTo(closestVil);
+            distance = attacker.getDistanceTo(closestVil);
 
             //search for closest village
             for (TargetVillage target : targets) {
-                if (attacker.computeDistanceTo(target) < distance) {
-                    distance = attacker.computeDistanceTo(target);
+                if (attacker.getDistanceTo(target) < distance) {
+                    distance = attacker.getDistanceTo(target);
                     closestVil = target;
                 }
             }
 
-            if (fake) {
+            if (assigningFakes) {
                 assignmentsList = attacker.getOwner().getFakeAssignments();
             }
             else {
