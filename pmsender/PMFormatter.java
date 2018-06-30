@@ -22,12 +22,12 @@ public class PMFormatter {
 
     ResourceBundle bundle = ResourceBundle.getBundle("resources.bundles.pmformatter");
 
-    private final String REQUIREMENTS_HEADER = bundle.getString("REQUIREMENTS_HEADER");
-    private final String NOBLE_HEADER        = bundle.getString("NOBLE_HEADER");
-    private final String OFF_HEADER          = bundle.getString("OFF_HEADER");
-    private final String FAKE_HEADER         = bundle.getString("FAKE_HEADER");
-    private final String FAKENOBLE_HEADER    = bundle.getString("FAKENOBLE_HEADER");
-    private final String EXECUTION_TEXT      = bundle.getString("EXECUTION_TEXT");
+    private String REQUIREMENTS_HEADER = bundle.getString("REQUIREMENTS_HEADER");
+    private String NOBLE_HEADER        = bundle.getString("NOBLE_HEADER");
+    private String OFF_HEADER          = bundle.getString("OFF_HEADER");
+    private String FAKE_HEADER         = bundle.getString("FAKE_HEADER");
+    private String FAKENOBLE_HEADER    = bundle.getString("FAKENOBLE_HEADER");
+    private String EXECUTION_TEXT      = bundle.getString("EXECUTION_TEXT");
 
     private enum Unit {
         RAM,
