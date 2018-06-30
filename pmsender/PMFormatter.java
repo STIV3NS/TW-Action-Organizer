@@ -20,13 +20,14 @@ public class PMFormatter {
     private static final String OPEN_SPOILER        = "[spoiler]\n";
     private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
 
-    //TODO add internationalization
-    private static final String REQUIREMENTS_HEADER = "Villages in which you have to have certain number of nobles:\n";
-    private static final String NOBLE_HEADER        = "[unit]snob[/unit][unit]axe[/unit] [b]OFF + NOBLE[/b]\n";
-    private static final String OFF_HEADER          = "[unit]ram[/unit] [b]OFF[/b]\n";
-    private static final String FAKE_HEADER         = "[unit]spy[/unit] [b]FAKE[/b]\n";
-    private static final String FAKENOBLE_HEADER    = "[unit]snob[/unit][unit]spy[/unit] [b]FAKE NOBLE[/b]\n";
-    private static final String EXECUTION_TEXT      = "execute";
+    ResourceBundle bundle = ResourceBundle.getBundle("resources.bundles.pmformatter");
+
+    private final String REQUIREMENTS_HEADER = bundle.getString("REQUIREMENTS_HEADER");
+    private final String NOBLE_HEADER        = bundle.getString("NOBLE_HEADER");
+    private final String OFF_HEADER          = bundle.getString("OFF_HEADER");
+    private final String FAKE_HEADER         = bundle.getString("FAKE_HEADER");
+    private final String FAKENOBLE_HEADER    = bundle.getString("FAKENOBLE_HEADER");
+    private final String EXECUTION_TEXT      = bundle.getString("EXECUTION_TEXT");
 
     private enum Unit {
         RAM,
