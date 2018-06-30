@@ -3,25 +3,24 @@ package gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.image.ImageView;
-import twao.Player;
 
 
 public class Controller {
     @FXML
     private TreeView treeView;
-    @FXML
-    private ImageView imgMap;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         treeView.setRoot(new TreeItem<>("root"));
         treeView.setShowRoot(false);
 
-        TreeItem<String> item = new TreeItem<>("World");
-        treeView.getRoot().getChildren().add(item);
+        TreeItem<String> world = new TreeItem<>("World");
+        treeView.getRoot().getChildren().add(world);
 
-        item = new TreeItem<>("Targets");
-        treeView.getRoot().getChildren().add(item);
+        TreeItem<String> resources = new TreeItem<>("Action resources");
+        treeView.getRoot().getChildren().add(resources);
+
+        TreeItem<String> targets = new TreeItem<>("Targets");
+        treeView.getRoot().getChildren().add(targets);
     }
 }
