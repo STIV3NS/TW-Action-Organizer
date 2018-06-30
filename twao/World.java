@@ -8,6 +8,7 @@ import twao.villages.Village;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -42,16 +43,11 @@ public class World {
         }
     }
 
-    public void loadVillageList() {
-        try {
-            URL url = new URL(this.getDomain() + "/map/village.txt");
-            Scanner sc = new Scanner(url.openStream());
-            this.villagesList = sc.useDelimiter("\\Z").next();
-            sc.close();
-        } catch (Exception e) {
-            //should never happen unless user loses internet connection after world is loaded
-            e.printStackTrace();
-        }
+    public void loadVillageList() throws IOException {
+        URL url = new URL(this.getDomain() + "/map/village.txt");
+        Scanner sc = new Scanner(url.openStream());
+        this.villagesList = sc.useDelimiter("\\Z").next();
+        sc.close();
     }
 
     public int getVillageId(Village vil) throws VillageNotFoundException {
