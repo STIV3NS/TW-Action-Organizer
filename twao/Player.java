@@ -32,15 +32,15 @@ public class Player {
 
     public void decreaseNumberOfVillaes() { numberOfVillages--; }
 
-    public synchronized boolean hasNoble() { return (noblesAvailable > 0) ? true : false; }
+    public boolean hasNoble() { return (noblesAvailable > 0) ? true : false; }
 
-    public synchronized void decreaseNoblesAmount() { noblesAvailable--; }
+    public void decreaseNoblesAmount() { noblesAvailable--; }
 
     public int getNoblesAvailable() { return noblesAvailable; }
 
     public List<VillageAssignment> getOffAssignments() { return offAssignments; }
 
-    public List<VillageAssignment> getFakeAssignments() { return fakeAssignments; }
+    public synchronized List<VillageAssignment> getFakeAssignments() { return fakeAssignments; }
 
     public List<VillageAssignment> getNobleAssignments() { return nobleAssignments; }
 
