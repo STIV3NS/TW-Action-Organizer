@@ -17,7 +17,7 @@
    <center>
        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
            <tabs>
-               <Tab text="Assigner">
+               <Tab fx:id="assignerTab" text="%ASSIGNER_TAB">
                    <content>
                        <BorderPane>
                            <center>
@@ -25,7 +25,7 @@
                                    <items>
                                        <BorderPane>
                                            <center>
-                                               <TreeView fx:id="treeView" BorderPane.alignment="CENTER" />
+                                               <TreeView fx:id="actionTreeView" BorderPane.alignment="CENTER" />
                                            </center>
                                        </BorderPane>
                                        <BorderPane>
@@ -46,7 +46,7 @@
                        </BorderPane>
                    </content>
                </Tab>
-               <Tab text="Map">
+               <Tab fx:id="mapTab" text="%MAP_TAB">
                    <content>
                        <BorderPane>
                              <center>
@@ -55,7 +55,7 @@
                        </BorderPane>
                    </content>
                </Tab>
-               <Tab disable="true" text="PMSender">
+               <Tab fx:id="senderTab" disable="true" text="%PMSENDER_TAB">
                    <content>
                        <VBox>
                            <children>
