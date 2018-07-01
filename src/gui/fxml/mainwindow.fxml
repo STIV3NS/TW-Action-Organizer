@@ -69,6 +69,14 @@
                        </VBox>
                    </content>
                </Tab>
+               <Tab fx:id="tutorialsTab" disable="true" text="%TUTORIALS_TAB">
+                   <content>
+                       <VBox>
+                           <children>
+                           </children>
+                       </VBox>
+                   </content>
+               </Tab>
            </tabs>
        </TabPane>
    </center>

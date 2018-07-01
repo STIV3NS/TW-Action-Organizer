@@ -20,6 +20,7 @@ public class Controller {
     private final static String ASSIGNER_TAB_ICON       = "resources/img/roadsplit.png";    /*Icon made by https://www.flaticon.com/authors/vaadin licensed by CC 3.0 BY*/
     private final static String MAP_TAB_ICON            = "resources/img/map.png";          /*Icon made by https://www.flaticon.com/authors/smashiconslicensed by CC 3.0 BY*/
     private final static String SENDER_TAB_ICON         = "resources/img/paperplane.png";   /*Icon made by http://www.freepik.com licensed by CC 3.0 BY*/
+    private final static String TUTORIALS_TAB_ICON      = "resources/img/books.png";        /*Icon made by http://www.freepik.com licensed by CC 3.0 BY*/
 
     @FXML
     private Tab assignerTab;
@@ -29,6 +30,9 @@ public class Controller {
 
     @FXML
     private Tab senderTab;
+
+    @FXML
+    private Tab tutorialsTab;
 
     @FXML
     private TreeView actionTreeView;
@@ -43,6 +47,7 @@ public class Controller {
         assignerTab.setGraphic(getIcon(ASSIGNER_TAB_ICON));
         mapTab.setGraphic(getIcon(MAP_TAB_ICON));
         senderTab.setGraphic(getIcon(SENDER_TAB_ICON));
+        tutorialsTab.setGraphic(getIcon(TUTORIALS_TAB_ICON));
     }
 
     private void initActionTreeView() {
