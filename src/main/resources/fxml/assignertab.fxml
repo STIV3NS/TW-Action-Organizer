@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.controllers.AssignerTabController">
+    <center>
+        <SplitPane dividerPositions="0.25" BorderPane.alignment="CENTER">
+            <items>
+                <BorderPane>
+                    <center>
+                        <TreeView fx:id="actionTreeView" BorderPane.alignment="CENTER" />
+                    </center>
+                </BorderPane>
+                <BorderPane>
+                    <bottom>
+                        <ProgressBar prefWidth="99999.0" progress="0.0" BorderPane.alignment="CENTER">
+                            <BorderPane.margin>
+                                <Insets />
+                            </BorderPane.margin>
+                            <cursor>
+                                <Cursor fx:constant="DEFAULT" />
+                            </cursor>
+                        </ProgressBar>
+                    </bottom>
+                </BorderPane>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

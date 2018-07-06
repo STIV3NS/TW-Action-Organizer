@@ -19,11 +19,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         /*Icon made by https://www.flaticon.com/authors/pixel-buddha licensed by CC 3.0 BY*/
-        primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("resources/img/appicon.png")));
+        primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/img/appicon.png")));
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setResources(ResourceBundle.getBundle("localization.gui"));
-        Parent root = fxmlLoader.load(this.getClass().getResourceAsStream("fxml/mainwindow.fxml"));
+        fxmlLoader.setResources(ResourceBundle.getBundle("localization/gui"));
+        fxmlLoader.setLocation(getClass().getResource("/fxml/mainwindow.fxml"));
+        Parent root = fxmlLoader.load();
 
         primaryStage.setTitle("TW Action Organizer");
         primaryStage.setResizable(false);

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity"
+            maxWidth="-Infinity"
+            minHeight="-Infinity"
+            minWidth="-Infinity"
+            prefHeight="700.0"
+            prefWidth="1200.0"
+            xmlns="http://javafx.com/javafx/9.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.controllers.MainWindowController">
+   <center>
+       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+           <tabs>
+               <Tab fx:id="assignerTab" style="-fx-padding: 5;" text="%ASSIGNER_TAB">
+                   <content>
+                       <fx:include source="assignertab.fxml" />
+                   </content>
+               </Tab>
+               <Tab fx:id="mapTab" style="-fx-padding: 5;" text="%MAP_TAB">
+                   <content>
+                       <BorderPane>
+                             <center>
+                                <ImageView fx:id="imgMap" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                             </center>
+                       </BorderPane>
+                   </content>
+               </Tab>
+               <Tab fx:id="senderTab" style="-fx-padding: 5;" text="%PMSENDER_TAB">
+                   <content>
+                   </content>
+               </Tab>
+               <Tab fx:id="tutorialsTab" style="-fx-padding: 5;" text="%TUTORIALS_TAB">
+                   <content>
+                   </content>
+               </Tab>
+           </tabs>
+       </TabPane>
+   </center>
+   <cursor>
+      <Cursor fx:constant="DEFAULT" />
+   </cursor>
+</BorderPane>
