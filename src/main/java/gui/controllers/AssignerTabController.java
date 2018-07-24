@@ -16,39 +16,38 @@ public class AssignerTabController implements IconHelper {
     @FXML
     private TreeView actionTreeView;
 
+    private TreeItem<String> root;
+    private TreeItem<String> world;
+    private TreeItem<String> actionResources;
+    private TreeItem<String> targets;
+    private TreeItem<String> nobleTargets;
+    private TreeItem<String> astonishingTargets;
+    private TreeItem<String> offTargets;
+    private TreeItem<String> fakeTargets;
+    private TreeItem<String> fakeNobleTargets;
+
     @FXML
     private void initialize() {
         initActionTreeView();
     }
 
     private void initActionTreeView() {
-        TreeItem<String> root = new TreeItem<>("root");
+        root = new TreeItem<>("root");
         actionTreeView.setRoot(root);
         actionTreeView.setShowRoot(false);
 
-        TreeItem<String> world = createTreeItem("WORLD", WORLD_ICON);
-        root.getChildren().add(world);
+        world = createTreeItem("WORLD", WORLD_ICON);
+        actionResources = createTreeItem("ACTION_RESOURCES", ACTION_RESOURCES_ICON);
+        targets = createTreeItem("TARGETS", TARGET_ICON);
 
-        TreeItem<String> actionResources = createTreeItem("ACTION_RESOURCES", ACTION_RESOURCES_ICON);
-        root.getChildren().add(actionResources);
+        nobleTargets = createTreeItem("NOBLE_TARGETS");
+        astonishingTargets = createTreeItem("ASTONISHING_TARGETS");
+        offTargets = createTreeItem("OFF_TARGETS");
+        fakeTargets = createTreeItem("FAKE_TARGETS");
+        fakeNobleTargets = createTreeItem("FAKENOBLE_TARGETS");
 
-        TreeItem<String> targets = createTreeItem("TARGETS", TARGET_ICON);
-        root.getChildren().add(targets);
-
-        TreeItem<String> nobleTargets = createTreeItem("NOBLE_TARGETS");
-        targets.getChildren().add(nobleTargets);
-
-        TreeItem<String> astonishingTargets = createTreeItem("ASTONISHING_TARGETS");
-        targets.getChildren().add(astonishingTargets);
-
-        TreeItem<String> offTargets = createTreeItem("OFF_TARGETS");
-        targets.getChildren().add(offTargets);
-
-        TreeItem<String> fakeTargets = createTreeItem("FAKE_TARGETS");
-        targets.getChildren().add(fakeTargets);
-
-        TreeItem<String> fakeNobleTargets = createTreeItem("FAKENOBLE_TARGETS");
-        targets.getChildren().add(fakeNobleTargets);
+        targets.getChildren().addAll(nobleTargets, astonishingTargets, offTargets, fakeTargets, fakeNobleTargets);
+        root.getChildren().addAll(world, actionResources, targets);
     }
 
     private TreeItem<String> createTreeItem(String text) {
