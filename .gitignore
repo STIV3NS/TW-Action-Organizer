@@ -1,4 +1,7 @@
 *.class
+*.java
+
+*.iml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -8,5 +11,4 @@ hs_err_pid*
 
 \.idea/
 \out/
-
-TW Action Organizer\.iml
+\target/
