@@ -11,31 +11,33 @@ import java.util.List;
 
 public class PMFormatter {
     private final World world;
-
-    private int previousDay = -1; //flag init
-    private boolean nextDay = false; //flag init
+    private final Calendar dateOfArrival;
 
     private static final int SECONDS_PER_MIN        = 60;
     private static final int GROUP_SIZE             = 5;
     private static final String OPEN_SPOILER        = "[spoiler]\n";
     private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
 
-    ResourceBundle bundle = ResourceBundle.getBundle("localization/pmformatter");
+    private static ResourceBundle bundle = ResourceBundle.getBundle("localization/pmformatter");
 
-    private String REQUIREMENTS_HEADER = bundle.getString("REQUIREMENTS_HEADER");
-    private String NOBLE_HEADER        = bundle.getString("NOBLE_HEADER");
-    private String OFF_HEADER          = bundle.getString("OFF_HEADER");
-    private String FAKE_HEADER         = bundle.getString("FAKE_HEADER");
-    private String FAKENOBLE_HEADER    = bundle.getString("FAKENOBLE_HEADER");
-    private String EXECUTION_TEXT      = bundle.getString("EXECUTION_TEXT");
+    private static String REQUIREMENTS_HEADER = bundle.getString("REQUIREMENTS_HEADER");
+    private static String NOBLE_HEADER        = bundle.getString("NOBLE_HEADER");
+    private static String OFF_HEADER          = bundle.getString("OFF_HEADER");
+    private static String FAKE_HEADER         = bundle.getString("FAKE_HEADER");
+    private static String FAKENOBLE_HEADER    = bundle.getString("FAKENOBLE_HEADER");
+    private static String EXECUTION_TEXT      = bundle.getString("EXECUTION_TEXT");
 
     private enum Unit {
         RAM,
         NOBLE
     }
 
-    public PMFormatter(World world) {
+    private int previousDay = -1; //flag init
+    private boolean nextDay = false; //flag init
+
+    public PMFormatter(World world, Calendar dateOfArrival) {
         this.world = world;
+        this.dateOfArrival = dateOfArrival;
     }
 
     public String get(Player player) {
@@ -135,19 +137,18 @@ public class PMFormatter {
 
         sbuilder.append(CLOSE_SPOILER);
     }
-
-    //TODO implement custom dateOfArrival
+    
     private String getDepartureTime(double squaredDistance, int standardTimePerUnit) {
-        Calendar dateOfArrival = new GregorianCalendar(2018, Calendar.MAY, 21);
-        dateOfArrival.add(Calendar.HOUR, 8);
+
+        Calendar departureTime = (Calendar) dateOfArrival.clone();
 
         double distance = Math.sqrt(squaredDistance);
         double unitSpeed = standardTimePerUnit / world.getSpeed();
         int travelTime = (int) ((distance * unitSpeed) * SECONDS_PER_MIN );
 
-        dateOfArrival.add(Calendar.SECOND, -travelTime);
+        departureTime.add(Calendar.SECOND, -travelTime);
 
-        int dayOfMonth = dateOfArrival.get(Calendar.DAY_OF_MONTH);
+        int dayOfMonth = departureTime.get(Calendar.DAY_OF_MONTH);
 
         if (dayOfMonth != previousDay) {
             nextDay = true;
@@ -156,7 +157,7 @@ public class PMFormatter {
         }
         previousDay = dayOfMonth;
 
-        return new SimpleDateFormat("dd.MM | HH:mm:ss").format(dateOfArrival.getTime());
+        return new SimpleDateFormat("dd.MM | HH:mm:ss").format(departureTime.getTime());
     }
 
     private void sortAssignmentsList(List<VillageAssignment> list) {
