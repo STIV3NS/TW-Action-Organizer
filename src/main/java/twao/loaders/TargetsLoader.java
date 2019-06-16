@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import java.io.File;
 
 public class TargetsLoader {
-    public TargetsLoader(String filePath, int attacksPerVillage, List<TargetVillage> outputList) throws FileNotFoundException {
+    public static void load(String filePath, int attacksPerVillage, List<TargetVillage> outputList) throws FileNotFoundException {
         Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}");
         Matcher matcher;
 
