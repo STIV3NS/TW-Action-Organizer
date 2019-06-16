@@ -1,8 +1,12 @@
 package gui.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.util.ResourceBundle;
 
@@ -14,7 +18,7 @@ public class AssignerTabController implements IconHelper {
     private final static String ACTION_RESOURCES_ICON   = "/img/hr.png";           /*Icon made by http://www.freepik.com licensed by CC 3.0 BY*/
 
     @FXML
-    private TreeView actionTreeView;
+    private TreeView<String> actionTreeView;
 
     private TreeItem<String> root;
     private TreeItem<String> world;
@@ -29,6 +33,7 @@ public class AssignerTabController implements IconHelper {
     @FXML
     private void initialize() {
         initActionTreeView();
+        initContextMenus();
     }
 
     private void initActionTreeView() {
@@ -48,6 +53,43 @@ public class AssignerTabController implements IconHelper {
 
         targets.getChildren().addAll(nobleTargets, astonishingTargets, offTargets, fakeTargets, fakeNobleTargets);
         root.getChildren().addAll(world, actionResources, targets);
+    }
+
+    private void initContextMenus() {
+        actionTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+            actionTreeView.setContextMenu(null);
+
+            if (e.getButton() == MouseButton.SECONDARY) {
+                ContextMenu contextMenu = null;
+                Object selected = actionTreeView.getSelectionModel().getSelectedItem();
+
+                if (selected == world) {
+                    contextMenu = getWorldContextMenu();
+                } else if (selected == actionResources) {
+                    contextMenu = getActionResourcesContextMenu();
+                }
+
+                actionTreeView.setContextMenu(contextMenu);
+            }
+        });
+    }
+
+    private ContextMenu getWorldContextMenu() {
+        ContextMenu contextmenu = new ContextMenu();
+        MenuItem specifyDomain = new MenuItem(bundle.getString("CONTEXT_SPECIFY_DOMAIN"));
+
+        contextmenu.getItems().addAll(specifyDomain);
+
+        return contextmenu;
+    }
+
+    private ContextMenu getActionResourcesContextMenu() {
+        ContextMenu contextmenu = new ContextMenu();
+        MenuItem specifyDomain = new MenuItem(bundle.getString("CONTEXT_LOAD_ALLIES"));
+
+        contextmenu.getItems().addAll(specifyDomain);
+
+        return contextmenu;
     }
 
     private TreeItem<String> createTreeItem(String text) {
