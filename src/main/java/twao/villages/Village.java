@@ -1,6 +1,7 @@
 package twao.villages;
 
 import twao.World;
+import twao.exceptions.VillageNotFoundException;
 
 import java.lang.Math;
 
@@ -48,7 +49,7 @@ public class Village implements Cloneable {
 
     public int getId() { return id; }
 
-    public void setId(World world) throws Exception {
+    public void findId(World world) throws VillageNotFoundException {
         id = world.getVillageId(this);
     }
 
