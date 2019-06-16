@@ -45,12 +45,12 @@ public class RamAssigner implements Runnable {
 
             //init closestVil and distance
             closestVil = targets.get(0);
-            distance = attacker.getDistanceTo(closestVil);
+            distance =  Village.distance(attacker, closestVil);
 
             //search for closest village
             for (TargetVillage target : targets) {
-                if (attacker.getDistanceTo(target) < distance) {
-                    distance = attacker.getDistanceTo(target);
+                if (Village.distance(attacker, target) < distance) {
+                    distance = Village.distance(attacker, target);
                     closestVil = target;
                 }
             }

@@ -40,13 +40,13 @@ public class AstonishingRamAssigner implements Runnable {
 
                 //init closestVil and distance
                 closestVil = attackingVillages.get(0);
-                distance = target.getDistanceTo(closestVil);
+                distance = Village.distance(target, closestVil);
 
                 //search for closest village
                 for (AllyVillage attacker : attackingVillages) {
-                    if (attacker.getDistanceTo(target) < distance) {
+                    if (Village.distance(attacker, target) < distance) {
                         closestVil = attacker;
-                        distance = closestVil.getDistanceTo(target);
+                        distance = Village.distance(closestVil, target);
                     }
                 }
 

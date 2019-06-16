@@ -16,8 +16,8 @@ public class Village implements Cloneable {
         this.y = y;
     }
 
-    public int getDistanceTo(Village vil) {
-        return (int) (Math.pow(this.getX() - vil.getX(), 2) + Math.pow(this.getY() - vil.getY(), 2));
+    public static int distance(Village v1, Village v2) {
+        return (int) (Math.pow(v1.getX() - v2.getX(), 2) + Math.pow(v1.getY() - v2.getY(), 2));
     }
 
     @Override
@@ -54,5 +54,5 @@ public class Village implements Cloneable {
 
     public int getRelativeDistance() { return relativeDistance; }
 
-    public void setRelativeDistance(Village vil) { relativeDistance = getDistanceTo(vil); }
+    public void setRelativeDistance(Village vil) { relativeDistance = distance(this, vil); }
 }
