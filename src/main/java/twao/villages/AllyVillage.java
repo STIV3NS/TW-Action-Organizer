@@ -10,6 +10,11 @@ public class AllyVillage extends Village {
         this.owner = owner;
     }
 
+    @Override
+    public AllyVillage clone() {
+        return (AllyVillage) super.clone();
+    }
+
     /**
      * -----------------------------------------------------------
      * getters and setters
