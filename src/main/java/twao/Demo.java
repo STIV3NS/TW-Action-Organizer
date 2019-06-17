@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Demo {
     /**
@@ -26,6 +27,7 @@ public class Demo {
 
         List<Player> players = al.getPlayers();
         List<AllyVillage> villages = al.getVillages();
+        List<AllyVillage> villages_bis = villages.stream().map(v -> v.clone()).collect(Collectors.toList());
 
         List<TargetVillage> targets = new LinkedList<>();
         List<TargetVillage> fake_noble_targets = new LinkedList<>();
@@ -42,7 +44,7 @@ public class Demo {
 
         Thread t2 = new Thread(new AssignerBuilder()
                                     .setTargets(fake_noble_targets)
-                                    .setAttackingVillages(villages)
+                                    .setAttackingVillages(villages_bis)
                                     .setRelativityPoint(new Village(500, 500))
                                     .setType(AssignerBuilder.AssignerType.FAKE_NOBLE)
                                     .setMaxNobleRange(500*500)
