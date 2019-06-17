@@ -1,5 +1,6 @@
 package twao.assigners;
 
+import twao.Player;
 import twao.VillageAssignment;
 import twao.villages.AllyVillage;
 import twao.villages.TargetVillage;
@@ -26,15 +27,15 @@ class ReversedRamAssigning implements AssigningStrategy {
                 AllyVillage closestVil = attackingVillages.get(0);
                 int distance = Village.distance(target, closestVil);
 
-                List<VillageAssignment> assignmentsList;
+                Player owner = closestVil.getOwner();
+                VillageAssignment assignment = new VillageAssignment(closestVil, target, distance);
+
                 if (assigningFakes) {
-                    assignmentsList = closestVil.getOwner().getFakeAssignments();
+                    owner.putFakeAssignment( assignment );
                 }
                 else {
-                    assignmentsList = closestVil.getOwner().getOffAssignments();
+                    owner.putOffAssignment( assignment );
                 }
-
-                assignmentsList.add( new VillageAssignment(closestVil, target, distance) );
 
                 attackingVillages.remove(closestVil);
                 target.attack();

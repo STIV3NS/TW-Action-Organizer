@@ -1,5 +1,6 @@
 package twao.assigners;
 
+import twao.Player;
 import twao.VillageAssignment;
 import twao.villages.AllyVillage;
 import twao.villages.TargetVillage;
@@ -31,15 +32,15 @@ class RamAssigning implements AssigningStrategy {
             int distance =  Village.distance(attacker, closestVil);
 
 
-            List<VillageAssignment> assignmentsList;
+            Player owner = attacker.getOwner();
+            VillageAssignment assignment = new VillageAssignment(attacker, closestVil, distance);
+
             if (assigningFakes) {
-                assignmentsList = attacker.getOwner().getFakeAssignments();
+                owner.putFakeAssignment( assignment );
             }
             else {
-                assignmentsList = attacker.getOwner().getOffAssignments();
+                owner.putOffAssignment( assignment );
             }
-
-            assignmentsList.add( new VillageAssignment(attacker, closestVil, distance) );
 
             usedVillages.add(attacker);
 

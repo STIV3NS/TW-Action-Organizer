@@ -1,9 +1,9 @@
 package twao.assigners;
 
+import twao.Player;
 import twao.VillageAssignment;
 import twao.villages.AllyVillage;
 import twao.villages.TargetVillage;
-import twao.villages.Village;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,21 +47,21 @@ class NobleAssigning implements AssigningStrategy {
                     break;
                 }
 
-                List<VillageAssignment> assignmentsList;
+                Player owner = closestVil.getOwner();
+                VillageAssignment assignment = new VillageAssignment(closestVil, target, distance);
+
                 if (assigningFakes) {
-                    assignmentsList = closestVil.getOwner().getFakeNobleAssignments();
+                    owner.putFakeNobleAssignment( assignment );
                 }
                 else {
-                    assignmentsList = closestVil.getOwner().getNobleAssignments();
+                    owner.putNobleAssignment( assignment );
                 }
 
-                assignmentsList.add( new VillageAssignment(closestVil, target, distance) );
-
-                closestVil.getOwner().delegateNoble();
+                owner.delegateNoble();
+                target.attack();
 
                 attackingVillages.remove(closestVil);
 
-                target.attack();
             }
         }
     }

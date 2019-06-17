@@ -43,37 +43,37 @@ public class PMFormatter {
     public String get(Player player) {
         StringBuilder sbuilder = new StringBuilder();
 
-        if (player.getNobleAssignments().size() > 0 || player.getFakeNobleAssignments().size() > 0) {
+        if (player.getNobleAssignmentsCopy().size() > 0 || player.getFakeNobleAssignmentsCopy().size() > 0) {
             sbuilder.append(REQUIREMENTS_HEADER);
             generateNobleRequirements(sbuilder, player);
         }
 
-        if (player.getNobleAssignments().size() > 0) {
-            sortAssignmentsList(player.getNobleAssignments());
+        if (player.getNobleAssignmentsCopy().size() > 0) {
+            sortAssignmentsList(player.getNobleAssignmentsCopy());
 
             sbuilder.append(NOBLE_HEADER);
-            generateCommandsList(sbuilder, player.getNobleAssignments(), getUnitSpeed(Unit.NOBLE));
+            generateCommandsList(sbuilder, player.getNobleAssignmentsCopy(), getUnitSpeed(Unit.NOBLE));
         }
 
-        if (player.getOffAssignments().size() > 0) {
-            sortAssignmentsList(player.getOffAssignments());
+        if (player.getOffAssignmentsCopy().size() > 0) {
+            sortAssignmentsList(player.getOffAssignmentsCopy());
 
             sbuilder.append(OFF_HEADER);
-            generateCommandsList(sbuilder, player.getOffAssignments(), getUnitSpeed(Unit.RAM));
+            generateCommandsList(sbuilder, player.getOffAssignmentsCopy(), getUnitSpeed(Unit.RAM));
         }
 
-        if (player.getFakeAssignments().size() > 0) {
-            sortAssignmentsList(player.getFakeAssignments());
+        if (player.getFakeAssignmentsCopy().size() > 0) {
+            sortAssignmentsList(player.getFakeAssignmentsCopy());
 
             sbuilder.append(FAKE_HEADER);
-            generateCommandsList(sbuilder, player.getFakeAssignments(), getUnitSpeed(Unit.RAM));
+            generateCommandsList(sbuilder, player.getFakeAssignmentsCopy(), getUnitSpeed(Unit.RAM));
         }
 
-        if (player.getFakeNobleAssignments().size() > 0) {
-            sortAssignmentsList(player.getFakeNobleAssignments());
+        if (player.getFakeNobleAssignmentsCopy().size() > 0) {
+            sortAssignmentsList(player.getFakeNobleAssignmentsCopy());
 
             sbuilder.append(FAKENOBLE_HEADER);
-            generateCommandsList(sbuilder, player.getFakeNobleAssignments(), getUnitSpeed(Unit.NOBLE));
+            generateCommandsList(sbuilder, player.getFakeNobleAssignmentsCopy(), getUnitSpeed(Unit.NOBLE));
         }
 
         return sbuilder.toString();
@@ -83,8 +83,8 @@ public class PMFormatter {
         HashMap<Village, Integer> requirements = new HashMap<>();
 
         List<VillageAssignment> nobleAssignments = new LinkedList<>();
-        nobleAssignments.addAll(player.getNobleAssignments());
-        nobleAssignments.addAll(player.getFakeNobleAssignments());
+        nobleAssignments.addAll(player.getNobleAssignmentsCopy());
+        nobleAssignments.addAll(player.getFakeNobleAssignmentsCopy());
 
         sbuilder.append(OPEN_SPOILER);
 
