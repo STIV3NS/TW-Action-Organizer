@@ -5,7 +5,7 @@ import twao.exceptions.VillageNotFoundException;
 
 import java.lang.Math;
 
-public class Village implements Cloneable {
+public class Village {
     private final int x;
     private final int y;
     private int id;
@@ -24,17 +24,6 @@ public class Village implements Cloneable {
     @Override
     public String toString() {
         return String.format("%s|%s", x, y);
-    }
-
-    @Override
-    public Village clone() {
-        Village clone = null;
-        try {
-            clone = (Village) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return clone;
     }
 
     /**

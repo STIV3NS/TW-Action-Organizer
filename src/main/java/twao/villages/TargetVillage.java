@@ -8,11 +8,6 @@ public class TargetVillage extends Village {
         this.numberOfAttacks = numberOfAttacks;
     }
 
-    @Override
-    public TargetVillage clone() {
-        return (TargetVillage) super.clone();
-    }
-
     public void attack() {
         numberOfAttacks--;
     }

@@ -27,7 +27,7 @@ public class Demo {
 
         List<Player> players = al.getPlayers();
         List<AllyVillage> villages = al.getVillages();
-        List<AllyVillage> villages_bis = villages.stream().map(v -> v.clone()).collect(Collectors.toList());
+        List<AllyVillage> villages_bis = new LinkedList<>(villages);
 
         List<TargetVillage> targets = new LinkedList<>();
         List<TargetVillage> fake_noble_targets = new LinkedList<>();
