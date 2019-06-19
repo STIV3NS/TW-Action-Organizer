@@ -12,13 +12,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Demo {
     /**
      * Just a stupid simple hard-coded example
      * */
     public static void main(String[] args) throws Exception {
+        World pl141 = new World("pl141.plemiona.pl");
+
         AllyLoader al = new AllyLoader("allies.txt");
         al.setNicknameKey("nick");
         al.setNobleKey("nobles");
@@ -47,7 +48,7 @@ public class Demo {
                                     .setAttackingVillages(villages_bis)
                                     .setRelativityPoint(new Village(500, 500))
                                     .setType(AssignerBuilder.AssignerType.FAKE_NOBLE)
-                                    .setMaxNobleRange(500*500)
+                                    .setMaxNobleRange(pl141.getMaxNobleRange())
                                     .build());
 
 
@@ -58,11 +59,11 @@ public class Demo {
 
 
         PMFormatter pf = new PMFormatter(
-                new World("pl141.plemiona.pl"),
+                pl141,
                 new GregorianCalendar(1900, Calendar.JANUARY, 1)
         );
         for (Player p : players) {
-            System.out.println( pf.get(p) );
+            System.out.println( pf.generatePlayerMsg(p) );
         }
     }
 }

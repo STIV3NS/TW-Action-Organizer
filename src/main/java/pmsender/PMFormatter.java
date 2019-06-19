@@ -10,11 +10,11 @@ import java.util.*;
 import java.util.List;
 
 public class PMFormatter {
-    private final World world;
-    private final Calendar dateOfArrival;
+    private final World         world;
+    private final Calendar      dateOfArrival;
 
-    private static final int SECONDS_PER_MIN        = 60;
-    private static final int GROUP_SIZE             = 5;
+    private static final int    SECONDS_PER_MIN        = 60;
+    private static final int    GROUP_SIZE             = 5;
     private static final String OPEN_SPOILER        = "[spoiler]\n";
     private static final String CLOSE_SPOILER       = "[/spoiler]\n\n\n";
 
@@ -35,12 +35,22 @@ public class PMFormatter {
     private int previousDay = -1; //flag init
     private boolean nextDay = false; //flag init
 
+    /**
+     * @param world             Specific world to get information from (e.g. speed)
+     * @param dateOfArrival     Concrete date that is meant to be "D-Day"
+     */
     public PMFormatter(World world, Calendar dateOfArrival) {
         this.world = world;
         this.dateOfArrival = dateOfArrival;
     }
 
-    public String get(Player player) {
+    /**
+     * Generates a message intended for a given player.
+     *
+     * @param player    Given player
+     * @return          Message with all assignments
+     */
+    public String generatePlayerMsg(Player player) {
         StringBuilder sbuilder = new StringBuilder();
 
         if (player.getNobleAssignmentsCopy().size() > 0 || player.getFakeNobleAssignmentsCopy().size() > 0) {

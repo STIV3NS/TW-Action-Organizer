@@ -12,6 +12,12 @@ public class Player {
     private final List<VillageAssignment> nobleAssignments = new LinkedList<>();
     private final List<VillageAssignment> fakeNobleAssignments = new LinkedList<>();
 
+    /**
+     * Initializes player.
+     *
+     * @param nickname          Player's nickname
+     * @param numberOfNobles    Number of nobles that given player may produce
+     */
     public Player(String nickname, int numberOfNobles) {
         this.nickname = nickname;
         this.numberOfNobles = numberOfNobles;
@@ -25,6 +31,10 @@ public class Player {
 
     public int getNumberOfNobles()          { return numberOfNobles; }
     public boolean hasNoble()               { return (numberOfNobles > 0) ? true : false; }
+
+    /**
+     * Decreases number of available nobles by 1.
+     */
     public void delegateNoble()             { numberOfNobles--; }
 
     public List<VillageAssignment> getOffAssignmentsCopy()          { return new LinkedList<>(offAssignments); }
