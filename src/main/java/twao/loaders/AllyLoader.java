@@ -63,7 +63,7 @@ public class AllyLoader {
 
         for (CSVRecord record : records) {
             nickname = record.get(nicknameKey);
-           numberOfNobles = Integer.parseInt(record.get(nobleKey));
+            numberOfNobles = Integer.parseInt(record.get(nobleKey));
 
             if (knownPlayers.get(nickname) == null) {
                player = new Player(nickname, numberOfNobles);
