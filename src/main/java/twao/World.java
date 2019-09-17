@@ -66,7 +66,7 @@ public class World {
      * @return
      * @throws VillageNotFoundException
      */
-    public int getVillageId(Village vil) throws VillageNotFoundException {
+    public int fetchVillageId(Village vil) throws VillageNotFoundException {
         Pattern pattern = Pattern.compile(String.format("^.*,%d,%d,.*$", vil.getX(), vil.getY()), Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(villagesList);
 

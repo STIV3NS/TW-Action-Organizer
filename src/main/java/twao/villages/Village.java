@@ -59,7 +59,7 @@ public class Village {
      * @throws VillageNotFoundException
      */
     public void initId(World world) throws VillageNotFoundException {
-        id = world.getVillageId(this);
+        id = world.fetchVillageId(this);
     }
 
     public int getRelativeDistance()             { return relativeDistance; }
