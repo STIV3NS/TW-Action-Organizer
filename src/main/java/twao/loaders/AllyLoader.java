@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
  * and {@link #setVillagesKey(String)} methods.
  */
 public class AllyLoader {
-    private final List<Player>      players = new LinkedList<>();
-    private final List<AllyVillage> villages = new LinkedList<>();
+    private final List<Player>      players = new ArrayList<>();
+    private final List<AllyVillage> villages = new ArrayList<>();
 
     private String nicknameKey;
     private String nobleKey;
