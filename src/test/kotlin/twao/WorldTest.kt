@@ -37,12 +37,12 @@ class WorldTest : WordSpec({
                     row(Village(497, 506), 44),
                     row(Village(508, 499), 66)
                 ) { village, id ->
-                    world.fetchVillageId(village) shouldBe id
+                    world.fetchVillageID(village) shouldBe id
                 }
             }
             "throw an exception when trying to handle non-existing village" {
                 shouldThrow<VillageNotFoundException> {
-                    world.fetchVillageId( Village(-1, -1) )
+                    world.fetchVillageID( Village(-1, -1) )
                 }
             }
         }

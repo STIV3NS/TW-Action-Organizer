@@ -12,7 +12,7 @@ open class Village(open val x: Int, open val y: Int) {
 
     @Throws(VillageNotFoundException::class)
     fun initID(world: World) {
-        id = world.fetchVillageId(this)
+        id = world.fetchVillageID(this)
     }
 
     fun setRelativeDistance(vil: Village) {
@@ -20,7 +20,7 @@ open class Village(open val x: Int, open val y: Int) {
     }
 
     override fun toString()
-            = "$x|$y"
+        = "$x|$y"
 
     companion object {
         infix fun Int.`**`(exponent: Int): Int = toDouble().pow(exponent).toInt()

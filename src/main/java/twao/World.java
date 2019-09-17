@@ -52,7 +52,7 @@ public class World {
         sc.close();
     }
 
-    public int fetchVillageId(Village vil) throws VillageNotFoundException {
+    public int fetchVillageID(Village vil) throws VillageNotFoundException {
         Pattern pattern = Pattern.compile(String.format("^.*,%d,%d,.*$", vil.getX(), vil.getY()), Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(villagesList);
 
