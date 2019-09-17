@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1"
+<BorderPane xmlns="http://javafx.com/javafx/8.0.221"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="gui.controllers.AssignerTabController">
     <center>
