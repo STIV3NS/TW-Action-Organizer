@@ -9,20 +9,20 @@ import java.util.List;
 
 public class AssignerBuilder {
     /**
-     * Determines assigner behavior <br>
+     * Determines assigner behavior
      *
-     * -. RAM: (concrete attack without noble) Pick ALLY village that is the farthest from {@link #relativityPoint} and link it with target village that
-     * distance between it and given village is the shortest. Repeat.<br>
+     * -. RAM: (concrete attack without noble) Pick ALLY village that is the farthest from [#relativityPoint] and link it with target village that
+     * distance between it and given village is the shortest. Repeat.
      *
-     * -. REVERSED_RAM: (concrete attack without noble) Pick TARGET village that is the closest to {@link #relativityPoint} and link it with ally village
-     * that distance between it and given village is the shortest. Repeat.<br>
+     * -. REVERSED_RAM: (concrete attack without noble) Pick TARGET village that is the closest to [#relativityPoint and link it with ally village
+     * that distance between it and given village is the shortest. Repeat.
      *
-     * -. FAKE_RAM: (fake attack without noble) Act like {@code type.RAM}.<br>
+     * -. FAKE_RAM: (fake attack without noble) Act like [type.RAM].
      *
-     * -. NOBLE: (concrete attack with noble) Pick TARGET village that is the closest to {@link #relativityPoint} and link it with ally village
-     * that distance between it and given village is the shortest. Repeat.<br>
+     * -. NOBLE: (concrete attack with noble) Pick TARGET village that is the closest to [#relativityPoint] and link it with ally village
+     * that distance between it and given village is the shortest. Repeat.
      *
-     * -. FAKE_NOBKE: (fake attack with noble) Act like {@code type.NOBLE}.<br>
+     * -. FAKE_NOBKE: (fake attack with noble) Act like [type.NOBLE].
      */
     public enum AssignerType {
         RAM,
@@ -39,11 +39,10 @@ public class AssignerBuilder {
     private int maxNobleRange = -1;
 
     /**
-     * Requires {@link #targets}, {@link #attackingVillages}, {@link #relativityPoint}, {@link #type} to be set.
-     * If assigning (fake)nobles {@link #maxNobleRange} is also obligatory.
+     * Requires [#targets], [#attackingVillages], [#relativityPoint], [#type] to be set.
+     * If assigning (fake)nobles [#maxNobleRange] is also obligatory.
      *
      * @return Concrete Assigner instance
-     * @throws UnspecifiedKeyException
      */
     public Assigner build() throws UnspecifiedKeyException {
         if (targets == null || attackingVillages == null || relativityPoint == null || type == null) {
@@ -73,57 +72,31 @@ public class AssignerBuilder {
         return assigner;
     }
 
-    /**
-     * Obligatory
-     *
-     * @param targets               {@code List<TargetVillage>}
-     * @return
-     */
+    /** Obligatory */
     public AssignerBuilder setTargets(List<TargetVillage> targets) {
         this.targets = targets;
         return this;
     }
 
-    /**
-     * Obligatory
-     *
-     * @param attackingVillages     {@code List<AllyVillage>}
-     * @return
-     */
+    /** Obligatory */
     public AssignerBuilder setAttackingVillages(List<AllyVillage> attackingVillages) {
         this.attackingVillages = attackingVillages;
         return this;
     }
 
-    /**
-     * Obligatory
-     *
-     * @param relativityPoint       Distance between this point and given village determines in what order it will be assigned
-     * @return
-     */
+    /** Obligatory */
     public AssignerBuilder setRelativityPoint(Village relativityPoint) {
         this.relativityPoint = relativityPoint;
         return this;
     }
 
-    /**
-     * Obligatory
-     *
-     * @param type                  {{@link #type}} - determines assigner behaviour
-     * @return
-     */
+    /** Obligatory */
     public AssignerBuilder setType(AssignerType type) {
         this.type = type;
         return this;
     }
 
-
-    /**
-     * Used only when assigning (fake)nobles
-     *
-     * @param maxNobleRange         All assignment above this limit will be rejected
-     * @return
-     */
+    /** Used only when assigning (fake)nobles */
     public AssignerBuilder setMaxNobleRange(int maxNobleRange) {
         this.maxNobleRange = maxNobleRange;
         return this;

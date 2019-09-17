@@ -10,15 +10,14 @@ import java.io.File;
 
 public class TargetsLoader {
     /**
-     * Parses {@code filePath} and loads its coordinates into {@code outputList}
+     * Parses [filePath] and loads its coordinates into [outputList]
      *
      * @param filePath                  Inputfile path
      * @param attacksPerVillage         How many attacks should be assigned to each village from the list
      * @param outputList                Destination List<TargetVillage>
-     * @throws FileNotFoundException
      */
     public static void load(String filePath, int attacksPerVillage, List<TargetVillage> outputList) throws FileNotFoundException {
-        Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}");
+        Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}"); // XXX|YYY
         Matcher matcher;
 
         File file = new File(filePath);

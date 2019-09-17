@@ -31,7 +31,6 @@ data class Player(val nickname: String, private var _numberOfNobles: Int = 0) {
     fun hasNoble(): Boolean
         = numberOfNobles > 0
 
-    /** Decreases number of available nobles by 1 */
     fun delegateNoble() {
         _numberOfNobles--
     }

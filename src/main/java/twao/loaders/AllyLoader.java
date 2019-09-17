@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 /**
  * Used to parse file with player questionnaires.
  *
- * It must have {@link #nicknameKey}, {@link #nobleKey} and {@link #villagesKey}
- * before {@link #load()} method usage. To set it use {@link #setNicknameKey(String)}, {@link #setNobleKey(String)}
- * and {@link #setVillagesKey(String)} methods.
+ * It must have [#nicknameKey], [#nobleKey] and [#villagesKey]
+ * before [#load()] method usage. To set it use [#setNicknameKey(String)], [#setNobleKey(String)]
+ * and {[#setVillagesKey(String)] methods.
  */
 public class AllyLoader {
     private final List<Player>      players = new ArrayList<>();
@@ -30,12 +30,6 @@ public class AllyLoader {
 
     private Iterable<CSVRecord> records;
 
-    /**
-     * Initializes AllyLoader to parse {@code filePath}.
-     *
-     * @param filePath      Path to CSV file containing questionnaires
-     * @throws IOException
-     */
     public AllyLoader(String filePath) throws IOException {
         Reader in = new FileReader(filePath);
         records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
@@ -44,7 +38,7 @@ public class AllyLoader {
     /**
      * Loads player questionnaires into object context.
      *
-     * @throws UnspecifiedKeyException Thrown if {@link #nicknameKey}, {@link #nobleKey} or {@link #villagesKey} is not set.
+     * @throws UnspecifiedKeyException Thrown if [#nicknameKey], [#nobleKey] or [#villagesKey] is not set.
      */
     public void load() throws UnspecifiedKeyException {
         if (nicknameKey == null || nobleKey == null || villagesKey == null) {
@@ -127,14 +121,14 @@ public class AllyLoader {
     /**
      * Returns List of all villages that belong to tribe.
      *
-     * @return {@code List<AllyVillage>}
+     * @return [List<AllyVillage>]
      */
     public List<AllyVillage> getVillages() { return villages; }
 
     /**
      * Returns list of all players who completed the questionnaire.
      *
-     * @return {@code List<Player>}
+     * @return [List<Player>]
      */
     public List<Player> getPlayers()       { return players; }
 }

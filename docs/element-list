@@ -1,9 +1,0 @@
-gui
-gui.controllers
-gui.dialogs
-pmsender
-twao
-twao.assigners
-twao.exceptions
-twao.loaders
-twao.villages

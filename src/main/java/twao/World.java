@@ -22,13 +22,6 @@ public class World {
     private final int       nightBonusEndHour;
     private String          villagesList;
 
-    /**
-     * Initializes World based on its domain.
-     * Constructor downloads necessary data using game api.
-     *
-     * @param domain Server URL without "https://" [ex. en100.tribalwars.net]
-     * @throws BadDomainException
-     */
     public World(String domain) throws BadDomainException {
         this.domain = "https://" + domain;
 
@@ -59,13 +52,6 @@ public class World {
         sc.close();
     }
 
-    /**
-     * Sets properly {@code vil}'s id or throws {@code VillageNotFoundException} if id not found.
-     *
-     * @param vil Village which id is meant to be set
-     * @return
-     * @throws VillageNotFoundException
-     */
     public int fetchVillageId(Village vil) throws VillageNotFoundException {
         Pattern pattern = Pattern.compile(String.format("^.*,%d,%d,.*$", vil.getX(), vil.getY()), Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(villagesList);
@@ -77,11 +63,6 @@ public class World {
         }
     }
 
-    /**
-     * Returns basic world info.
-     *
-     * @return "domain: %s | speed: %.2f (%.2f * %.2f) | max snob distance: %d"
-     */
     @Override
     public String toString() {
         return String.format("domain: %s | speed: %.2f (%.2f * %.2f) | max snob distance: %d",
