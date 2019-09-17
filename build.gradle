@@ -20,6 +20,7 @@ dependencies {
     compile 'org.apache.commons:commons-csv:1.5'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
 }
 
 compileKotlin {
