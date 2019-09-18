@@ -12,11 +12,15 @@ public class TargetsLoader {
     /**
      * Parses [filePath] and loads its coordinates into [outputList]
      *
-     * @param filePath                  Inputfile path
-     * @param attacksPerVillage         How many attacks should be assigned to each village from the list
-     * @param outputList                Destination List<TargetVillage>
+     * @param filePath             Inputfile path
+     * @param attacksPerVillage    How many attacks should be assigned to each village from the list
+     * @param outputList           Destination List<TargetVillage>
      */
-    public static void load(String filePath, int attacksPerVillage, List<TargetVillage> outputList) throws FileNotFoundException {
+    public static void load(
+            String filePath,
+            int attacksPerVillage,
+            List<TargetVillage> outputList) throws FileNotFoundException {
+
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
@@ -28,7 +32,9 @@ public class TargetsLoader {
 
             while (matcher.find()) {
                 String[] coordinates = matcher.group().split("\\|");
-                outputList.add(new TargetVillage(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]), attacksPerVillage));
+                outputList.add(new TargetVillage(Integer.parseInt(coordinates[0]),
+                                                 Integer.parseInt(coordinates[1]),
+                                                 attacksPerVillage));
             }
         }
 

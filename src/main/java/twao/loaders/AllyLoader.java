@@ -100,7 +100,7 @@ public class AllyLoader {
     }
 
     private void parseVillages(Player player, CSVRecord record) {
-        Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{2}\\s+(\\d|\\()"); // (XXX|YYY) ?CC ... (
+        Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{2}\\s+(\\d|\\()");
         Pattern xyPattern = Pattern.compile("\\d{3}");
 
         String rawVillages = record.get(villagesKey);
