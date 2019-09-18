@@ -30,79 +30,11 @@ public class AllyLoader {
     private String villagesKey;
 
     private Iterable<CSVRecord> records;
+    private Map<String, Player> knownPlayers = new HashMap<>();
 
     public AllyLoader(String filePath) throws IOException {
         Reader in = new FileReader(filePath);
         records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
-    }
-
-    /**
-     * Fetch player questionnaires into object context.
-     *
-     * @throws UnspecifiedKeyException Thrown if [#nicknameKey], [#nobleKey] or [#villagesKey] is not set.
-     */
-    public void fetchData() throws UnspecifiedKeyException {
-        if (nicknameKey == null || nobleKey == null || villagesKey == null) {
-            throw new UnspecifiedKeyException();
-        }
-
-        final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{2}\\s+(\\d|\\()"); // (XXX|YYY) ?CC ... (
-        final Pattern xyPattern = Pattern.compile("\\d{3}");
-
-        Player player;
-        String nickname, rawVillages, tmp;
-        Matcher matcher, innerMatcher;
-        int x, y, numberOfNobles;
-
-        final Map<String, Player> knownPlayers = new HashMap<>();
-
-        for (CSVRecord record : records) {
-            nickname = record.get(nicknameKey);
-            numberOfNobles = Integer.parseInt(record.get(nobleKey));
-
-            if (knownPlayers.get(nickname) == null) {
-                player = new Player(nickname, numberOfNobles);
-                knownPlayers.put(nickname, player);
-                players.add(player);
-            } else {
-                player = knownPlayers.get(nickname);
-            }
-
-            rawVillages = record.get(villagesKey);
-            matcher = coordinatesPattern.matcher(rawVillages);
-
-            while (matcher.find()) {
-                tmp = matcher.group();
-                innerMatcher = xyPattern.matcher(tmp);
-
-                innerMatcher.find();
-                x = Integer.parseInt(innerMatcher.group());
-                innerMatcher.find();
-                y = Integer.parseInt(innerMatcher.group());
-
-                villages.add(new AllyVillage(x, y, player));
-                player.increaseNumberOfVillages();
-            }
-        }
-
-        removeDuplicates();
-    }
-
-    private void removeDuplicates() {
-        HashSet<String> knownVillages = new HashSet<>();
-
-        villages.forEach( v ->{
-            if (knownVillages.contains(v.toString())) {
-                v.getOwner().decreaseNumberOfVillaes();
-            } else {
-                knownVillages.add(v.toString());
-            }
-        });
-
-        villages = villages
-                    .stream()
-                    .distinct()
-                    .collect(Collectors.toList());
     }
 
     /**
@@ -120,11 +52,22 @@ public class AllyLoader {
     public void setVillagesKey(String villagesKey) { this.villagesKey = villagesKey; }
 
     /**
-     * Returns List of all villages that belong to tribe.
+     * Fetch player questionnaires into object context.
      *
-     * @return [List<AllyVillage>]
+     * @throws UnspecifiedKeyException Thrown if [#nicknameKey], [#nobleKey] or [#villagesKey] is not set.
      */
-    public List<AllyVillage> getVillages() { return villages; }
+    public void fetchData() throws UnspecifiedKeyException {
+        if (nicknameKey == null || nobleKey == null || villagesKey == null) {
+            throw new UnspecifiedKeyException();
+        } else {
+            for (CSVRecord record : records) {
+                Player player = parsePlayer(record);
+                parseVillages(player, record);
+            }
+
+            removeDuplicates();
+        }
+    }
 
     /**
      * Returns list of all players who completed the questionnaire.
@@ -132,4 +75,66 @@ public class AllyLoader {
      * @return [List<Player>]
      */
     public List<Player> getPlayers()       { return players; }
+
+    /**
+     * Returns List of all villages that belong to tribe.
+     *
+     * @return [List<AllyVillage>]
+     */
+    public List<AllyVillage> getVillages() { return villages; }
+
+    private Player parsePlayer(CSVRecord record) {
+        String nickname = record.get(nicknameKey);
+        int numberOfNobles = Integer.parseInt(record.get(nobleKey));
+
+        Player player;
+        if (knownPlayers.get(nickname) == null) {
+            player = new Player(nickname, numberOfNobles);
+            knownPlayers.put(nickname, player);
+            players.add(player);
+        } else {
+            player = knownPlayers.get(nickname);
+        }
+
+        return player;
+    }
+
+    private void parseVillages(Player player, CSVRecord record) {
+        Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{2}\\s+(\\d|\\()"); // (XXX|YYY) ?CC ... (
+        Pattern xyPattern = Pattern.compile("\\d{3}");
+
+        String rawVillages = record.get(villagesKey);
+
+        Matcher matcher = coordinatesPattern.matcher(rawVillages);
+
+        while (matcher.find()) {
+            String tmp = matcher.group();
+            Matcher innerMatcher = xyPattern.matcher(tmp);
+
+            innerMatcher.find();
+            int x = Integer.parseInt(innerMatcher.group());
+            innerMatcher.find();
+            int y = Integer.parseInt(innerMatcher.group());
+
+            villages.add(new AllyVillage(x, y, player));
+            player.increaseNumberOfVillages();
+        }
+    }
+
+    private void removeDuplicates() {
+        HashSet<String> knownVillages = new HashSet<>();
+
+        villages.forEach( v ->{
+            if (knownVillages.contains(v.toString())) {
+                v.getOwner().decreaseNumberOfVillaes();
+            } else {
+                knownVillages.add(v.toString());
+            }
+        });
+
+        villages = villages
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }
