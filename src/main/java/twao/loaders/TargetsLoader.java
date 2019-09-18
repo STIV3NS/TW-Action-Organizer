@@ -17,21 +17,17 @@ public class TargetsLoader {
      * @param outputList                Destination List<TargetVillage>
      */
     public static void load(String filePath, int attacksPerVillage, List<TargetVillage> outputList) throws FileNotFoundException {
-        Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}"); // XXX|YYY
-        Matcher matcher;
-
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
-        String line;
-        String[] coordinates;
 
+        Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}"); // XXX|YYY
         while (scanner.hasNextLine()) {
-            line = scanner.nextLine();
+            String line = scanner.nextLine();
 
-            matcher = coordinatesPattern.matcher(line);
+            Matcher matcher = coordinatesPattern.matcher(line);
 
             while (matcher.find()) {
-                coordinates = matcher.group().split("\\|");
+                String[] coordinates = matcher.group().split("\\|");
                 outputList.add(new TargetVillage(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]), attacksPerVillage));
             }
         }
