@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * Used to parse file with player questionnaires.
  *
  * It must have [#nicknameKey], [#nobleKey] and [#villagesKey]
- * before [#load()] method usage. To set it use [#setNicknameKey(String)], [#setNobleKey(String)]
+ * before [#fetchData()] method usage. To set it use [#setNicknameKey(String)], [#setNobleKey(String)]
  * and {[#setVillagesKey(String)] methods.
  */
 public class AllyLoader {
@@ -36,11 +36,11 @@ public class AllyLoader {
     }
 
     /**
-     * Loads player questionnaires into object context.
+     * Fetch player questionnaires into object context.
      *
      * @throws UnspecifiedKeyException Thrown if [#nicknameKey], [#nobleKey] or [#villagesKey] is not set.
      */
-    public void load() throws UnspecifiedKeyException {
+    public void fetchData() throws UnspecifiedKeyException {
         if (nicknameKey == null || nobleKey == null || villagesKey == null) {
             throw new UnspecifiedKeyException();
         }
@@ -105,16 +105,16 @@ public class AllyLoader {
     }
 
     /**
-     * @param nicknameKey   Column with header content equal key will be used to load nicknames from CSV
+     * @param nicknameKey   Column with header content equal key will be used to fetch nicknames from CSV
      */
     public void setNicknameKey(String nicknameKey) { this.nicknameKey = nicknameKey; }
     /**
-     * @param nobleKey      Column with header content equal key will be used to load number of nobles from CSV
+     * @param nobleKey      Column with header content equal key will be used to fetch number of nobles from CSV
      */
     public void setNobleKey(String nobleKey)       { this.nobleKey = nobleKey; }
 
     /**
-     * @param villagesKey   Column with header content equal key will be used to load village list from CSV
+     * @param villagesKey   Column with header content equal key will be used to fetc village list from CSV
      */
     public void setVillagesKey(String villagesKey) { this.villagesKey = villagesKey; }
 
