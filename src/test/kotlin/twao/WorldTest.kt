@@ -17,9 +17,9 @@ class WorldTest : WordSpec({
                 }
             }
         }
-        "given good domain" should {
+        "given good domain /*test domain viable until 2021*/" should {
             val world = World("plp6.plemiona.pl")
-            /* if tests fail you should try change domain since this one may be already closed */
+            /* if tests fail you should try changing domain since this one may be already closed */
 
             "set proper domain" {
                 world.domain shouldBe "https://plp6.plemiona.pl"

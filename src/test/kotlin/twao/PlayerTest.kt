@@ -1,6 +1,5 @@
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import twao.Player
@@ -10,19 +9,21 @@ import twao.villages.Village
 class PlayerTest : WordSpec({
     "Player [nobles]" When {
         "has available noble" should {
-            val player = Player("test", _numberOfNobles = 1)
+            val player = Player("test", _numberOfNobles = 63)
 
             "return true when asked about it" {
                 player.hasNoble() shouldBe true
             }
             "decrease numberOfNobles by 1 when Player.delegateNoble is called" {
                 player.delegateNoble()
+                player.numberOfNobles shouldBe 62
 
-                player.numberOfNobles shouldBe 0
+                player.delegateNoble()
+                player.numberOfNobles shouldBe 61
             }
         }
         "doesnt have available noble" should {
-            val player = Player("test")
+            val player = Player("test", _numberOfNobles = 0)
 
             "return false when asked about it" {
                 player.hasNoble() shouldBe false
@@ -39,22 +40,26 @@ class PlayerTest : WordSpec({
         "::increaseNumberOfVillages increment this value" {
             player.increaseNumberOfVillages()
             player.increaseNumberOfVillages()
-
             player.numberOfVillages shouldBe 2
+
+            player.increaseNumberOfVillages()
+            player.numberOfVillages shouldBe 3
         }
         "::decreaseNumberOfVillages decrement this value" {
             player.decreaseNumberOfVillaes()
+            player.numberOfVillages shouldBe 2
 
+            player.decreaseNumberOfVillaes()
             player.numberOfVillages shouldBe 1
         }
     }
 
     "Player [assigments]" should {
         val player = Player("test")
-        val assignment_1 = VillageAssignment(Village(500, 500), Village(300, 300), 100)
-        val assignment_2 = VillageAssignment(Village(400, 400), Village(400, 400), 200)
-        val assignment_3 = VillageAssignment(Village(700, 700), Village(100, 100), 2500)
-        val assignment_4 = VillageAssignment(Village(400, 700), Village(100, 300), 2700)
+        val assignment_1 = VillageAssignment(Village(1,1), Village(2,2),2)
+        val assignment_2 = VillageAssignment(Village(3,3), Village(4,4),2)
+        val assignment_3 = VillageAssignment(Village(5,5), Village(6,6),2)
+        val assignment_4 = VillageAssignment(Village(7,7), Village(8,8),2)
 
         "be initialized as empty lists" {
             with(player) {
