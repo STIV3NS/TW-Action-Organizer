@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Used to parse file with player questionnaires.
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
  */
 public class AllyLoader {
     private final List<Player>      players = new ArrayList<>();
-    private final List<AllyVillage> villages = new ArrayList<>();
+    private List<AllyVillage>       villages = new ArrayList<>();
 
     private String nicknameKey;
     private String nobleKey;
@@ -45,7 +46,7 @@ public class AllyLoader {
             throw new UnspecifiedKeyException();
         }
 
-        final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{2}\\n"); // (XXX|YYY) ?CC\n
+        final Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{2}\\s+(\\d|\\()"); // (XXX|YYY) ?CC ... (
         final Pattern xyPattern = Pattern.compile("\\d{3}");
 
         Player player;
@@ -60,7 +61,7 @@ public class AllyLoader {
             numberOfNobles = Integer.parseInt(record.get(nobleKey));
 
             if (knownPlayers.get(nickname) == null) {
-               player = new Player(nickname, numberOfNobles);
+                player = new Player(nickname, numberOfNobles);
                 knownPlayers.put(nickname, player);
                 players.add(player);
             } else {
@@ -89,19 +90,19 @@ public class AllyLoader {
 
     private void removeDuplicates() {
         HashSet<String> knownVillages = new HashSet<>();
-        List<AllyVillage> duplicates = new LinkedList<>();
 
-        for (AllyVillage vil : villages) {
-            if ( knownVillages.contains(vil.toString()) ) {
-                duplicates.add(vil);
-                vil.getOwner().decreaseNumberOfVillaes();
+        villages.forEach( v ->{
+            if (knownVillages.contains(v.toString())) {
+                v.getOwner().decreaseNumberOfVillaes();
+            } else {
+                knownVillages.add(v.toString());
             }
-            else {
-                knownVillages.add(vil.toString());
-            }
-        }
+        });
 
-        villages.removeAll(duplicates);
+        villages = villages
+                    .stream()
+                    .distinct()
+                    .collect(Collectors.toList());
     }
 
     /**
