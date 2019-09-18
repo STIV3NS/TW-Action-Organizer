@@ -20,19 +20,19 @@ data class Player(val nickname: String, private var _numberOfNobles: Int = 0) {
     var numberOfVillages: Int = 0
         private set
 
-    fun increaseNumberOfVillages() {
-        numberOfVillages++
-    }
-
-    fun decreaseNumberOfVillaes() {
-        numberOfVillages--
-    }
-
     fun hasNoble(): Boolean
         = numberOfNobles > 0
 
-    fun delegateNoble() {
+    @Synchronized fun delegateNoble() {
         _numberOfNobles--
+    }
+
+    @Synchronized fun increaseNumberOfVillages() {
+        numberOfVillages++
+    }
+
+    @Synchronized fun decreaseNumberOfVillaes() {
+        numberOfVillages--
     }
 
     @Synchronized fun putOffAssignment(assignment: VillageAssignment) {
