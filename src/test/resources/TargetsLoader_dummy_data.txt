@@ -1,0 +1,4 @@
+[coord]623|574[/coord]
+[coord]626|576[/coord]
+[coord]626|578[/coord]
+[coord]625|576[/coord]
