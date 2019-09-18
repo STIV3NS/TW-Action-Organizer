@@ -1,4 +1,4 @@
-package twao.loaders;
+package twao.parsers;
 
 import twao.villages.TargetVillage;
 
@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.File;
 
-public class TargetsLoader {
+public class TargetParser {
     /**
      * Parses [filePath] and loads its coordinates into [outputList]
      *
@@ -16,7 +16,7 @@ public class TargetsLoader {
      * @param attacksPerVillage    How many attacks should be assigned to each village from the list
      * @param outputList           Destination List<TargetVillage>
      */
-    public static void load(
+    public static void parse(
             String filePath,
             int attacksPerVillage,
             List<TargetVillage> outputList) throws FileNotFoundException {

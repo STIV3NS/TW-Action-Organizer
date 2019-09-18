@@ -1,4 +1,4 @@
-package twao.loaders;
+package twao.parsers;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
  * Used to parse file with player questionnaires.
  *
  * It must have [#nicknameKey], [#nobleKey] and [#villagesKey]
- * before [#fetchData()] method usage. To set it use [#setNicknameKey(String)], [#setNobleKey(String)]
+ * before [#parse()] method usage. To set it use [#setNicknameKey(String)], [#setNobleKey(String)]
  * and {[#setVillagesKey(String)] methods.
  */
-public class AllyLoader {
+public class AllyParser {
     private final List<Player>      players = new ArrayList<>();
     private List<AllyVillage>       villages = new ArrayList<>();
 
@@ -32,31 +32,31 @@ public class AllyLoader {
     private Iterable<CSVRecord> records;
     private Map<String, Player> knownPlayers = new HashMap<>();
 
-    public AllyLoader(String filePath) throws IOException {
+    public AllyParser(String filePath) throws IOException {
         Reader in = new FileReader(filePath);
         records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
     }
 
     /**
-     * @param nicknameKey   Column with header content equal key will be used to fetch nicknames from CSV
+     * @param nicknameKey   Column with header content equal key will be used to parse nicknames from CSV
      */
     public void setNicknameKey(String nicknameKey) { this.nicknameKey = nicknameKey; }
     /**
-     * @param nobleKey      Column with header content equal key will be used to fetch number of nobles from CSV
+     * @param nobleKey      Column with header content equal key will be used to parse number of nobles from CSV
      */
     public void setNobleKey(String nobleKey)       { this.nobleKey = nobleKey; }
 
     /**
-     * @param villagesKey   Column with header content equal key will be used to fetc village list from CSV
+     * @param villagesKey   Column with header content equal key will be used to parse village list from CSV
      */
     public void setVillagesKey(String villagesKey) { this.villagesKey = villagesKey; }
 
     /**
-     * Fetch player questionnaires into object context.
+     * Parses player questionnaires into object context.
      *
      * @throws UnspecifiedKeyException Thrown if [#nicknameKey], [#nobleKey] or [#villagesKey] is not set.
      */
-    public void fetchData() throws UnspecifiedKeyException {
+    public void parse() throws UnspecifiedKeyException {
         if (nicknameKey == null || nobleKey == null || villagesKey == null) {
             throw new UnspecifiedKeyException();
         } else {
