@@ -68,6 +68,7 @@ public class World {
         return String.format("domain: %s | speed: %.2f (%.2f * %.2f) | max snob distance: %d",
                 domain, getSpeed(), worldSPeed, unitSpeed, maxNobleRange);
     }
+    
     public String getDomain()           { return domain; }
     public int getMaxNobleRange()       { return maxNobleRange; }
     public int getNightBonusEndHour()   { return nightBonusEndHour; }

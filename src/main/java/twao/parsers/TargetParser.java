@@ -9,13 +9,9 @@ import java.util.regex.Pattern;
 import java.io.File;
 
 public class TargetParser {
-    /**
-     * Parses [filePath] and loads its coordinates into [outputList]
-     *
-     * @param filePath             Inputfile path
-     * @param attacksPerVillage    How many attacks should be assigned to each village from the list
-     * @param outputList           Destination List<TargetVillage>
-     */
+    /** Parses [filePath] and loads its content into List<TargetVillage>[outputList] 
+      * number of attacks equal [attacksPerVillage]
+      */
     public static void parse(
             String filePath,
             int attacksPerVillage,
@@ -24,7 +20,7 @@ public class TargetParser {
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
-        Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}"); // XXX|YYY
+        Pattern coordinatesPattern = Pattern.compile("\\d{3}\\|\\d{3}");
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
 

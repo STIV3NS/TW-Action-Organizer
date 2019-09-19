@@ -8,9 +8,8 @@ data class TargetVillage(
     val numberOfAttacks
         get() = _numberOfAttacks
 
-    fun attack() {
-        _numberOfAttacks--
-    }
+    fun attack()
+        { _numberOfAttacks-- }
 
     fun isAssignCompleted(): Boolean
         = _numberOfAttacks <= 0

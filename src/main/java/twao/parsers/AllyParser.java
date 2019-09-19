@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  * and {[#setOffsHeader(String)] methods.
  */
 public class AllyParser {
-    private final List<Player>      players = new ArrayList<>();
-    private List<AllyVillage>       villages = new ArrayList<>();
+    private List<Player>        players = new ArrayList<>();
+    private List<AllyVillage>   villages = new ArrayList<>();
 
     private String nicknameHeader;
     private String noblesHeader;
@@ -37,19 +37,17 @@ public class AllyParser {
         records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
     }
 
-    /**
-     * @param nicknameHeader    Column with that header will be marked as nicknames
-     */
-    public void setNicknameHeader(String nicknameHeader) { this.nicknameHeader = nicknameHeader; }
-    /**
-     * @param noblesHeader      Column with that header will be marked as number of nobles
-     */
-    public void setNoblesHeader(String noblesHeader)       { this.noblesHeader = noblesHeader; }
+    /** Column with that header will be marked as nicknames */
+    public void setNicknameHeader(String nicknameHeader)
+        { this.nicknameHeader = nicknameHeader; }
 
-    /**
-     * @param offsHeader        Column with that header will be marked as list of offs
-     */
-    public void setOffsHeader(String offsHeader) { this.offsHeader = offsHeader; }
+    /** Column with that header will be marked as number of nobles */
+    public void setNoblesHeader(String noblesHeader)
+        { this.noblesHeader = noblesHeader; }
+
+    /** Column with that header will be marked as list of offs */
+    public void setOffsHeader(String offsHeader) 
+        { this.offsHeader = offsHeader; }
 
     /**
      * Parses player questionnaires into object context.
@@ -75,19 +73,13 @@ public class AllyParser {
         }
     }
 
-    /**
-     * Returns list of all players who completed the questionnaire.
-     *
-     * @return [List<Player>]
-     */
-    public List<Player> getPlayers()       { return players; }
+    /** Returns list of all players who completed the questionnaire */
+    public List<Player> getPlayers()
+        { return players; }
 
-    /**
-     * Returns List of all villages that belong to tribe.
-     *
-     * @return [List<AllyVillage>]
-     */
-    public List<AllyVillage> getVillages() { return villages; }
+    /** Returns list of declared off villages */
+    public List<AllyVillage> getVillages()
+        { return villages; }
 
     private Player parsePlayer(CSVRecord record) {
         String nickname = record.get(nicknameHeader);
