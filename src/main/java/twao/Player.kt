@@ -23,19 +23,19 @@ data class Player(val nickname: String, private var _numberOfNobles: Int = 0) {
     fun hasNoble(): Boolean
         = numberOfNobles > 0
 
-    @Synchronized fun delegateNoble() {
+    fun delegateNoble() {
         _numberOfNobles--
     }
 
-    @Synchronized fun increaseNumberOfVillages() {
+    fun increaseNumberOfVillages() {
         numberOfVillages++
     }
 
-    @Synchronized fun decreaseNumberOfVillaes() {
+    fun decreaseNumberOfVillaes() {
         numberOfVillages--
     }
 
-    @Synchronized fun putOffAssignment(assignment: VillageAssignment) {
+    fun putOffAssignment(assignment: VillageAssignment) {
         offAssignments.add(assignment)
     }
 
@@ -43,11 +43,11 @@ data class Player(val nickname: String, private var _numberOfNobles: Int = 0) {
         fakeAssignments.add(assignment)
     }
 
-    @Synchronized fun putNobleAssignment(assignment: VillageAssignment) {
+    fun putNobleAssignment(assignment: VillageAssignment) {
         nobleAssignments.add(assignment)
     }
 
-    @Synchronized fun putFakeNobleAssignment(assignment: VillageAssignment) {
+    fun putFakeNobleAssignment(assignment: VillageAssignment) {
         fakeNobleAssignments.add(assignment)
     }
 }

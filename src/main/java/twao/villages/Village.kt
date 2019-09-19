@@ -7,16 +7,10 @@ import kotlin.math.pow
 open class Village(open val x: Int, open val y: Int) {
     var id: Int? = null
         private set
-    var relativeDistance: Int? = null
-        private set
 
     @Throws(VillageNotFoundException::class)
     fun initID(world: World) {
         id = world.fetchVillageID(this)
-    }
-
-    fun setRelativeDistance(vil: Village) {
-        relativeDistance = distance(this, vil)
     }
 
     override fun toString()
