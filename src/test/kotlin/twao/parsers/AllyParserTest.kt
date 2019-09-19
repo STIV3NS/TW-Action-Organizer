@@ -23,9 +23,9 @@ class AllyParserTest : WordSpec({
         }
 
         "given proper path to proper CSV file" should {
-            val nicknameKey = "nick"
-            val vilagesKey = "offs"
-            val noblesKey = "noble"
+            val nicknameHeader = "nick"
+            val offsHeader = "offs"
+            val noblesHeader = "noble"
 
             var filePath = Paths.get(
                     this.javaClass
@@ -35,24 +35,24 @@ class AllyParserTest : WordSpec({
             ).toAbsolutePath().toString()
             var parser = AllyParser(filePath)
 
-            "throw UnspecifiedKeyException when trying to parse w/o setting keys" {
+            "throw UnspecifiedKeyException when trying to parse w/o setting headers" {
                 shouldThrow<UnspecifiedKeyException> {
                     parser.parse()
                 }
 
-                parser.setNicknameKey(nicknameKey)
+                parser.setNicknameHeader(nicknameHeader)
                 shouldThrow<UnspecifiedKeyException> {
                     parser.parse()
                 }
 
-                parser.setVillagesKey(vilagesKey)
+                parser.setOffsHeader(offsHeader)
                 shouldThrow<UnspecifiedKeyException> {
                     parser.parse()
                 }
             }
 
-            "not throw an exception when all keys are set" {
-                parser.setNobleKey(noblesKey)
+            "not throw an exception when all headers are set" {
+                parser.setNoblesHeader(noblesHeader)
                 shouldNotThrowAny {
                     parser.parse()
                 }
@@ -89,9 +89,9 @@ class AllyParserTest : WordSpec({
                 ).toAbsolutePath().toString()
                 var parser = AllyParser(filePath).also {
                     with(it) {
-                        setNicknameKey(nicknameKey)
-                        setVillagesKey(vilagesKey)
-                        setNobleKey(noblesKey)
+                        setNicknameHeader(nicknameHeader)
+                        setOffsHeader(offsHeader)
+                        setNoblesHeader(noblesHeader)
                         parse()
                     }
                 }

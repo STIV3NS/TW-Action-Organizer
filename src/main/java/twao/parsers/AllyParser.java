@@ -17,17 +17,17 @@ import java.util.stream.Collectors;
 /**
  * Used to parse file with player questionnaires.
  *
- * It must have [#nicknameKey], [#nobleKey] and [#villagesKey]
- * before [#parse()] method usage. To set it use [#setNicknameKey(String)], [#setNobleKey(String)]
- * and {[#setVillagesKey(String)] methods.
+ * It must have [#nicknameHeader], [#noblesHeader] and [#offsHeader]
+ * before [#parse()] method usage. To set it use [#setNicknameHeader(String)], [#setNoblesHeader(String)]
+ * and {[#setOffsHeader(String)] methods.
  */
 public class AllyParser {
     private final List<Player>      players = new ArrayList<>();
     private List<AllyVillage>       villages = new ArrayList<>();
 
-    private String nicknameKey;
-    private String nobleKey;
-    private String villagesKey;
+    private String nicknameHeader;
+    private String noblesHeader;
+    private String offsHeader;
 
     private Iterable<CSVRecord> records;
     private Map<String, Player> knownPlayers = new HashMap<>();
@@ -38,26 +38,26 @@ public class AllyParser {
     }
 
     /**
-     * @param nicknameKey   Column with header content equal key will be used to parse nicknames from CSV
+     * @param nicknameHeader    Column with that header will be marked as nicknames
      */
-    public void setNicknameKey(String nicknameKey) { this.nicknameKey = nicknameKey; }
+    public void setNicknameHeader(String nicknameHeader) { this.nicknameHeader = nicknameHeader; }
     /**
-     * @param nobleKey      Column with header content equal key will be used to parse number of nobles from CSV
+     * @param noblesHeader      Column with that header will be marked as number of nobles
      */
-    public void setNobleKey(String nobleKey)       { this.nobleKey = nobleKey; }
+    public void setNoblesHeader(String noblesHeader)       { this.noblesHeader = noblesHeader; }
 
     /**
-     * @param villagesKey   Column with header content equal key will be used to parse village list from CSV
+     * @param offsHeader        Column with that header will be marked as list of offs
      */
-    public void setVillagesKey(String villagesKey) { this.villagesKey = villagesKey; }
+    public void setOffsHeader(String offsHeader) { this.offsHeader = offsHeader; }
 
     /**
      * Parses player questionnaires into object context.
      *
-     * @throws UnspecifiedKeyException Thrown if [#nicknameKey], [#nobleKey] or [#villagesKey] is not set.
+     * @throws UnspecifiedKeyException Thrown if [#nicknameHeader], [#noblesHeader] or [#offsHeader] is not set.
      */
     public void parse() throws UnspecifiedKeyException {
-        if (nicknameKey == null || nobleKey == null || villagesKey == null) {
+        if (nicknameHeader == null || noblesHeader == null || offsHeader == null) {
             throw new UnspecifiedKeyException();
         } else {
             for (CSVRecord record : records) {
@@ -84,8 +84,8 @@ public class AllyParser {
     public List<AllyVillage> getVillages() { return villages; }
 
     private Player parsePlayer(CSVRecord record) {
-        String nickname = record.get(nicknameKey);
-        int numberOfNobles = Integer.parseInt(record.get(nobleKey));
+        String nickname = record.get(nicknameHeader);
+        int numberOfNobles = Integer.parseInt(record.get(noblesHeader));
 
         Player player;
         if (knownPlayers.get(nickname) == null) {
@@ -103,7 +103,7 @@ public class AllyParser {
         Pattern coordinatesPattern = Pattern.compile("\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{2}\\s+(\\d|\\()");
         Pattern xyPattern = Pattern.compile("\\d{3}");
 
-        String rawVillages = record.get(villagesKey);
+        String rawVillages = record.get(offsHeader);
 
         Matcher matcher = coordinatesPattern.matcher(rawVillages);
 
