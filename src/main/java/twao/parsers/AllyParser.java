@@ -58,7 +58,13 @@ public class AllyParser {
      */
     public void parse() throws UnspecifiedKeyException {
         if (nicknameHeader == null || noblesHeader == null || offsHeader == null) {
-            throw new UnspecifiedKeyException();
+            String errorMsg = "[";
+            if (nicknameHeader == null) errorMsg += "nicknameHeader;";
+            if (noblesHeader == null)   errorMsg += "noblesHeader;";
+            if (offsHeader == null)     errorMsg += "noblesHeader;";
+            errorMsg += "] <- headers not set";
+
+            throw new UnspecifiedKeyException(errorMsg);
         } else {
             for (CSVRecord record : records) {
                 Player player = parsePlayer(record);
