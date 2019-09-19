@@ -21,40 +21,41 @@ class NobleAssigner internal constructor(
     override val offAction = Player::putNobleAssignment
     override val fakeAction = Player::putFakeNobleAssignment
 
-    private var resourcesWithAvailableNobles = resources.filter { it.owner.hasNoble() }
+    private var resWithNobles = resources.filter { it.owner.hasNoble() }
+                                         .toMutableList()
 
     override fun putResourcesToQueue(referencePoint: Village) {
-        resourcesWithAvailableNobles.forEach { resourcesQueue.offer( Pair(it, Village.distance(it, referencePoint)) ) }
+        resWithNobles.forEach { resourcesQueue.offer( Pair(it, Village.distance(it, referencePoint)) ) }
     }
 
     override fun run() {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
-        for (targetPair in targetsQueue) {
-            if (resourcesWithAvailableNobles.isEmpty()) break
+        for ((target, _) in targetsQueue) {
+            if (resWithNobles.isEmpty()) break
 
-            handleTarget(targetPair.first)
+            handleTarget(target)
         }
 
     }
 
     private fun handleTarget(target: TargetVillage) {
-        while (!target.isAssignCompleted()) {
-            if (resourcesWithAvailableNobles.isEmpty())
+        putResourcesToQueue(referencePoint = target)
+
+        for ((nearestAllyVillage, distance) in resourcesQueue) {
+            if (target.isAssignCompleted())
+                break
+            if (distance > maxNobleRange)
                 break
 
-            putResourcesToQueue(referencePoint = target)
-
-            if (targetsQueue.poll().second > maxNobleRange)
-                break
-
-            val (nearestAllyVillage, distance) = resourcesQueue.poll()
             assign(nearestAllyVillage, target, distance)
-
-            target.attack()
+            resources.remove(nearestAllyVillage)
 
             nearestAllyVillage.owner.delegateNoble()
-            updateResourcesWithAvailableNobles(villageToRemove = nearestAllyVillage)
+            if (!nearestAllyVillage.owner.hasNoble()) updateResWithNobles()
+            else resWithNobles.remove(nearestAllyVillage)
+
+            target.attack()
         }
 
         if (target.isAssignCompleted()) {
@@ -62,9 +63,9 @@ class NobleAssigner internal constructor(
         }
     }
 
-    private fun updateResourcesWithAvailableNobles(villageToRemove: AllyVillage) {
-        resourcesWithAvailableNobles = resourcesWithAvailableNobles
-                                        .filter { it.owner.hasNoble() && it != villageToRemove }
+    private fun updateResWithNobles() {
+        resWithNobles = resWithNobles.filter { it.owner.hasNoble() }
+                                     .toMutableList()
     }
 
     private fun setTargetsPriorities()

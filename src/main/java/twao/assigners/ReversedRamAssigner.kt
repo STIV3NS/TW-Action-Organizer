@@ -23,22 +23,21 @@ class ReversedRamAssigner internal constructor(
     override fun run() {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
-        for (targetPair in targetsQueue) {
+        for ((target, _) in targetsQueue) {
             if (resources.isEmpty())
                 break;
 
-            handleTarget(targetPair.first)
+            handleTarget(target)
         }
 
     }
 
     private fun handleTarget(target: TargetVillage) {
-        while (!target.isAssignCompleted()) {
-            if (resources.isEmpty())
-                break;
+        putResourcesToQueue(referencePoint = target)
 
-            putResourcesToQueue(referencePoint = target)
-            val (nearestAllyVillage, distance) = resourcesQueue.poll()
+        for ((nearestAllyVillage, distance) in resourcesQueue) {
+            if (target.isAssignCompleted())
+                break
 
             assign(nearestAllyVillage, target, distance)
 

@@ -23,7 +23,7 @@ class StandardRamAssigner internal constructor(
     override fun run() {
         putResourcesToQueue(referencePoint = mainReferencePoint)
 
-        for (allyVillage in resources) {
+        for ((allyVillage, _) in resourcesQueue) {
             if (targets.isEmpty())
                 break
 
