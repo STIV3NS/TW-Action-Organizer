@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.221"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="gui.controllers.AssignerTabController">
+            fx:controller="io.github.stiv3ns.twactionorganizer.gui.controllers.AssignerTabController">
     <center>
         <SplitPane dividerPositions="0.25" BorderPane.alignment="CENTER">
             <items>
