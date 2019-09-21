@@ -28,6 +28,8 @@ class NobleAssigner internal constructor(
         resWithNobles.forEach { resourcesQueue.offer( Pair(it, Village.distance(it, referencePoint)) ) }
     }
 
+
+
     override fun run() {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
@@ -43,23 +45,34 @@ class NobleAssigner internal constructor(
         putResourcesToQueue(referencePoint = target)
 
         for ((nearestAllyVillage, distance) in resourcesQueue) {
-            if (target.isAssignCompleted())
+            if (target.isAssignCompleted()) {
                 break
-            if (distance > maxNobleRange)
+            }
+            if (distance > maxNobleRange) {
                 break
+            }
 
             assign(nearestAllyVillage, target, distance)
-            resources.remove(nearestAllyVillage)
-
-            nearestAllyVillage.owner.delegateNoble()
-            if (!nearestAllyVillage.owner.hasNoble()) updateResWithNobles()
-            else resWithNobles.remove(nearestAllyVillage)
+            updateOwnerAndResources(nearestAllyVillage)
 
             target.attack()
         }
 
         if (target.isAssignCompleted()) {
             targets.remove(target)
+        }
+    }
+
+    private fun updateOwnerAndResources(nearestAllyVillage: AllyVillage) {
+        nearestAllyVillage.owner.delegateNoble()
+
+        resources.remove(nearestAllyVillage)
+
+        if (!nearestAllyVillage.owner.hasNoble()) {
+            updateResWithNobles()
+        }
+        else {
+            resWithNobles.remove(nearestAllyVillage)
         }
     }
 
