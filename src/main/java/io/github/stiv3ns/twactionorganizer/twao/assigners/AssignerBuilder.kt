@@ -49,11 +49,12 @@ class AssignerBuilder {
      * !!! If assigning (fake)nobles [maxNobleRange] is also obligatory. !!!
      */
     fun build(): Assigner? {
-        if (targets == null || resources == null || mainReferencePoint == null || type == null)
+        if (obligatoryHeadersAreNotSet()) {
             return null
-        if (type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
-                && maxNobleRange == null)
+        }
+        if (requestedNobleAssigner() && maxNobleRange == null) {
             return null
+        }
 
         val assigner = when (type) {
             AssignerType.RAM -> StandardRamAssigner(
@@ -120,4 +121,11 @@ class AssignerBuilder {
             maxNobleRange = null
         }
     }
+
+
+    private fun obligatoryHeadersAreNotSet()
+            = targets == null || resources == null || mainReferencePoint == null || type == null
+
+    private fun requestedNobleAssigner()
+            = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
 }
