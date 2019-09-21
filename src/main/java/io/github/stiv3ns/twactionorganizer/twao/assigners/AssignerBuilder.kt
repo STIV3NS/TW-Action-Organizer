@@ -11,23 +11,23 @@ class AssignerBuilder {
      * ---------------------------------------------------------------------------------------------------------------
      * [RAM]:
      * output assigment: Concrete attack without noble
-     * behavior: Pick ALLY village that is the farthest from referencePoint and link it with nearest target. Repeat.
+     * behavior: Pick ALLY village that is the farthest from referencePoint and link it with nearest target.
      *---------------------------------------------------------------------------------------------------------------
      * [REVERSED_RAM]:
      * output assigment: Concrete attack without noble
-     * Pick TARGET village that is closest to the referencePoint and link it with nearest ally village. Repeat.
+     * behavior: Pick TARGET village that is closest to the referencePoint and link it with nearest ally village.
      *---------------------------------------------------------------------------------------------------------------
      * [FAKE_RAM]:
      * output assigment: Fake attack without noble
-     * Pick ALLY village that is the farthest from referencePoint and link it with nearest target. Repeat.
+     * behavior: Pick ALLY village that is the farthest from referencePoint and link it with nearest target.
      *---------------------------------------------------------------------------------------------------------------
      * [NOBLE]:
      * output assigment: Concrete attack with noble
-     * Pick TARGET village that is closest to the relativityPoint and link it with nearest ally village. Repeat.
+     * behavior: Pick TARGET village that is closest to the relativityPoint and link it with nearest ally village.
      *---------------------------------------------------------------------------------------------------------------
      * [FAKE_NOBKE]:
      * output assigment: Fake attack with noble
-     * Pick TARGET village that is closest to the relativityPoint and link it with nearest ally village. Repeat.
+     * behavior: Pick TARGET village that is closest to the relativityPoint and link it with nearest ally village.
      * ---------------------------------------------------------------------------------------------------------------
      */
     enum class AssignerType {
@@ -55,7 +55,7 @@ class AssignerBuilder {
                 && maxNobleRange == null)
             return null
 
-        return when (type) {
+        val assigner = when (type) {
             AssignerType.RAM -> StandardRamAssigner(
                     targets!!,
                     resources!!,
@@ -90,7 +90,11 @@ class AssignerBuilder {
             )
             else -> null
         }
+
+        clear()
+        return assigner
     }
+
 
     fun targets(targets: MutableList<TargetVillage>)
         = apply { this.targets = targets }
@@ -106,4 +110,14 @@ class AssignerBuilder {
 
     fun maxNobleRange(range: Int)
         = apply { this.maxNobleRange = range }
+
+    fun clear() {
+        apply {
+            targets = null
+            resources = null
+            mainReferencePoint = null
+            type = null
+            maxNobleRange = null
+        }
+    }
 }
