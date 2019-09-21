@@ -20,6 +20,7 @@ abstract class Assigner internal constructor(
     protected abstract val offAction: Player.(VillageAssignment) -> Unit
     protected abstract val fakeAction: Player.(VillageAssignment) -> Unit
 
+
     protected open fun putResourcesToQueue(referencePoint: Village) {
         resources.forEach { resourcesQueue.offer( Pair(it, Village.distance(it, referencePoint)) ) }
     }
@@ -27,6 +28,7 @@ abstract class Assigner internal constructor(
     protected open fun putTargetsToQueue(referencePoint: Village) {
         targets.forEach { targetsQueue.offer( Pair(it, Village.distance(it, referencePoint)) ) }
     }
+
 
     protected fun assign(allyVillage: AllyVillage, targetVillage: TargetVillage, distance: Int) {
         val assignment = VillageAssignment(

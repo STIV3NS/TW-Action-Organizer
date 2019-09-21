@@ -20,12 +20,14 @@ class ReversedRamAssigner internal constructor(
     override val offAction = Player::putOffAssignment
     override val fakeAction = Player::putFakeAssignment
 
+
     override fun run() {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
         for ((target, _) in targetsQueue) {
-            if (resources.isEmpty())
-                break;
+            if (resources.isEmpty()) {
+                break
+            }
 
             handleTarget(target)
         }
@@ -36,8 +38,9 @@ class ReversedRamAssigner internal constructor(
         putResourcesToQueue(referencePoint = target)
 
         for ((nearestAllyVillage, distance) in resourcesQueue) {
-            if (target.isAssignCompleted())
+            if (target.isAssignCompleted()) {
                 break
+            }
 
             assign(nearestAllyVillage, target, distance)
 
@@ -46,7 +49,9 @@ class ReversedRamAssigner internal constructor(
             target.attack()
         }
 
-        if (target.isAssignCompleted()) targets.remove(target)
+        if (target.isAssignCompleted()) {
+            targets.remove(target)
+        }
     }
 
     private fun setTargetsPriorities()

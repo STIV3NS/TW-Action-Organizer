@@ -16,6 +16,7 @@ class TargetParserTest : WordSpec({
             }
         }
 
+
         "given good file path" should {
             val outputList = mutableListOf<TargetVillage>()
 

@@ -10,6 +10,7 @@ class TargetVillageTest : WordSpec({
             "return false when asked if assigning is completed" {
                 target.isAssignCompleted() shouldBe false
             }
+
             "decrease numberOfAttacks when it was attacked" {
                 target.attack()
                 target.numberOfAttacks shouldBe 4
@@ -18,6 +19,8 @@ class TargetVillageTest : WordSpec({
                 target.numberOfAttacks shouldBe 3
             }
         }
+
+
         "it doesnt need more attacks" should {
             val target = TargetVillage(500, 500, 0)
 

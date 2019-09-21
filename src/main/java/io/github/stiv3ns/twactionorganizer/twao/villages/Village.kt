@@ -15,6 +15,7 @@ open class Village(open val x: Int, open val y: Int) {
     override fun toString()
         = "$x|$y"
 
+
     companion object {
         fun Int.squared(): Int = this * this
 

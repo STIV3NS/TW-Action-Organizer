@@ -14,6 +14,7 @@ class PlayerTest : WordSpec({
             "return true when asked about it" {
                 player.hasNoble() shouldBe true
             }
+
             "decrease numberOfNobles by 1 when Player.delegateNoble is called" {
                 player.delegateNoble()
                 player.numberOfNobles shouldBe 62
@@ -22,6 +23,8 @@ class PlayerTest : WordSpec({
                 player.numberOfNobles shouldBe 61
             }
         }
+
+
         "doesnt have available noble" should {
             val player = Player("test", _numberOfNobles = 0)
 
@@ -31,12 +34,14 @@ class PlayerTest : WordSpec({
         }
     }
 
+
     "Player [villages]" should {
         val player = Player("test")
 
         "be initialized with 0 villages" {
             player.numberOfVillages shouldBe 0
         }
+
         "::increaseNumberOfVillages increment this value" {
             player.increaseNumberOfVillages()
             player.increaseNumberOfVillages()
@@ -45,6 +50,7 @@ class PlayerTest : WordSpec({
             player.increaseNumberOfVillages()
             player.numberOfVillages shouldBe 3
         }
+
         "::decreaseNumberOfVillages decrement this value" {
             player.decreaseNumberOfVillaes()
             player.numberOfVillages shouldBe 2
@@ -53,6 +59,7 @@ class PlayerTest : WordSpec({
             player.numberOfVillages shouldBe 1
         }
     }
+
 
     "Player [assigments]" should {
         val player = Player("test")
@@ -69,26 +76,31 @@ class PlayerTest : WordSpec({
                 fakeNobleAssignmentsCopy.shouldBeEmpty()
             }
         }
+
         "put off-assigment to offAssigments" {
             player.putOffAssignment(assignment_1)
 
             player.offAssignmentsCopy.shouldContainExactly(assignment_1)
         }
+
         "put fake-assigment to fakeAssigments" {
             player.putFakeAssignment(assignment_2)
 
             player.fakeAssignmentsCopy.shouldContainExactly(assignment_2)
         }
+
         "put noble-assigment to nobleAssigments" {
             player.putNobleAssignment(assignment_3)
 
             player.nobleAssignmentsCopy.shouldContainExactly(assignment_3)
         }
+
         "put fake-noble-assigment to fakeNobleAssigments" {
             player.putFakeNobleAssignment(assignment_4)
 
             player.fakeNobleAssignmentsCopy.shouldContainExactly(assignment_4)
         }
+
         "properly put multiple assigments" {
             val new_player = Player("test")
             with(new_player) {

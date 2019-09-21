@@ -22,6 +22,7 @@ class AllyParserTest : WordSpec({
             }
         }
 
+
         "given proper path to proper CSV file" should {
             val nicknameHeader = "nick"
             val offsHeader = "offs"

@@ -17,6 +17,8 @@ class WorldTest : WordSpec({
                 }
             }
         }
+
+
         "given good domain /*test domain viable until 2021*/" should {
             val world = World("plp6.plemiona.pl")
             /* if tests fail you should try changing domain since this one may be already closed */
@@ -24,6 +26,7 @@ class WorldTest : WordSpec({
             "set proper domain" {
                 world.domain shouldBe "https://plp6.plemiona.pl"
             }
+
             "load proper settings" {
                 with(world) {
                     maxNobleRange shouldBe 1000
@@ -31,6 +34,7 @@ class WorldTest : WordSpec({
                     speed shouldBe 1.0
                 }
             }
+
             "load proper Village.id" {
                 forall(
                     row(Village(500, 499), 15),
@@ -40,6 +44,7 @@ class WorldTest : WordSpec({
                     world.fetchVillageID(village) shouldBe id
                 }
             }
+
             "throw an exception when trying to handle non-existing village" {
                 shouldThrow<VillageNotFoundException> {
                     world.fetchVillageID( Village(-1, -1) )

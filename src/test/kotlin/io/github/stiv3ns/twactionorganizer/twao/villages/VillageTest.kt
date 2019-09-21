@@ -11,6 +11,7 @@ class VillageTest : WordSpec({
         }
     }
 
+
     "Village.distance" should {
         "return proper squared distance between given villages" {
             forall (

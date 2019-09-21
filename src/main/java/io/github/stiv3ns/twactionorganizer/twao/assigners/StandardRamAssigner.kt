@@ -20,12 +20,14 @@ class StandardRamAssigner internal constructor(
     override val offAction = Player::putOffAssignment
     override val fakeAction = Player::putFakeAssignment
 
+
     override fun run() {
         putResourcesToQueue(referencePoint = mainReferencePoint)
 
         for ((allyVillage, _) in resourcesQueue) {
-            if (targets.isEmpty())
+            if (targets.isEmpty()) {
                 break
+            }
 
             putTargetsToQueue(referencePoint = allyVillage)
 
@@ -35,7 +37,9 @@ class StandardRamAssigner internal constructor(
             nearestTarget.attack()
 
             resources.remove(allyVillage)
-            if (nearestTarget.isAssignCompleted()) targets.remove(nearestTarget)
+            if (nearestTarget.isAssignCompleted()) {
+                targets.remove(nearestTarget)
+            }
         }
     }
 
