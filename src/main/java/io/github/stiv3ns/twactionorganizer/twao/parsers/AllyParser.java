@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  * and {[#setOffsHeader(String)] methods.
  */
 public class AllyParser {
-    private List<Player>        players = new ArrayList<>();
-    private List<AllyVillage>   villages = new ArrayList<>();
+    private List<Player>      players = new ArrayList<>();
+    private List<AllyVillage> villages = new ArrayList<>();
 
     private String nicknameHeader;
     private String noblesHeader;
@@ -37,6 +37,7 @@ public class AllyParser {
         records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
     }
 
+
     /** Column with that header will be marked as nicknames */
     public void setNicknameHeader(String nicknameHeader)
         { this.nicknameHeader = nicknameHeader; }
@@ -49,29 +50,24 @@ public class AllyParser {
     public void setOffsHeader(String offsHeader) 
         { this.offsHeader = offsHeader; }
 
-    /**
-     * Parses player questionnaires into object context.
-     *
-     * @throws UnspecifiedKeyException Thrown if [#nicknameHeader], [#noblesHeader] or [#offsHeader] is not set.
-     */
+
     public void parse() throws UnspecifiedKeyException {
-        if (nicknameHeader == null || noblesHeader == null || offsHeader == null) {
-            String errorMsg = "[";
-            if (nicknameHeader == null) errorMsg += "nicknameHeader;";
-            if (noblesHeader == null)   errorMsg += "noblesHeader;";
-            if (offsHeader == null)     errorMsg += "noblesHeader;";
-            errorMsg += "] <- headers not set";
-
-            throw new UnspecifiedKeyException(errorMsg);
+        if (headersAreNotSet()) {
+            throwUnspecifiedKeyException();
         } else {
-            for (CSVRecord record : records) {
-                Player player = parsePlayer(record);
-                parseVillages(player, record);
-            }
-
-            removeDuplicates();
+            parseRecords();
         }
     }
+
+    private void parseRecords() {
+        for (CSVRecord record : records) {
+            Player player = parsePlayer(record);
+            parseVillages(player, record);
+        }
+
+        removeDuplicates();
+    }
+
 
     /** Returns list of all players who completed the questionnaire */
     public List<Player> getPlayers()
@@ -80,6 +76,9 @@ public class AllyParser {
     /** Returns list of declared off villages */
     public List<AllyVillage> getVillages()
         { return villages; }
+
+
+
 
     private Player parsePlayer(CSVRecord record) {
         String nickname = record.get(nicknameHeader);
@@ -122,7 +121,7 @@ public class AllyParser {
     private void removeDuplicates() {
         HashSet<String> knownVillages = new HashSet<>();
 
-        villages.forEach( v ->{
+        villages.forEach( v -> {
             if (knownVillages.contains(v.toString())) {
                 v.getOwner().decreaseNumberOfVillaes();
             } else {
@@ -131,8 +130,23 @@ public class AllyParser {
         });
 
         villages = villages
-                .stream()
-                .distinct()
-                .collect(Collectors.toList());
+                    .stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+    }
+
+
+    private boolean headersAreNotSet() {
+        return nicknameHeader == null || noblesHeader == null || offsHeader == null;
+    }
+
+    private void throwUnspecifiedKeyException() throws UnspecifiedKeyException {
+        String errorMsg = "[";
+        if (nicknameHeader == null) errorMsg += "nicknameHeader;";
+        if (noblesHeader == null)   errorMsg += "noblesHeader;";
+        if (offsHeader == null)     errorMsg += "noblesHeader;";
+        errorMsg += "] <- headers not set";
+
+        throw new UnspecifiedKeyException(errorMsg);
     }
 }
