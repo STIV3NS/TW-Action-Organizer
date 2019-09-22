@@ -3,6 +3,7 @@ package io.github.stiv3ns.twactionorganizer.twao.assigners
 import io.github.stiv3ns.twactionorganizer.twao.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.twao.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.twao.villages.Village
+import java.util.*
 
 class AssignerBuilder {
     /**
@@ -46,54 +47,52 @@ class AssignerBuilder {
 
     /**
      * Requires [targets], [resources], [mainReferencePoint], [type] to be set.
-     * !!! If assigning (fake)nobles [maxNobleRange] is also obligatory. !!!
+     * When assigning (fake)nobles [maxNobleRange] is also obligatory. !!!
      */
-    fun build(): Assigner? {
-        if (obligatoryHeadersAreNotSet()) {
-            return null
-        }
-        if (requestedNobleAssigner() && maxNobleRange == null) {
-            return null
-        }
+    fun build(): Optional<Assigner> {
+        if (obligatoryHeadersAreNotSet()
+            || ( requestedNobleAssigner() && maxNobleRangeIsNotSet()) ) {
+            return Optional.empty()
+        } else {
 
-        val assigner = when (type) {
-            AssignerType.RAM -> StandardRamAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = false
-            )
-            AssignerType.REVERSED_RAM -> ReversedRamAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = false
-            )
-            AssignerType.FAKE_RAM -> StandardRamAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = true
-            )
-            AssignerType.NOBLE -> NobleAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = false,
-                    maxNobleRange = maxNobleRange!!
-            )
-            AssignerType.FAKE_NOBLE -> NobleAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = true,
-                    maxNobleRange = maxNobleRange!!
-            )
-            else -> null
-        }
+            val assigner = when (type!!) {
+                AssignerType.RAM -> StandardRamAssigner(
+                        targets!!,
+                        resources!!,
+                        mainReferencePoint!!,
+                        isAssigningFakes = false
+                )
+                AssignerType.REVERSED_RAM -> ReversedRamAssigner(
+                        targets!!,
+                        resources!!,
+                        mainReferencePoint!!,
+                        isAssigningFakes = false
+                )
+                AssignerType.FAKE_RAM -> StandardRamAssigner(
+                        targets!!,
+                        resources!!,
+                        mainReferencePoint!!,
+                        isAssigningFakes = true
+                )
+                AssignerType.NOBLE -> NobleAssigner(
+                        targets!!,
+                        resources!!,
+                        mainReferencePoint!!,
+                        isAssigningFakes = false,
+                        maxNobleRange = maxNobleRange!!
+                )
+                AssignerType.FAKE_NOBLE -> NobleAssigner(
+                        targets!!,
+                        resources!!,
+                        mainReferencePoint!!,
+                        isAssigningFakes = true,
+                        maxNobleRange = maxNobleRange!!
+                )
+            }
 
-        clear()
-        return assigner
+            clear()
+            return Optional.of(assigner)
+        }
     }
 
 
@@ -124,8 +123,11 @@ class AssignerBuilder {
 
 
     private fun obligatoryHeadersAreNotSet()
-            = targets == null || resources == null || mainReferencePoint == null || type == null
+        = targets == null || resources == null || mainReferencePoint == null || type == null
 
     private fun requestedNobleAssigner()
-            = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
+        = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
+
+    private fun maxNobleRangeIsNotSet()
+        = maxNobleRange == null
 }
