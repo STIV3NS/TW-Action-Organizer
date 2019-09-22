@@ -25,6 +25,7 @@ class NobleAssigner internal constructor(
                                          .toMutableList()
 
     override fun putResourcesToQueue(referencePoint: Village) {
+        resourcesQueue.clear()
         resWithNobles.forEach { resourcesQueue.offer( Pair(it, Village.distance(it, referencePoint)) ) }
     }
 
