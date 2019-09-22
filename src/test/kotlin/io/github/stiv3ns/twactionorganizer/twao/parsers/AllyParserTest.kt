@@ -7,7 +7,7 @@ import io.kotlintest.shouldNotThrowAny
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.UnspecifiedKeyException
+import io.github.stiv3ns.twactionorganizer.twao.exceptions.UnspecifiedHeaderException
 import io.github.stiv3ns.twactionorganizer.twao.parsers.AllyParser
 import java.io.IOException
 import java.nio.file.Paths
@@ -36,18 +36,18 @@ class AllyParserTest : WordSpec({
             ).toAbsolutePath().toString()
             var parser = AllyParser(filePath)
 
-            "throw UnspecifiedKeyException when trying to parse w/o setting headers" {
-                shouldThrow<UnspecifiedKeyException> {
+            "throw UnspecifiedHeaderException when trying to parse w/o setting headers" {
+                shouldThrow<UnspecifiedHeaderException> {
                     parser.parse()
                 }
 
                 parser.setNicknameHeader(nicknameHeader)
-                shouldThrow<UnspecifiedKeyException> {
+                shouldThrow<UnspecifiedHeaderException> {
                     parser.parse()
                 }
 
                 parser.setOffsHeader(offsHeader)
-                shouldThrow<UnspecifiedKeyException> {
+                shouldThrow<UnspecifiedHeaderException> {
                     parser.parse()
                 }
             }

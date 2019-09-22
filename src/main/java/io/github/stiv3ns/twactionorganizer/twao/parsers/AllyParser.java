@@ -3,7 +3,7 @@ package io.github.stiv3ns.twactionorganizer.twao.parsers;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import io.github.stiv3ns.twactionorganizer.twao.Player;
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.UnspecifiedKeyException;
+import io.github.stiv3ns.twactionorganizer.twao.exceptions.UnspecifiedHeaderException;
 import io.github.stiv3ns.twactionorganizer.twao.villages.AllyVillage;
 
 import java.io.FileReader;
@@ -51,9 +51,9 @@ public class AllyParser {
         { this.offsHeader = offsHeader; }
 
 
-    public void parse() throws UnspecifiedKeyException {
+    public void parse() throws UnspecifiedHeaderException {
         if (headersAreNotSet()) {
-            throwUnspecifiedKeyException();
+            throwUnspecifiedHeaderException();
         } else {
             parseRecords();
         }
@@ -140,13 +140,13 @@ public class AllyParser {
         return nicknameHeader == null || noblesHeader == null || offsHeader == null;
     }
 
-    private void throwUnspecifiedKeyException() throws UnspecifiedKeyException {
+    private void throwUnspecifiedHeaderException() throws UnspecifiedHeaderException {
         String errorMsg = "[";
         if (nicknameHeader == null) errorMsg += "nicknameHeader;";
         if (noblesHeader == null)   errorMsg += "noblesHeader;";
         if (offsHeader == null)     errorMsg += "noblesHeader;";
         errorMsg += "] <- headers not set";
 
-        throw new UnspecifiedKeyException(errorMsg);
+        throw new UnspecifiedHeaderException(errorMsg);
     }
 }
