@@ -42,20 +42,20 @@ class PlayerTest : WordSpec({
             player.numberOfVillages shouldBe 0
         }
 
-        "::increaseNumberOfVillages increment this value" {
-            player.increaseNumberOfVillages()
-            player.increaseNumberOfVillages()
+        "::registerVillage increments ::numberOfVillages" {
+            player.registerVillage()
+            player.registerVillage()
             player.numberOfVillages shouldBe 2
 
-            player.increaseNumberOfVillages()
+            player.registerVillage()
             player.numberOfVillages shouldBe 3
         }
 
-        "::decreaseNumberOfVillages decrement this value" {
-            player.decreaseNumberOfVillaes()
+        "::unregisterVillage decrements ::numberOfVillages" {
+            player.unregisterVillage()
             player.numberOfVillages shouldBe 2
 
-            player.decreaseNumberOfVillaes()
+            player.unregisterVillage()
             player.numberOfVillages shouldBe 1
         }
     }

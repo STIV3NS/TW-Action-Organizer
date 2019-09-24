@@ -1,39 +1,39 @@
 package io.github.stiv3ns.twactionorganizer.twao
 
-data class Player
-           (val nickname: String, private var _numberOfNobles: Int = 0) {
-    private val offAssignments = mutableListOf<VillageAssignment>()
-    private val fakeAssignments = mutableListOf<VillageAssignment>()
-    private val nobleAssignments = mutableListOf<VillageAssignment>()
-    private val fakeNobleAssignments = mutableListOf<VillageAssignment>()
+data class Player(val nickname: String, private var _numberOfNobles: Int = 0)  {
 
     var numberOfVillages: Int = 0
         private set
 
-    val offAssignmentsCopy
+    val numberOfNobles: Int
+        get() = _numberOfNobles
+
+    val offAssignmentsCopy:       List<VillageAssignment>
         get() = offAssignments.toList()
-    val fakeAssignmentsCopy
+    val fakeAssignmentsCopy:      List<VillageAssignment>
         get() = fakeAssignments.toList()
-    val nobleAssignmentsCopy
+    val nobleAssignmentsCopy:     List<VillageAssignment>
         get() = nobleAssignments.toList()
-    val fakeNobleAssignmentsCopy
+    val fakeNobleAssignmentsCopy: List<VillageAssignment>
         get() = fakeNobleAssignments.toList()
 
-    val numberOfNobles
-        get() = _numberOfNobles
+    private val offAssignments       = mutableListOf<VillageAssignment>()
+    private val fakeAssignments      = mutableListOf<VillageAssignment>()
+    private val nobleAssignments     = mutableListOf<VillageAssignment>()
+    private val fakeNobleAssignments = mutableListOf<VillageAssignment>()
 
 
     fun hasNoble(): Boolean
-        = numberOfNobles > 0
+        = _numberOfNobles > 0
 
     fun delegateNoble()
         { _numberOfNobles-- }
 
 
-    fun increaseNumberOfVillages()
+    fun registerVillage()
         { numberOfVillages++ }
 
-    fun decreaseNumberOfVillaes()
+    fun unregisterVillage()
         { numberOfVillages-- }
 
 

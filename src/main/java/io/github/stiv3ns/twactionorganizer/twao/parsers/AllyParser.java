@@ -114,7 +114,7 @@ public class AllyParser {
             int y = Integer.parseInt(innerMatcher.group());
 
             villages.add(new AllyVillage(x, y, player));
-            player.increaseNumberOfVillages();
+            player.registerVillage();
         }
     }
 
@@ -123,7 +123,7 @@ public class AllyParser {
 
         villages.forEach( v -> {
             if (knownVillages.contains(v.toString())) {
-                v.getOwner().decreaseNumberOfVillaes();
+                v.getOwner().unregisterVillage();
             } else {
                 knownVillages.add(v.toString());
             }
