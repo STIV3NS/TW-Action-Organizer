@@ -22,20 +22,23 @@ public class World {
     private final double unitSpeed;
     private final int    maxNobleRange;
     private final int    nightBonusEndHour;
-    private String       villagesList;
+    private String villagesRawText;
 
     public World(String domain) throws BadDomainException {
-        this.domain = "https://" + domain;
+        if ( !domain.startsWith("https://") ) {
+            domain = "https://" + domain;
+        }
+        this.domain = domain;
 
         try {
-            Document doc = getXMLDocument();
+            Document doc = getXMLDocumentWithConfig(this.domain);
 
             worldSPeed = Double.parseDouble(doc.getElementsByTagName("speed").item(0).getTextContent());
             unitSpeed = Double.parseDouble(doc.getElementsByTagName("unit_speed").item(0).getTextContent());
             maxNobleRange = Integer.parseInt(doc.getElementsByTagName("max_dist").item(0).getTextContent());
             nightBonusEndHour = Integer.parseInt(doc.getElementsByTagName("end_hour").item(0).getTextContent());
 
-            loadVillageList();
+            fetchVillagesRawText();
         } catch (Exception e) {
             throw new BadDomainException();
         }
@@ -43,9 +46,10 @@ public class World {
 
     public int fetchVillageID(Village vil) throws VillageNotFoundException {
         Pattern pattern = Pattern.compile(String.format("^.*,%d,%d,.*$", vil.getX(), vil.getY()), Pattern.MULTILINE);
-        Matcher matcher = pattern.matcher(villagesList);
+        Matcher matcher = pattern.matcher(villagesRawText);
 
         if (matcher.find()) {
+            /* village.txt::village repr: id,x,y,(not important data) */
             return Integer.parseInt(matcher.group().split(",")[0]);
         } else {
             throw new VillageNotFoundException();
@@ -53,8 +57,8 @@ public class World {
     }
 
 
-    private Document getXMLDocument() throws ParserConfigurationException, SAXException, IOException {
-        URL url = new URL(this.getDomain() + "/interface.php?func=get_config");
+    private Document getXMLDocumentWithConfig(String domain) throws Exception {
+        URL url = new URL(domain + "/interface.php?func=get_config");
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -65,11 +69,11 @@ public class World {
         return doc;
     }
 
-    private void loadVillageList() throws IOException {
-        URL url = new URL(this.getDomain() + "/map/village.txt");
+    private void fetchVillagesRawText() throws IOException {
+        URL url = new URL(domain + "/map/village.txt");
         Scanner sc = new Scanner(url.openStream());
 
-        this.villagesList = sc.useDelimiter("\\Z").next();
+        villagesRawText = sc.useDelimiter("\\Z").next();
 
         sc.close();
     }
