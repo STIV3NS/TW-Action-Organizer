@@ -5,7 +5,7 @@ data class TargetVillage(
         override val y: Int,
         private var _numberOfAttacks: Int
 ) : Village(x, y) {
-    val numberOfAttacks
+    val numberOfAttacks: Int
         get() = _numberOfAttacks
 
     fun attack()
