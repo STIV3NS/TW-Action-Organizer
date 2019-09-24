@@ -14,8 +14,8 @@ class StandardRamAssigner internal constructor(
         isAssigningFakes: Boolean
 ) : Assigner (targets, resources, mainReferencePoint, isAssigningFakes) {
 
-    override val targetsQueue = PriorityQueue< Pair<TargetVillage, Int> >(targets.size, setTargetsPriorities())
-    override val resourcesQueue = PriorityQueue< Pair<AllyVillage, Int> >(resources.size, setResourcesPriorities())
+    override val targetsQueue = PriorityQueue< Pair<TargetVillage, Int> >(targets.size, getInternalTargetsComparator())
+    override val resourcesQueue = PriorityQueue< Pair<AllyVillage, Int> >(resources.size, getInternalResourcesComparator())
 
     override val offAction = Player::putOffAssignment
     override val fakeAction = Player::putFakeAssignment
@@ -43,10 +43,10 @@ class StandardRamAssigner internal constructor(
         }
     }
 
-    private fun setTargetsPriorities()
+    private fun getInternalTargetsComparator()
         = Comparator.comparing(Pair<Village, Int>::second)
 
-    private fun setResourcesPriorities()
+    private fun getInternalResourcesComparator()
         = Comparator.comparing(Pair<Village, Int>::second)
                     .reversed()
 }

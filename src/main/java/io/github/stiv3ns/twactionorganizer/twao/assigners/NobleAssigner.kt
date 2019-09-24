@@ -15,8 +15,8 @@ class NobleAssigner internal constructor(
         private val maxNobleRange: Int
 ) : Assigner (targets, resources, mainReferencePoint, isAssigningFakes) {
 
-    override val targetsQueue = PriorityQueue< Pair<TargetVillage, Int> >(targets.size, setTargetsPriorities())
-    override val resourcesQueue = PriorityQueue< Pair<AllyVillage, Int> >(resources.size, setResourcesPriorities())
+    override val targetsQueue = PriorityQueue< Pair<TargetVillage, Int> >(targets.size, getInternalTargetsComparator())
+    override val resourcesQueue = PriorityQueue< Pair<AllyVillage, Int> >(resources.size, getInternalResourcesComparator())
 
     override val offAction = Player::putNobleAssignment
     override val fakeAction = Player::putFakeNobleAssignment
@@ -35,11 +35,12 @@ class NobleAssigner internal constructor(
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
         for ((target, _) in targetsQueue) {
-            if (resWithNobles.isEmpty()) break
+            if (resWithNobles.isEmpty()) {
+                break
+            }
 
             handleTarget(target)
         }
-
     }
 
     private fun handleTarget(target: TargetVillage) {
@@ -82,9 +83,9 @@ class NobleAssigner internal constructor(
                                      .toMutableList()
     }
 
-    private fun setTargetsPriorities()
+    private fun getInternalTargetsComparator()
             = Comparator.comparing(Pair<Village, Int>::second)
 
-    private fun setResourcesPriorities()
+    private fun getInternalResourcesComparator()
             = Comparator.comparing(Pair<Village, Int>::second)
 }
