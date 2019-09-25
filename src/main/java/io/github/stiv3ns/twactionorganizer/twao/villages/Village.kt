@@ -2,7 +2,9 @@ package io.github.stiv3ns.twactionorganizer.twao.villages
 
 import io.github.stiv3ns.twactionorganizer.twao.World
 import io.github.stiv3ns.twactionorganizer.twao.exceptions.VillageNotFoundException
+import kotlinx.serialization.Serializable
 
+@Serializable
 open class Village(open val x: Int, open val y: Int) {
     var id: Int? = null
         private set

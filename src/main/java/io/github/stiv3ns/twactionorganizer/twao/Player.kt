@@ -1,5 +1,8 @@
 package io.github.stiv3ns.twactionorganizer.twao
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Player(val nickname: String, private var _numberOfNobles: Int = 0)  {
 
     var numberOfVillages: Int = 0
