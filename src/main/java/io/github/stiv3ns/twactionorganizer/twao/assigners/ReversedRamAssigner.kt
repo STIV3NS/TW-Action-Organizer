@@ -14,21 +14,14 @@ class ReversedRamAssigner internal constructor(
         isAssigningFakes: Boolean
 ) : Assigner (targets, resources, mainReferencePoint, isAssigningFakes) {
 
-    override val targetsQueue = PriorityQueue< Pair<TargetVillage, Int> >(targets.size, getInternalTargetsComparator())
-    override val resourcesQueue = PriorityQueue< Pair<AllyVillage, Int> >(resources.size, getInternalResourcesComparator())
-
     override val offAction = Player::putOffAssignment
     override val fakeAction = Player::putFakeAssignment
-
 
     override fun run() {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
-        for ((target, _) in targetsQueue) {
-            if (resources.isEmpty()) {
-                break
-            }
-
+        while (targetsQueue.isNotEmpty() && resources.isNotEmpty()) {
+            val (target, _) = targetsQueue.poll()
             handleTarget(target)
         }
     }
@@ -52,10 +45,4 @@ class ReversedRamAssigner internal constructor(
             targets.remove(target)
         }
     }
-
-    private fun getInternalTargetsComparator()
-            = Comparator.comparing(Pair<Village, Int>::second)
-
-    private fun getInternalResourcesComparator()
-            = Comparator.comparing(Pair<Village, Int>::second)
 }

@@ -14,8 +14,17 @@ abstract class Assigner internal constructor(
         protected val isAssigningFakes: Boolean
 ) : Runnable {
 
-    protected abstract val targetsQueue: PriorityQueue< Pair<TargetVillage, Int> >
-    protected abstract val resourcesQueue: PriorityQueue< Pair<AllyVillage, Int> >
+    protected val distanceComparator = Comparator.comparing(Pair<Village, Int>::second)
+
+    protected open val targetsQueue = PriorityQueue< Pair<TargetVillage, Int> >(
+            targets.size,
+            distanceComparator
+    )
+    protected open val resourcesQueue = PriorityQueue< Pair<AllyVillage, Int> >(
+            resources.size,
+            distanceComparator
+    )
+
 
     protected abstract val offAction: Player.(VillageAssignment) -> Unit
     protected abstract val fakeAction: Player.(VillageAssignment) -> Unit
