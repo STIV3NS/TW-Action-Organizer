@@ -7,7 +7,7 @@ import io.kotlintest.shouldNotThrowAny
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.UnspecifiedHeaderException
+import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.UnspecifiedHeaderException
 import io.github.stiv3ns.twactionorganizer.twao.parsers.AllyParser
 import java.io.IOException
 import java.nio.file.Paths

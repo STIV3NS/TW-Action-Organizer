@@ -3,7 +3,7 @@ package io.github.stiv3ns.twactionorganizer.twao.parsers;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import io.github.stiv3ns.twactionorganizer.twao.Player;
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.UnspecifiedHeaderException;
+import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.UnspecifiedHeaderException;
 import io.github.stiv3ns.twactionorganizer.twao.villages.AllyVillage;
 
 import java.io.FileReader;

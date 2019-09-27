@@ -4,8 +4,8 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 import io.github.stiv3ns.twactionorganizer.twao.World
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.BadDomainException
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.VillageNotFoundException
+import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.BadDomainException
+import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.VillageNotFoundException
 import io.github.stiv3ns.twactionorganizer.twao.villages.Village
 
 class WorldTest : WordSpec({

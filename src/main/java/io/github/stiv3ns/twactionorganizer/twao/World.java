@@ -2,14 +2,12 @@ package io.github.stiv3ns.twactionorganizer.twao;
 
 import org.w3c.dom.Document;
 
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.BadDomainException;
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.VillageNotFoundException;
+import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.BadDomainException;
+import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.VillageNotFoundException;
 import io.github.stiv3ns.twactionorganizer.twao.villages.Village;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;

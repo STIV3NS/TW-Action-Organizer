@@ -1,7 +1,7 @@
 package io.github.stiv3ns.twactionorganizer.twao.villages
 
 import io.github.stiv3ns.twactionorganizer.twao.World
-import io.github.stiv3ns.twactionorganizer.twao.exceptions.VillageNotFoundException
+import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.VillageNotFoundException
 import kotlinx.serialization.Serializable
 
 @Serializable
