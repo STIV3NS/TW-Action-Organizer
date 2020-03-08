@@ -12,11 +12,10 @@ import kotlin.math.sqrt
 
 class PMFormatter(private val world: World, private val dateOfArrival: LocalDateTime) {
 
-    private val OPEN_SPOILER = "[spoiler]\n"
-    private val CLOSE_SPOILER = "[/spoiler]\n\n\n"
-
     private val bundle = ResourceBundle.getBundle("localization/pmformatter")
 
+    private val OPEN_SPOILER        by lazy { bundle.getString("OPEN_SPOILER") }
+    private val CLOSE_SPOILER       by lazy { bundle.getString("CLOSE_SPOILER") }
     private val REQUIREMENTS_HEADER by lazy { bundle.getString("REQUIREMENTS_HEADER") }
     private val NOBLE_HEADER        by lazy { bundle.getString("NOBLE_HEADER") }
     private val OFF_HEADER          by lazy { bundle.getString("OFF_HEADER") }
