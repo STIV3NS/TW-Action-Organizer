@@ -88,13 +88,11 @@ class AllyParserTest : WordSpec({
                                 .getResource("AllyParser_data_with_duplicates.csv")!!
                                 .toURI()
                 ).toAbsolutePath().toString()
-                var parser = AllyParser(filePath).also {
-                    with(it) {
-                        setNicknameHeader(nicknameHeader)
-                        setOffsHeader(offsHeader)
-                        setNoblesHeader(noblesHeader)
-                        parse()
-                    }
+                var parser = AllyParser(filePath).apply {
+                    setNicknameHeader(nicknameHeader)
+                    setOffsHeader(offsHeader)
+                    setNoblesHeader(noblesHeader)
+                    parse()
                 }
 
                 val parsedPlayer = parser.players.first()

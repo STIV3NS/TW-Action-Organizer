@@ -102,8 +102,7 @@ class PlayerTest : WordSpec({
         }
 
         "properly put multiple assigments" {
-            val new_player = Player("test")
-            with(new_player) {
+            val new_player = Player("test").apply {
                 putOffAssignment(assignment_1)
                 putOffAssignment(assignment_2)
                 putOffAssignment(assignment_3)
