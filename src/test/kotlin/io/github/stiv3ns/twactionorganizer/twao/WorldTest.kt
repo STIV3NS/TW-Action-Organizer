@@ -37,9 +37,21 @@ class WorldTest : WordSpec({
 
             "load proper Village.id" {
                 forall(
-                    row(Village(500, 499), 15),
-                    row(Village(497, 506), 44),
-                    row(Village(508, 499), 66)
+                    row(object : Village {
+                        override val x = 500
+                        override val y = 499
+                        override var id: Int? = null
+                    }, 15),
+                    row(object : Village {
+                        override val x = 497
+                        override val y = 506
+                        override var id: Int? = null
+                    }, 44),
+                    row(object : Village {
+                        override val x = 508
+                        override val y = 499
+                        override var id: Int? = null
+                    }, 66)
                 ) { village, id ->
                     world.fetchVillageID(village) shouldBe id
                 }
@@ -47,7 +59,11 @@ class WorldTest : WordSpec({
 
             "throw an exception when trying to handle non-existing village" {
                 shouldThrow<VillageNotFoundException> {
-                    world.fetchVillageID( Village(-1, -1) )
+                    world.fetchVillageID(object : Village {
+                        override val x = -1
+                        override val y = -1
+                        override var id: Int? = null
+                    })
                 }
             }
         }

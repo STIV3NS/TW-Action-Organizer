@@ -4,7 +4,8 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import io.github.stiv3ns.twactionorganizer.twao.Player
 import io.github.stiv3ns.twactionorganizer.twao.VillageAssignment
-import io.github.stiv3ns.twactionorganizer.twao.villages.Village
+import io.github.stiv3ns.twactionorganizer.twao.villages.AllyVillage
+import io.github.stiv3ns.twactionorganizer.twao.villages.TargetVillage
 
 class PlayerTest : WordSpec({
     "Player [nobles]" When {
@@ -63,10 +64,11 @@ class PlayerTest : WordSpec({
 
     "Player [assigments]" should {
         val player = Player("test")
-        val assignment_1 = VillageAssignment(Village(1,1), Village(2,2),2)
-        val assignment_2 = VillageAssignment(Village(3,3), Village(4,4),2)
-        val assignment_3 = VillageAssignment(Village(5,5), Village(6,6),2)
-        val assignment_4 = VillageAssignment(Village(7,7), Village(8,8),2)
+//        val assignment_1 = VillageAssignment(Village(1,1), Village(2,2),2)
+        val assignment_1 = VillageAssignment(AllyVillage(1,1,player), TargetVillage(2,2,0),2)
+        val assignment_2 = VillageAssignment(AllyVillage(3,3,player), TargetVillage(4,4,0),2)
+        val assignment_3 = VillageAssignment(AllyVillage(5,5,player), TargetVillage(6,6,0),2)
+        val assignment_4 = VillageAssignment(AllyVillage(7,7,player), TargetVillage(8,8,0),2)
 
         "be initialized as empty lists" {
             with(player) {

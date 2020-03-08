@@ -18,12 +18,11 @@ class NobleAssigner internal constructor(
     override val offAction = Player::putNobleAssignment
     override val fakeAction = Player::putFakeNobleAssignment
 
-    private var resWithNobles = resources.filter { it.owner.hasNoble() }
-                                         .toMutableList()
+    private var resWithNobles = resources.filter { it.owner.hasNoble() }.toMutableList()
 
     override fun putResourcesToQueue(referencePoint: Village) {
         resourcesQueue.clear()
-        resWithNobles.forEach { resourcesQueue.offer( Pair(it, Village.distance(it, referencePoint)) ) }
+        resWithNobles.forEach { resourcesQueue.offer( Pair(it, it distanceTo referencePoint) ) }
     }
 
 
@@ -73,7 +72,6 @@ class NobleAssigner internal constructor(
     }
 
     private fun updateResWithNobles() {
-        resWithNobles = resWithNobles.filter { it.owner.hasNoble() }
-                                     .toMutableList()
+        resWithNobles = resWithNobles.filter { it.owner.hasNoble() }.toMutableList()
     }
 }
