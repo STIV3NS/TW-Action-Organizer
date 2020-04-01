@@ -13,16 +13,16 @@ data class Player(val nickname: String) {
         this.numberOfNobles = numberOfNobles
     }
 
-    val offAssignmentsCopy: List<VillageAssignment>
+    val offAssignmentsCopy
         get() = offAssignments.toList()
 
-    val fakeAssignmentsCopy: List<VillageAssignment>
+    val fakeAssignmentsCopy
         get() = fakeAssignments.toList()
 
-    val nobleAssignmentsCopy: List<VillageAssignment>
+    val nobleAssignmentsCopy
         get() = nobleAssignments.toList()
 
-    val fakeNobleAssignmentsCopy: List<VillageAssignment>
+    val fakeNobleAssignmentsCopy
         get() = fakeNobleAssignments.toList()
 
     private val offAssignments       = mutableListOf<VillageAssignment>()
