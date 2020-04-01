@@ -8,4 +8,6 @@ class Resources (
 ) {
     val villageCount
         get() = villages.size
+    val playerCount
+        get() = players.size
 }
