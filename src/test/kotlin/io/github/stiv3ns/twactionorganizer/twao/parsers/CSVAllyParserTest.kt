@@ -8,59 +8,51 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 import io.github.stiv3ns.twactionorganizer.twao.utils.exceptions.UnspecifiedHeaderException
-import io.github.stiv3ns.twactionorganizer.twao.parsers.AllyParser
+import io.github.stiv3ns.twactionorganizer.twao.parsers.CSVAllyParser
 import java.io.IOException
 import java.nio.file.Paths
 
-class AllyParserTest : WordSpec({
-    "AllyParser" When {
-        "given bad file path or path to non-CSV file" should {
-            "throw an exception" {
-                shouldThrow<IOException> {
-                    AllyParser("bad/path.csv")
-                }
-            }
-        }
-
+class CSVAllyParserTest : WordSpec({
+    "CSVAllyParser" When {
+        val parser = CSVAllyParser()
 
         "given proper path to proper CSV file" should {
             val nicknameHeader = "nick"
-            val offsHeader = "offs"
+            val villagesHeader = "offs"
             val noblesHeader = "noble"
 
-            var filePath = Paths.get(
+            val filePath = Paths.get(
                     this.javaClass
                             .classLoader
                             .getResource("AllyParser_dummy_data.csv")!!
                             .toURI()
             ).toAbsolutePath().toString()
-            var parser = AllyParser(filePath)
+
+            parser.csvFilePath = filePath
 
             "throw UnspecifiedHeaderException when trying to parse w/o setting headers" {
                 shouldThrow<UnspecifiedHeaderException> {
-                    parser.parse()
+                    parser.parseAndGetResources()
                 }
 
-                parser.setNicknameHeader(nicknameHeader)
+                parser.nicknameHeader = nicknameHeader
                 shouldThrow<UnspecifiedHeaderException> {
-                    parser.parse()
-                }
-
-                parser.setOffsHeader(offsHeader)
-                shouldThrow<UnspecifiedHeaderException> {
-                    parser.parse()
+                    parser.parseAndGetResources()
                 }
             }
 
-            "not throw an exception when all headers are set" {
-                parser.setNoblesHeader(noblesHeader)
+            "not throw an exception when required headers are set" {
+                parser.villagesHeader = villagesHeader
+                parser.noblesHeader = noblesHeader
+
                 shouldNotThrowAny {
-                    parser.parse()
+                    parser.parseAndGetResources()
                 }
             }
 
-            "::getPlayers should return proper list of players" {
-                val parsedPlayers = parser.players
+            "Resources::players should be proper list of players" {
+                val resources = parser.parseAndGetResources()
+                val parsedPlayers = resources.players
 
                 parsedPlayers.shouldHaveSize(3)
 
@@ -70,10 +62,7 @@ class AllyParserTest : WordSpec({
                             row("darek0729", 2, 60),
                             row("nicoleesme", 1, 50)
                     ) { nick, vilNum, nobNum ->
-                        with(parsedPlayers.filter { it.nickname == nick }
-                                .first()) {
-                            this.shouldNotBeNull()
-
+                        with(  parsedPlayers.filter { it.nickname == nick }.first()  ) {
                             numberOfVillages shouldBe vilNum
                             numberOfNobles shouldBe nobNum
                         }
@@ -82,25 +71,42 @@ class AllyParserTest : WordSpec({
             }
 
             "duplicates should be handled" {
-                filePath = Paths.get(
+                val newFilePath = Paths.get(
                         this.javaClass
                                 .classLoader
                                 .getResource("AllyParser_data_with_duplicates.csv")!!
                                 .toURI()
                 ).toAbsolutePath().toString()
-                var parser = AllyParser(filePath).apply {
-                    setNicknameHeader(nicknameHeader)
-                    setOffsHeader(offsHeader)
-                    setNoblesHeader(noblesHeader)
-                    parse()
+
+                val new_parser = CSVAllyParser().apply {
+                    this.villagesHeader = villagesHeader
+                    this.noblesHeader = noblesHeader
+                    this.nicknameHeader = nicknameHeader
+                    this.csvFilePath = newFilePath
                 }
 
-                val parsedPlayer = parser.players.first()
-                val parsedVillages = parser.villages
+                val resources = new_parser.parseAndGetResources()
+
+                val parsedPlayer = resources.players.first()
+                val parsedVillages = resources.villages
 
                 parsedPlayer.numberOfVillages shouldBe 3
                 parsedVillages.size shouldBe 3
                 parsedVillages.shouldBeUnique()
+            }
+        }
+
+        "given bad file path or path to non-CSV file" should {
+            parser.apply {
+                this.villagesHeader = "asdas"
+                this.noblesHeader = "asdsadasd"
+                this.nicknameHeader = "asadasdas"
+            }
+            "throw an exception" {
+                shouldThrow<IOException> {
+                    parser.csvFilePath = "bad/path.csv"
+                    parser.parseAndGetResources()
+                }
             }
         }
     }
