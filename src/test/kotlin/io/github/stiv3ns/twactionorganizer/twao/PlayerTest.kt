@@ -64,7 +64,6 @@ class PlayerTest : WordSpec({
 
     "Player [assigments]" should {
         val player = Player("test")
-//        val assignment_1 = VillageAssignment(Village(1,1), Village(2,2),2)
         val assignment_1 = VillageAssignment(AllyVillage(1,1,player), TargetVillage(2,2,0),2)
         val assignment_2 = VillageAssignment(AllyVillage(3,3,player), TargetVillage(4,4,0),2)
         val assignment_3 = VillageAssignment(AllyVillage(5,5,player), TargetVillage(6,6,0),2)
