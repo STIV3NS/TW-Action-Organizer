@@ -5,7 +5,8 @@ import io.github.stiv3ns.twactionorganizer.twao.villages.Village
 import kotlin.math.roundToInt
 
 class Targets(val targetsList: MutableList<TargetVillage>)
-    : List<TargetVillage> by targetsList
+
+    : MutableList<TargetVillage> by targetsList
 {
     val villageCount: Int
         get() = targetsList.size
