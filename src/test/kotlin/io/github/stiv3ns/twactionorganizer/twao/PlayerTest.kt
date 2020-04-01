@@ -10,7 +10,7 @@ import io.github.stiv3ns.twactionorganizer.twao.villages.TargetVillage
 class PlayerTest : WordSpec({
     "Player [nobles]" When {
         "has available noble" should {
-            val player = Player("test", _numberOfNobles = 63)
+            val player = Player("test", numberOfNobles = 63)
 
             "return true when asked about it" {
                 player.hasNoble() shouldBe true
@@ -27,7 +27,7 @@ class PlayerTest : WordSpec({
 
 
         "doesnt have available noble" should {
-            val player = Player("test", _numberOfNobles = 0)
+            val player = Player("test", numberOfNobles = 0)
 
             "return false when asked about it" {
                 player.hasNoble() shouldBe false

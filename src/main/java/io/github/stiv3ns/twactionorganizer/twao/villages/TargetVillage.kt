@@ -4,19 +4,22 @@ import kotlinx.serialization.Serializable
 
 data class TargetVillage(
         override val x: Int,
-        override val y: Int,
-        private var _numberOfAttacks: Int
+        override val y: Int
 ) : Village {
     override var id: Int? = null
 
-    val numberOfAttacks: Int
-        get() = _numberOfAttacks
+    var numberOfAttacks: Int = 0
+        private set
 
-    fun attack()
-        { _numberOfAttacks-- }
+    constructor(x: Int, y: Int, numberOfAttacks: Int) : this(x, y) {
+        this.numberOfAttacks = numberOfAttacks
+    }
 
-    fun isAssignCompleted(): Boolean
-            = _numberOfAttacks <= 0
+    fun attack() {
+        numberOfAttacks--;
+    }
+
+    fun isAssignCompleted(): Boolean = (numberOfAttacks <= 0)
 
     override fun toString() = "$x|$y"
 }

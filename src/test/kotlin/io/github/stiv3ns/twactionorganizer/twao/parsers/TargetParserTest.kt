@@ -42,12 +42,12 @@ class TargetParserTest : WordSpec({
                 TargetParser.parse(filePath_2, attacksPerSecondGroup, outputList)
 
                 outputList.shouldContainExactly(
-                        TargetVillage(x = 623, y = 574, _numberOfAttacks = attacksPerFirstGroup),
-                        TargetVillage(x = 626, y = 576, _numberOfAttacks = attacksPerFirstGroup),
-                        TargetVillage(x = 626, y = 578, _numberOfAttacks = attacksPerFirstGroup),
-                        TargetVillage(x = 625, y = 576, _numberOfAttacks = attacksPerFirstGroup),
-                        TargetVillage(x = 597, y = 541, _numberOfAttacks = attacksPerSecondGroup),
-                        TargetVillage(x = 612, y = 550, _numberOfAttacks = attacksPerSecondGroup)
+                        TargetVillage(x = 623, y = 574, numberOfAttacks = attacksPerFirstGroup),
+                        TargetVillage(x = 626, y = 576, numberOfAttacks = attacksPerFirstGroup),
+                        TargetVillage(x = 626, y = 578, numberOfAttacks = attacksPerFirstGroup),
+                        TargetVillage(x = 625, y = 576, numberOfAttacks = attacksPerFirstGroup),
+                        TargetVillage(x = 597, y = 541, numberOfAttacks = attacksPerSecondGroup),
+                        TargetVillage(x = 612, y = 550, numberOfAttacks = attacksPerSecondGroup)
                 )
             }
         }
