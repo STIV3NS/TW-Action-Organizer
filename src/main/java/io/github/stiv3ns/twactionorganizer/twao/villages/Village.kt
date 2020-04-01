@@ -36,8 +36,7 @@ object VillageSerializer {
             override val y = map["y"]!!
             override var id: Int? = map["id"]!!
 
-            override fun toString(): String
-                = "$x|$y"
+            override fun toString(): String = "$x|$y"
         }
     }
 
