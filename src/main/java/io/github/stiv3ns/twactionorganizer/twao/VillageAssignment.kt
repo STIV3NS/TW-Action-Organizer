@@ -9,6 +9,5 @@ data class VillageAssignment(
         val destination: Village,
         val squaredDistance: Int
 ) {
-    override fun toString()
-        = "$departure -> $destination"
+    override fun toString() = "$departure -> $destination"
 }
