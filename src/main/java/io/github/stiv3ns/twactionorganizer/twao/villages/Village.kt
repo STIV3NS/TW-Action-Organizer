@@ -6,8 +6,6 @@ import kotlinx.serialization.*
 
 import kotlinx.serialization.json.Json
 
-@ImplicitReflectionSerializer
-@Serializable(with = VillageSerializer::class)
 interface Village {
     val x: Int
     val y: Int
