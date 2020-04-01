@@ -3,20 +3,25 @@ package io.github.stiv3ns.twactionorganizer.twao
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Player(val nickname: String, private var _numberOfNobles: Int = 0)  {
-
+data class Player(val nickname: String) {
+    var numberOfNobles: Int = 0
+        private set
     var numberOfVillages: Int = 0
         private set
 
-    val numberOfNobles: Int
-        get() = _numberOfNobles
+    constructor(nickname: String, numberOfNobles: Int = 0) : this(nickname) {
+        this.numberOfNobles = numberOfNobles
+    }
 
-    val offAssignmentsCopy:       List<VillageAssignment>
+    val offAssignmentsCopy: List<VillageAssignment>
         get() = offAssignments.toList()
-    val fakeAssignmentsCopy:      List<VillageAssignment>
+
+    val fakeAssignmentsCopy: List<VillageAssignment>
         get() = fakeAssignments.toList()
-    val nobleAssignmentsCopy:     List<VillageAssignment>
+
+    val nobleAssignmentsCopy: List<VillageAssignment>
         get() = nobleAssignments.toList()
+
     val fakeNobleAssignmentsCopy: List<VillageAssignment>
         get() = fakeNobleAssignments.toList()
 
@@ -26,30 +31,35 @@ data class Player(val nickname: String, private var _numberOfNobles: Int = 0)  {
     private val fakeNobleAssignments = mutableListOf<VillageAssignment>()
 
 
-    fun hasNoble(): Boolean
-        = _numberOfNobles > 0
+    fun hasNoble(): Boolean = (numberOfNobles > 0)
 
-    fun delegateNoble()
-        { _numberOfNobles-- }
-
-
-    fun registerVillage()
-        { numberOfVillages++ }
-
-    fun unregisterVillage()
-        { numberOfVillages-- }
+    fun delegateNoble() {
+        numberOfNobles--
+    }
 
 
-    fun putOffAssignment(assignment: VillageAssignment)
-        { offAssignments.add(assignment) }
+    fun registerVillage() {
+        numberOfVillages++
+    }
 
-    @Synchronized
-    fun putFakeAssignment(assignment: VillageAssignment)
-        { fakeAssignments.add(assignment) }
+    fun unregisterVillage() {
+        numberOfVillages--
+    }
 
-    fun putNobleAssignment(assignment: VillageAssignment)
-        { nobleAssignments.add(assignment) }
 
-    fun putFakeNobleAssignment(assignment: VillageAssignment)
-        { fakeNobleAssignments.add(assignment) }
+    fun putOffAssignment(assignment: VillageAssignment) {
+        offAssignments.add(assignment)
+    }
+
+    @Synchronized fun putFakeAssignment(assignment: VillageAssignment) {
+        fakeAssignments.add(assignment)
+    }
+
+    fun putNobleAssignment(assignment: VillageAssignment) {
+        nobleAssignments.add(assignment)
+    }
+
+    fun putFakeNobleAssignment(assignment: VillageAssignment) {
+        fakeNobleAssignments.add(assignment)
+    }
 }
