@@ -6,6 +6,6 @@ class Resources (
         val players: List<Player>,
         val villages: List<AllyVillage>
 ) {
-    val villagesCount
+    val villageCount
         get() = villages.size
 }
