@@ -21,6 +21,7 @@ public class World {
     private final int    maxNobleRange;
     private final int    nightBonusEndHour;
     private String villagesRawText;
+    private String playersRawText;
 
     public World(String domain) throws BadDomainException {
         if ( !domain.startsWith("https://") ) {
@@ -37,23 +38,43 @@ public class World {
             nightBonusEndHour = Integer.parseInt(doc.getElementsByTagName("end_hour").item(0).getTextContent());
 
             fetchVillagesRawText();
+            fetchPlayersRawText();
         } catch (Exception e) {
             throw new BadDomainException();
         }
     }
 
     public int fetchVillageID(Village vil) throws VillageNotFoundException {
+        return Integer.parseInt(fetchVillageEntity(vil).split(",")[0]);
+    }
+
+    public String fetchVillageOwner(Village vil) throws VillageNotFoundException {
+        int ownerId = Integer.parseInt(fetchVillageEntity(vil).split(",")[4]);
+        return fetchPlayerEntity(ownerId).split(",")[1];
+    }
+
+    private String fetchVillageEntity(Village vil) throws VillageNotFoundException {
         Pattern pattern = Pattern.compile(String.format("^.*,%d,%d,.*$", vil.getX(), vil.getY()), Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(villagesRawText);
 
         if (matcher.find()) {
-            /* village.txt::village repr: id,x,y,(not important data) */
-            return Integer.parseInt(matcher.group().split(",")[0]);
+            return matcher.group();
         } else {
             throw new VillageNotFoundException();
         }
     }
 
+    private String fetchPlayerEntity(int playerId) throws IllegalArgumentException {
+        Pattern pattern = Pattern.compile(String.format("^%d,.*,.*,.*,.*,.*", playerId), Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(playersRawText);
+
+        if (matcher.find()) {
+            return matcher.group();
+        } else {
+            /* this shouldn't happen if function used properly. */
+            throw new IllegalArgumentException();
+        }
+    }
 
     private Document getXMLDocumentWithConfig(String domain) throws Exception {
         URL url = new URL(domain + "/interface.php?func=get_config");
@@ -72,6 +93,15 @@ public class World {
         Scanner sc = new Scanner(url.openStream());
 
         villagesRawText = sc.useDelimiter("\\Z").next();
+
+        sc.close();
+    }
+
+    private void fetchPlayersRawText() throws IOException {
+        URL url = new URL(domain + "/map/player.txt");
+        Scanner sc = new Scanner(url.openStream());
+
+        playersRawText = sc.useDelimiter("\\Z").next();
 
         sc.close();
     }

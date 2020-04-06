@@ -57,6 +57,29 @@ class WorldTest : WordSpec({
                 }
             }
 
+            /* this test may (and will) randomly crash when village changes owner... */
+            "load proper Village.owner" {
+                forall(
+                    row(object : Village {
+                        override val x = 500
+                        override val y = 499
+                        override var id: Int? = null
+                    }, "Lucky1369"),
+                    row(object : Village {
+                        override val x = 497
+                        override val y = 506
+                        override var id: Int? = null
+                    }, "cmentarz125"),
+                    row(object : Village {
+                        override val x = 508
+                        override val y = 499
+                        override var id: Int? = null
+                    }, "adam11145")
+                ) { vil, owner ->
+                    world.fetchVillageOwner(vil) shouldBe owner
+                }
+            }
+
             "throw an exception when trying to handle non-existing village" {
                 shouldThrow<VillageNotFoundException> {
                     world.fetchVillageID(object : Village {
