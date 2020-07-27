@@ -31,13 +31,6 @@ class AssignerBuilder {
      * behavior: Pick TARGET village that is closest to the relativityPoint and link it with nearest ally village.
      * ---------------------------------------------------------------------------------------------------------------
      */
-    enum class AssignerType {
-        RAM,
-        REVERSED_RAM,
-        FAKE_RAM,
-        NOBLE,
-        FAKE_NOBLE
-    }
 
     var targets: MutableList<TargetVillage>? = null
     var resources: MutableList<AllyVillage>? = null
