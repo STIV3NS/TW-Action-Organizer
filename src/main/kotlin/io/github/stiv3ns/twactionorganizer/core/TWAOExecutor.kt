@@ -11,10 +11,7 @@ import java.util.concurrent.TimeUnit
 
 object TWAOExecutor {
     private val executorService: ExecutorService
-
     private val runningTasks = mutableMapOf< TargetGroup, Future<AssignerReport> >()
-
-    private var sharedResourceVillages = mutableListOf<AllyVillage>()
 
     init {
         val numberOfCores = Runtime.getRuntime().availableProcessors()
@@ -22,8 +19,6 @@ object TWAOExecutor {
     }
 
     fun execute(uow: TWAOUnitOfWork): List<AssignerReport> {
-        sharedResourceVillages = uow.getConcreteResourceVillages().toMutableList()
-
         startFakeRamAssigners(uow)
         startConcreteAssigners(uow)
 
@@ -37,7 +32,7 @@ object TWAOExecutor {
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villageList.toMutableList())
                     .resources(uow.getConcreteResourceVillages().apply{
-                        addAll(uow.getAdditionalResourceVillages())
+                        addAll( uow.getAdditionalResourceVillages() )
                     })
                     .type(group.type)
                 .build()
@@ -48,11 +43,13 @@ object TWAOExecutor {
     }
 
     private fun startConcreteAssigners(uow: TWAOUnitOfWork) {
+        val sharedResourceVillages = uow.getConcreteResourceVillages()
+        
         val groups = uow.getTargetGroups(
                 AssignerType.NOBLE
-        ).toMutableList().apply {
-            addAll(uow.getTargetGroups(AssignerType.REVERSED_RAM))
-            addAll(uow.getTargetGroups(AssignerType.RAM))
+        ).apply {
+            addAll( uow.getTargetGroups(AssignerType.REVERSED_RAM) )
+            addAll( uow.getTargetGroups(AssignerType.RAM) )
         }
 
         groups.forEach { group ->
