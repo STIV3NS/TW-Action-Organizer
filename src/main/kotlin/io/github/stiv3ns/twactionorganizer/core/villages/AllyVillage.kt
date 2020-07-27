@@ -7,3 +7,6 @@ data class AllyVillage(
         override val y: Int,
         val owner: Player
 ) : Village(x, y)
+{
+    override fun toString() = "$x|$y"
+}

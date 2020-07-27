@@ -17,4 +17,6 @@ data class TargetVillage(
     }
 
     fun isAssignCompleted(): Boolean = (numberOfAttacks <= 0)
+
+    override fun toString() = "$x|$y"
 }
