@@ -21,7 +21,7 @@ class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
         if ( ! txtFilePath.isNullOrBlank() ) {
             parseFile()
 
-            return Resources(players.toList(), villages.toList())
+            return Resources(players.toMutableList(), villages.toMutableList())
             .also {
                 players.clear()
                 villages.clear()
