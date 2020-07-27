@@ -8,16 +8,14 @@ import kotlin.math.roundToInt
 class TargetGroup(
         val name: String,
         val type: AssignerType,
-        val villageList: MutableList<TargetVillage>
-) : MutableList<TargetVillage> by villageList
-{
+        val villageList: List<TargetVillage>
+) {
     val villageCount: Int
         get() = villageList.size
     val totalAttackCount: Int
         get() = villageList.map{ it.numberOfAttacks }.sum()
-
-    fun averagedCoordsAsVillage()
-        = Village (
+    val averagedCoordsAsVillage
+        get() = Village (
             x = villageList.map{ it.x }.average().roundToInt(),
             y = villageList.map{ it.y }.average().roundToInt()
         )
