@@ -42,10 +42,10 @@ class AssignerBuilder {
      * Requires [targets], [resources], [mainReferencePoint], [type] to be set.
      * When assigning (fake)nobles [maxNobleRange] is also obligatory. !!!
      */
-    fun build(): Optional<Assigner> {
+    fun build(): Assigner? {
         if (obligatoryHeadersAreNotSet()
             || ( requestedNobleAssigner() && maxNobleRangeIsNotSet()) ) {
-            return Optional.empty()
+            return null
         } else {
 
             val assigner = when (type!!) {
@@ -84,7 +84,7 @@ class AssignerBuilder {
             }
 
             clear()
-            return Optional.of(assigner)
+            return assigner
         }
     }
 
