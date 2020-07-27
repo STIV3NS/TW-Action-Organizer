@@ -1,5 +1,6 @@
 package io.github.stiv3ns.twactionorganizer.core.assigners
 
+import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
@@ -42,50 +43,50 @@ class AssignerBuilder {
      * Requires [targets], [resources], [mainReferencePoint], [type] to be set.
      * When assigning (fake)nobles [maxNobleRange] is also obligatory. !!!
      */
-    fun build(): Assigner? {
+    @Throws(MissingConfigurationException::class)
+    fun build(): Assigner {
         if (obligatoryHeadersAreNotSet()
             || ( requestedNobleAssigner() && maxNobleRangeIsNotSet()) ) {
-            return null
-        } else {
-
-            val assigner = when (type!!) {
-                AssignerType.RAM -> StandardRamAssigner(
-                        targets!!,
-                        resources!!,
-                        mainReferencePoint!!,
-                        isAssigningFakes = false
-                )
-                AssignerType.REVERSED_RAM -> ReversedRamAssigner(
-                        targets!!,
-                        resources!!,
-                        mainReferencePoint!!,
-                        isAssigningFakes = false
-                )
-                AssignerType.FAKE_RAM -> StandardRamAssigner(
-                        targets!!,
-                        resources!!,
-                        mainReferencePoint!!,
-                        isAssigningFakes = true
-                )
-                AssignerType.NOBLE -> NobleAssigner(
-                        targets!!,
-                        resources!!,
-                        mainReferencePoint!!,
-                        isAssigningFakes = false,
-                        maxNobleRange = maxNobleRange!!
-                )
-                AssignerType.FAKE_NOBLE -> NobleAssigner(
-                        targets!!,
-                        resources!!,
-                        mainReferencePoint!!,
-                        isAssigningFakes = true,
-                        maxNobleRange = maxNobleRange!!
-                )
-            }
-
-            clear()
-            return assigner
+            throwException()
         }
+
+        val assigner = when (type!!) {
+            AssignerType.RAM -> StandardRamAssigner(
+                    targets!!,
+                    resources!!,
+                    mainReferencePoint!!,
+                    isAssigningFakes = false
+            )
+            AssignerType.REVERSED_RAM -> ReversedRamAssigner(
+                    targets!!,
+                    resources!!,
+                    mainReferencePoint!!,
+                    isAssigningFakes = false
+            )
+            AssignerType.FAKE_RAM -> StandardRamAssigner(
+                    targets!!,
+                    resources!!,
+                    mainReferencePoint!!,
+                    isAssigningFakes = true
+            )
+            AssignerType.NOBLE -> NobleAssigner(
+                    targets!!,
+                    resources!!,
+                    mainReferencePoint!!,
+                    isAssigningFakes = false,
+                    maxNobleRange = maxNobleRange!!
+            )
+            AssignerType.FAKE_NOBLE -> NobleAssigner(
+                    targets!!,
+                    resources!!,
+                    mainReferencePoint!!,
+                    isAssigningFakes = true,
+                    maxNobleRange = maxNobleRange!!
+            )
+        }
+
+        clear()
+        return assigner
     }
 
 
@@ -123,4 +124,16 @@ class AssignerBuilder {
 
     private fun maxNobleRangeIsNotSet()
         = maxNobleRange == null
+
+    private fun throwException() {
+        var exceptionMsg = "AssignerBuilder missing: "
+        if ( !obligatoryHeadersAreNotSet() ) {
+            if (targets == null)            exceptionMsg += "targets, "
+            if (resources == null)          exceptionMsg += "resources, "
+            if (mainReferencePoint == null) exceptionMsg += "mainReferencePoint, "
+            if (type == null)               exceptionMsg += "type, "
+        }
+
+        if (requestedNobleAssigner() && maxNobleRangeIsNotSet()) exceptionMsg += "maxNobleRange"
+    }
 }
