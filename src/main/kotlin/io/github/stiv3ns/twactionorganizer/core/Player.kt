@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Player(val nickname: String) {
     var numberOfNobles: Int = 0
-        private set
+        internal set
     var numberOfVillages: Int = 0
         private set
 
