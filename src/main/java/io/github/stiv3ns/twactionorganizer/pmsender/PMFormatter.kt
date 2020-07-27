@@ -90,7 +90,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         for (assignment in sortedAssignments) {
             val departureTime = designateDepartureTime(assignment.squaredDistance, slowestTroop)
 
-            val verticalSpaceIfNextDay = if (previousDayOfMonth != departureTime.dayOfMonth) "\n\n\n" else ""
+            val verticalSpaceIfNextDay = if (previousDayOfMonth != departureTime.dayOfMonth) "\n\n\n\n\n!" else ""
             val verticalSpaceIfNextGroup = if (counter % GROUP_SIZE == 0) "\n" else ""
 
             msg.append("$verticalSpaceIfNextDay ${++counter}. ${formatDepartureTime(departureTime)} $assignment \n")
