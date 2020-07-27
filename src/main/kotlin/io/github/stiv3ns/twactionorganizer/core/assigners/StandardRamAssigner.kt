@@ -21,23 +21,31 @@ class StandardRamAssigner internal constructor(
     override val offAction = Player::putOffAssignment
     override val fakeAction = Player::putFakeAssignment
 
-    override fun run() {
+    override fun call(): AssignerReport {
         putResourcesToQueue(referencePoint = mainReferencePoint)
 
         while (resourcesQueue.isNotEmpty() && targets.isNotEmpty()) {
             val (allyVillage, _) = resourcesQueue.poll()
+            processAllyVillage(allyVillage)
+        }
 
-            putTargetsToQueue(referencePoint = allyVillage)
+        return AssignerReport(
+            unusedResourceVillages = resources,
+            unassignedTargetVillages = targets
+        )
+    }
 
-            val (nearestTarget, distance) = targetsQueue.poll()
+    private fun processAllyVillage(allyVillage: AllyVillage) {
+        putTargetsToQueue(referencePoint = allyVillage)
 
-            assign(allyVillage, nearestTarget, distance)
-            nearestTarget.attack()
+        val (nearestTarget, distance) = targetsQueue.poll()
 
-            resources.remove(allyVillage)
-            if (nearestTarget.isAssignCompleted()) {
-                targets.remove(nearestTarget)
-            }
+        assign(allyVillage, nearestTarget, distance)
+        nearestTarget.attack()
+
+        resources.remove(allyVillage)
+        if (nearestTarget.isAssignCompleted()) {
+            targets.remove(nearestTarget)
         }
     }
 }

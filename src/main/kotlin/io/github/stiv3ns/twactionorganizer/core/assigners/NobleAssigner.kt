@@ -25,13 +25,18 @@ class NobleAssigner internal constructor(
 
 
 
-    override fun run() {
+    override fun call(): AssignerReport {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
         while (targetsQueue.isNotEmpty() && resWithNobles.isNotEmpty()) {
             val (target, _) = targetsQueue.poll()
             handleTarget(target)
         }
+
+        return AssignerReport(
+            unusedResourceVillages = resources,
+            unassignedTargetVillages = targets
+        )
     }
 
     private fun handleTarget(target: TargetVillage) {

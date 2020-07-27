@@ -6,13 +6,14 @@ import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.util.*
+import java.util.concurrent.Callable
 
 abstract class Assigner internal constructor(
         protected val targets: MutableList<TargetVillage>,
         protected val resources: MutableList<AllyVillage>,
         protected val mainReferencePoint: Village,
         protected val isAssigningFakes: Boolean
-) : Runnable {
+) : Callable<AssignerReport> {
 
     protected val distanceComparator = Comparator.comparing(Pair<Village, Int>::second)
 

@@ -15,13 +15,18 @@ class ReversedRamAssigner internal constructor(
     override val offAction = Player::putOffAssignment
     override val fakeAction = Player::putFakeAssignment
 
-    override fun run() {
+    override fun call(): AssignerReport {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
         while (targetsQueue.isNotEmpty() && resources.isNotEmpty()) {
             val (target, _) = targetsQueue.poll()
             handleTarget(target)
         }
+
+        return AssignerReport(
+            unusedResourceVillages = resources,
+            unassignedTargetVillages = targets
+        )
     }
 
     private fun handleTarget(target: TargetVillage) {
