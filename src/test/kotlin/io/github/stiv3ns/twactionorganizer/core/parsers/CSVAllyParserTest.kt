@@ -6,7 +6,7 @@ import io.kotlintest.shouldNotThrowAny
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.UnspecifiedHeaderException
+import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import io.github.stiv3ns.twactionorganizer.core.parsers.CSVAllyParser
 import java.io.IOException
 import java.nio.file.Paths
@@ -30,12 +30,12 @@ class CSVAllyParserTest : WordSpec({
             parser.csvFilePath = filePath
 
             "throw UnspecifiedHeaderException when trying to parse w/o setting headers" {
-                shouldThrow<UnspecifiedHeaderException> {
+                shouldThrow<MissingConfigurationException> {
                     parser.parseAndGetResources()
                 }
 
                 parser.nicknameHeader = nicknameHeader
-                shouldThrow<UnspecifiedHeaderException> {
+                shouldThrow<MissingConfigurationException> {
                     parser.parseAndGetResources()
                 }
             }
