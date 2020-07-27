@@ -4,7 +4,7 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import io.github.stiv3ns.twactionorganizer.core.Player
 import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.UnspecifiedHeaderException
+import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import java.io.File
 import java.io.IOException
 
@@ -25,7 +25,7 @@ class CSVAllyParser : AllyParser {
 
     private val knownPlayers = mutableMapOf<String, Player>()
 
-    @Throws(UnspecifiedHeaderException::class, IOException::class)
+    @Throws(MissingConfigurationException::class, IOException::class)
     override fun parseAndGetResources(): Resources {
         if (requiredHeadersAreSet) {
             parseCSV()
@@ -40,7 +40,16 @@ class CSVAllyParser : AllyParser {
             }
         }
 
-        else throw UnspecifiedHeaderException()
+        else {
+            var exceptionMsg = "CSVAllyParser missing: "
+
+            if (nicknameHeader.isNullOrBlank()) exceptionMsg += "nicknameHeader, "
+            if (villagesHeader.isNullOrBlank()) exceptionMsg += "villagesHeader, "
+            if (csvFilePath.isNullOrBlank()) exceptionMsg += "csvFilePath"
+
+
+            throw MissingConfigurationException(exceptionMsg)
+        }
     }
 
     private fun parseCSV() {
