@@ -1,6 +1,7 @@
 package io.github.stiv3ns.twactionorganizer.core
 
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
+import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 
 class TWAOUnitOfWork {
@@ -15,8 +16,11 @@ class TWAOUnitOfWork {
         this.world = world
     }
 
-    fun getWorld(): World?
-        = world
+    fun getWorld(): World
+        = when(world) {
+            null -> throw MissingConfigurationException("TWAOUnitOfWork: world not set.")
+            else -> world!!
+        }
 
     fun setConcreteResources(res: Resources) {
         concreteResources = res
@@ -26,11 +30,17 @@ class TWAOUnitOfWork {
         additionalResources = res
     }
 
-    fun getConcreteResourceVillages(): MutableList<AllyVillage>?
-        = concreteResources?.villages?.toMutableList()
+    fun getConcreteResourceVillages(): MutableList<AllyVillage>
+        = when(concreteResources) {
+            null -> throw MissingConfigurationException("TWAOUnitOfWork: concreteResources not set.")
+            else -> concreteResources!!.villages.toMutableList()
+        }
 
-    fun getAdditionalResourceVillages(): MutableList<AllyVillage>?
-        = additionalResources?.villages?.toMutableList()
+    fun getAdditionalResourceVillages(): MutableList<AllyVillage>
+        = when(additionalResources) {
+            null -> mutableListOf()
+            else -> additionalResources!!.villages.toMutableList()
+        }
 
     fun dropPlayer(player: Player) {
         concreteResources?.players?.remove(player)
