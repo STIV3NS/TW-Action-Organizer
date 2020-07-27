@@ -47,13 +47,7 @@ class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
                 val x = first().value.toInt()
                 val y = last().value.toInt()
 
-                val ownerNick = world.fetchVillageOwner(
-                        object : Village {
-                            override val x: Int = x
-                            override val y: Int = y
-                            override var id: Int? = null
-                        }
-                )
+                val ownerNick = world.fetchVillageOwner( Village(x, y) )
 
                 val owner = getPlayerObject(ownerNick)
 

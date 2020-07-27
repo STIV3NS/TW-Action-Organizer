@@ -37,21 +37,9 @@ class WorldTest : WordSpec({
 
             "load proper Village.id" {
                 forall(
-                    row(object : Village {
-                        override val x = 500
-                        override val y = 499
-                        override var id: Int? = null
-                    }, 15),
-                    row(object : Village {
-                        override val x = 497
-                        override val y = 506
-                        override var id: Int? = null
-                    }, 44),
-                    row(object : Village {
-                        override val x = 508
-                        override val y = 499
-                        override var id: Int? = null
-                    }, 66)
+                    row(Village(500,499), 15),
+                    row(Village(497,506), 44),
+                    row(Village(508,499), 66)
                 ) { village, id ->
                     world.fetchVillageID(village) shouldBe id
                 }
@@ -60,21 +48,9 @@ class WorldTest : WordSpec({
             /* this test may (and will) randomly crash when village changes owner... */
             "load proper Village.owner" {
                 forall(
-                    row(object : Village {
-                        override val x = 500
-                        override val y = 499
-                        override var id: Int? = null
-                    }, "Lucky1369"),
-                    row(object : Village {
-                        override val x = 497
-                        override val y = 506
-                        override var id: Int? = null
-                    }, "cmentarz125"),
-                    row(object : Village {
-                        override val x = 508
-                        override val y = 499
-                        override var id: Int? = null
-                    }, "adam11145")
+                    row(Village(500,499), "Lucky1369"),
+                    row(Village(497,506), "cmentarz125"),
+                    row(Village(508,499), "adam11145")
                 ) { vil, owner ->
                     world.fetchVillageOwner(vil) shouldBe owner
                 }
@@ -82,11 +58,7 @@ class WorldTest : WordSpec({
 
             "throw an exception when trying to handle non-existing village" {
                 shouldThrow<VillageNotFoundException> {
-                    world.fetchVillageID(object : Village {
-                        override val x = -1
-                        override val y = -1
-                        override var id: Int? = null
-                    })
+                    world.fetchVillageID(Village(-1,-1))
                 }
             }
         }
