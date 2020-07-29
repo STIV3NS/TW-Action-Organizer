@@ -4,7 +4,6 @@ import io.github.stiv3ns.twactionorganizer.core.Player
 import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
 import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
-import java.lang.StringBuilder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -33,36 +32,36 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
     fun getFormattedMsgFor(player: Player): String {
         val msg = StringBuilder()
 
-        if (player.nobleAssignmentsCopy.isNotEmpty() || player.fakeNobleAssignmentsCopy.isNotEmpty()) {
+        if (player.nobleAssignments.isNotEmpty() || player.fakeNobleAssignments.isNotEmpty()) {
             msg.append(REQUIREMENTS_HEADER)
             appendNobleRequirements(msg, player)
         }
 
-        if (player.nobleAssignmentsCopy.isNotEmpty()) {
+        if (player.nobleAssignments.isNotEmpty()) {
             msg.append(NOBLE_HEADER)
-            appendAssignments(msg, player.nobleAssignmentsCopy, TroopType.NOBLE)
+            appendAssignments(msg, player.nobleAssignments, TroopType.NOBLE)
         }
 
-        if (player.offAssignmentsCopy.isNotEmpty()) {
+        if (player.offAssignments.isNotEmpty()) {
             msg.append(OFF_HEADER)
-            appendAssignments(msg, player.offAssignmentsCopy, TroopType.RAM)
+            appendAssignments(msg, player.offAssignments, TroopType.RAM)
         }
 
-        if (player.fakeNobleAssignmentsCopy.isNotEmpty()) {
+        if (player.fakeNobleAssignments.isNotEmpty()) {
             msg.append(FAKENOBLE_HEADER)
-            appendAssignments(msg, player.fakeNobleAssignmentsCopy, TroopType.NOBLE)
+            appendAssignments(msg, player.fakeNobleAssignments, TroopType.NOBLE)
         }
 
-        if (player.fakeAssignmentsCopy.isNotEmpty()) {
+        if (player.fakeAssignments.isNotEmpty()) {
             msg.append(FAKE_HEADER)
-            appendAssignments(msg, player.fakeAssignmentsCopy, TroopType.RAM)
+            appendAssignments(msg, player.fakeAssignments, TroopType.RAM)
         }
 
         return msg.toString()
     }
 
     private fun appendNobleRequirements(msg: StringBuilder, player: Player) {
-        val allNobleAssignments = player.nobleAssignmentsCopy + player.fakeNobleAssignmentsCopy
+        val allNobleAssignments = player.nobleAssignments + player.fakeNobleAssignments
 
         val requirementsByVillage = numberOfNobleRequirementsByVillage(allNobleAssignments)
         val sortedRequirements = sortedRequirementsByVillage(requirementsByVillage)
@@ -87,18 +86,22 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         val sortedAssignments = sortedAssignments(assignments)
         var counter = 0
         var previousDayOfMonth = -1
+
         for (assignment in sortedAssignments) {
             val departureTime = designateDepartureTime(assignment.squaredDistance, slowestTroop)
 
-            val verticalSpaceIfNextDay = if (previousDayOfMonth != departureTime.dayOfMonth) "\n\n\n\n\n!" else ""
+            val verticalSpaceIfNextDay = if (previousDayOfMonth !in listOf(departureTime.dayOfMonth, -1))
+                                                     "\n\n\n\n\n!"
+                                                else ""
+
             val verticalSpaceIfNextGroup = if (counter % GROUP_SIZE == 0) "\n" else ""
 
             msg.append("$verticalSpaceIfNextDay ${++counter}. ${formatDepartureTime(departureTime)} $assignment \n")
-               .append("[url=${world.domain}/game.php")
-               .append("?village=${assignment.departure.id ?: 0}")
-               .append("&screen=place&target=${assignment.destination.id ?: 0}]")
-               .append("$EXECUTION_TEXT[/url]\n")
-               .append("$verticalSpaceIfNextGroup")
+                .append("[url=${world.domain}/game.php")
+                .append("?village=${assignment.departure.id ?: 0}")
+                .append("&screen=place&target=${assignment.destination.id ?: 0}]")
+                .append("$EXECUTION_TEXT[/url]\n")
+                .append(verticalSpaceIfNextGroup)
 
             previousDayOfMonth = departureTime.dayOfMonth
         }
@@ -113,23 +116,21 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         return requirementsByVillage
     }
 
-    private fun sortedRequirementsByVillage(requirementsByVillage: Map<Village, Int>): SortedMap<Village, Int>
-        = requirementsByVillage.toSortedMap( compareBy { requirementsByVillage[it] } ) /* sort by values */
+    private fun sortedRequirementsByVillage(requirementsByVillage: Map<Village, Int>): SortedMap<Village, Int> =
+        requirementsByVillage.toSortedMap(compareBy { requirementsByVillage[it] }) /* sort by values */
 
     private fun designateDepartureTime(squaredDistance: Int, slowestTroop: TroopType): LocalDateTime {
         val actualDistance = sqrt(squaredDistance.toDouble())
         val travelTime = actualDistance * troopTravelTime(slowestTroop)
 
-        val departureTime = dateOfArrival.minusMinutes(travelTime.toLong())
-
-        return departureTime
+        return dateOfArrival.minusMinutes(travelTime.toLong())
     }
 
-    private fun formatDepartureTime(departureTime: LocalDateTime): String
-        = departureTime.format(DateTimeFormatter.ofPattern("dd/MM/YY | HH:mm:ss"))
+    private fun formatDepartureTime(departureTime: LocalDateTime): String =
+        departureTime.format(DateTimeFormatter.ofPattern("dd/MM/YY | HH:mm:ss"))
 
-    private fun sortedAssignments(assignments: List<VillageAssignment>)
-        = assignments.sortedByDescending { it.squaredDistance }
+    private fun sortedAssignments(assignments: List<VillageAssignment>) =
+        assignments.sortedByDescending { it.squaredDistance }
 
     private fun troopTravelTime(type: TroopType) = when (type) {
         TroopType.RAM -> 30

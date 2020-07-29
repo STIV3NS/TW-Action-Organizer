@@ -1,3 +1,5 @@
+import io.github.stiv3ns.twactionorganizer.core.parsers.CSVAllyParser
+import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import io.kotlintest.data.forall
 import io.kotlintest.matchers.collections.shouldBeUnique
 import io.kotlintest.matchers.collections.shouldHaveSize
@@ -6,8 +8,6 @@ import io.kotlintest.shouldNotThrowAny
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
-import io.github.stiv3ns.twactionorganizer.core.parsers.CSVAllyParser
 import java.io.IOException
 import java.nio.file.Paths
 
@@ -21,15 +21,15 @@ class CSVAllyParserTest : WordSpec({
             val noblesHeader = "noble"
 
             val filePath = Paths.get(
-                    this.javaClass
-                            .classLoader
-                            .getResource("AllyParser_dummy_data.csv")!!
-                            .toURI()
+                this.javaClass
+                    .classLoader
+                    .getResource("AllyParser_dummy_data.csv")!!
+                    .toURI()
             ).toAbsolutePath().toString()
 
             parser.csvFilePath = filePath
 
-            "throw UnspecifiedHeaderException when trying to parse w/o setting headers" {
+            "throw MissingConfigurationException when trying to parse w/o setting headers" {
                 shouldThrow<MissingConfigurationException> {
                     parser.parseAndGetResources()
                 }
@@ -41,6 +41,7 @@ class CSVAllyParserTest : WordSpec({
             }
 
             "not throw an exception when required headers are set" {
+                parser.nicknameHeader = nicknameHeader
                 parser.villagesHeader = villagesHeader
                 parser.noblesHeader = noblesHeader
 
@@ -56,12 +57,12 @@ class CSVAllyParserTest : WordSpec({
                 parsedPlayers.shouldHaveSize(3)
 
                 if (parsedPlayers.size == 3) {
-                    forall (
-                            row("tomjo", 4, 24),
-                            row("darek0729", 2, 60),
-                            row("nicoleesme", 1, 50)
+                    forall(
+                        row("tomjo", 4, 24),
+                        row("darek0729", 2, 60),
+                        row("nicoleesme", 1, 50)
                     ) { nick, vilNum, nobNum ->
-                        with(  parsedPlayers.filter { it.nickname == nick }.first()  ) {
+                        with(parsedPlayers.filter { it.nickname == nick }.first()) {
                             numberOfVillages shouldBe vilNum
                             numberOfNobles shouldBe nobNum
                         }
@@ -71,20 +72,20 @@ class CSVAllyParserTest : WordSpec({
 
             "duplicates should be handled" {
                 val newFilePath = Paths.get(
-                        this.javaClass
-                                .classLoader
-                                .getResource("AllyParser_data_with_duplicates.csv")!!
-                                .toURI()
+                    this.javaClass
+                        .classLoader
+                        .getResource("AllyParser_data_with_duplicates.csv")!!
+                        .toURI()
                 ).toAbsolutePath().toString()
 
-                val new_parser = CSVAllyParser().apply {
+                val newParser = CSVAllyParser().apply {
                     this.villagesHeader = villagesHeader
                     this.noblesHeader = noblesHeader
                     this.nicknameHeader = nicknameHeader
                     this.csvFilePath = newFilePath
                 }
 
-                val resources = new_parser.parseAndGetResources()
+                val resources = newParser.parseAndGetResources()
 
                 val parsedPlayer = resources.players.first()
                 val parsedVillages = resources.villages

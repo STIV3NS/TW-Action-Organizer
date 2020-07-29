@@ -3,6 +3,7 @@ package io.github.stiv3ns.twactionorganizer.core
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
+import java.lang.IllegalStateException
 
 class TWAOUnitOfWork {
     private var world: World? = null
@@ -10,37 +11,31 @@ class TWAOUnitOfWork {
     private var concreteResources: Resources? = null
     private var additionalResources: Resources? = null
 
-    private val targetGroups = mutableMapOf< AssignerType, MutableList<TargetGroup> >()
+    private val targetGroups = mutableMapOf<AssignerType, MutableList<TargetGroup>>()
 
     fun setWorld(world: World) {
         this.world = world
     }
 
-    fun getWorld(): World
-        = when(world) {
-            null -> throw MissingConfigurationException("TWAOUnitOfWork: world not set.")
-            else -> world!!
-        }
+    fun getWorld(): World = world ?: throw MissingConfigurationException("TWAOUnitOfWork: world not set")
 
-    fun setConcreteResources(res: Resources) {
-        concreteResources = res
+    fun setConcreteResources(resources: Resources) {
+        concreteResources = resources
     }
 
-    fun setAdditionalResources(res: Resources) {
-        additionalResources = res
+    fun setAdditionalResources(resources: Resources) {
+        additionalResources = resources
     }
 
-    fun getConcreteResourceVillages(): MutableList<AllyVillage>
-        = when(concreteResources) {
-            null -> throw MissingConfigurationException("TWAOUnitOfWork: concreteResources not set.")
-            else -> concreteResources!!.villages.toMutableList()
-        }
+    fun getConcreteResourceVillages(): MutableList<AllyVillage> = when (concreteResources) {
+        null -> throw MissingConfigurationException("TWAOUnitOfWork: concreteResources not set")
+        else -> concreteResources!!.villages
+    }
 
-    fun getAdditionalResourceVillages(): MutableList<AllyVillage>
-        = when(additionalResources) {
-            null -> mutableListOf()
-            else -> additionalResources!!.villages.toMutableList()
-        }
+    fun getAdditionalResourceVillages(): MutableList<AllyVillage> = when (additionalResources) {
+        null -> mutableListOf()
+        else -> additionalResources!!.villages
+    }
 
     fun dropPlayer(player: Player) {
         concreteResources?.players?.remove(player)
@@ -50,19 +45,14 @@ class TWAOUnitOfWork {
         additionalResources?.villages?.removeAll { it.owner == player }
     }
 
-    fun dropConcreteVillage(vil: AllyVillage) {
-        val wasRemoved: Boolean? = concreteResources?.villages?.remove(vil)
+    fun dropVillage(vil: AllyVillage) {
+        val wasConcrete: Boolean? = concreteResources?.villages?.remove(vil)
 
-        when(wasRemoved) {
-            true -> vil.owner.unregisterVillage()
-        }
+        if (wasConcrete == true) vil.owner.unregisterVillage()
+        else additionalResources?.villages?.remove(vil)
     }
 
-    fun dropAdditionalVillage(vil: AllyVillage) {
-        additionalResources?.villages?.remove(vil)
-    }
-
-    fun setPlayerNoblesNumber(player: Player, newValue: Int) {
+    fun setPlayerNumberOfNobles(player: Player, newValue: Int) {
         player.numberOfNobles = newValue
     }
 
@@ -77,9 +67,9 @@ class TWAOUnitOfWork {
         targetGroups[group.type]?.remove(group)
     }
 
-    fun getTargetGroups(type: AssignerType): MutableList<TargetGroup>
-        = targetGroups.getOrDefault(
+    fun getTargetGroups(type: AssignerType): List<TargetGroup> =
+        targetGroups.getOrDefault(
             key = type,
             defaultValue = mutableListOf()
-        ).toMutableList()
+        ).toList()
 }

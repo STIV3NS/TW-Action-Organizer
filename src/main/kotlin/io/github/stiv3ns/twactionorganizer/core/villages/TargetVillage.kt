@@ -1,10 +1,9 @@
 package io.github.stiv3ns.twactionorganizer.core.villages
 
 data class TargetVillage(
-        override val x: Int,
-        override val y: Int
-) : Village(x, y)
-{
+    override val x: Int,
+    override val y: Int
+) : Village(x, y) {
     var numberOfAttacks: Int = 0
         private set
 
@@ -13,7 +12,7 @@ data class TargetVillage(
     }
 
     fun attack() {
-        numberOfAttacks--;
+        numberOfAttacks--
     }
 
     fun isAssignCompleted(): Boolean = (numberOfAttacks <= 0)

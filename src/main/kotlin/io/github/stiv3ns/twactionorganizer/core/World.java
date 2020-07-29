@@ -1,10 +1,9 @@
 package io.github.stiv3ns.twactionorganizer.core;
 
-import org.w3c.dom.Document;
-
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.BadDomainException;
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFoundException;
 import io.github.stiv3ns.twactionorganizer.core.villages.Village;
+import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,13 +17,13 @@ public class World {
     private final String domain;
     private final double worldSPeed;
     private final double unitSpeed;
-    private final int    maxNobleRange;
-    private final int    nightBonusEndHour;
+    private final int maxNobleRange;
+    private final int nightBonusEndHour;
     private String villagesRawText;
     private String playersRawText;
 
     public World(String domain) throws BadDomainException {
-        if ( !domain.startsWith("https://") ) {
+        if (!domain.startsWith("https://")) {
             domain = "https://" + domain;
         }
         this.domain = domain;
@@ -112,9 +111,20 @@ public class World {
         return String.format("domain: %s | speed: %.2f (%.2f * %.2f) | max noble distance: %d",
                 domain, getSpeed(), worldSPeed, unitSpeed, maxNobleRange);
     }
-    
-    public String getDomain()         { return domain; }
-    public int getMaxNobleRange()     { return maxNobleRange; }
-    public int getNightBonusEndHour() { return nightBonusEndHour; }
-    public double getSpeed()          { return worldSPeed*unitSpeed; }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public int getMaxNobleRange() {
+        return maxNobleRange;
+    }
+
+    public int getNightBonusEndHour() {
+        return nightBonusEndHour;
+    }
+
+    public double getSpeed() {
+        return worldSPeed * unitSpeed;
+    }
 }

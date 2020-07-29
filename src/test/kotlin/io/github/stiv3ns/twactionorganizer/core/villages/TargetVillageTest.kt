@@ -1,6 +1,6 @@
+import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 
 class TargetVillageTest : WordSpec({
     "TargetVillage" When {
@@ -19,7 +19,6 @@ class TargetVillageTest : WordSpec({
                 target.numberOfAttacks shouldBe 3
             }
         }
-
 
         "it doesnt need more attacks" should {
             val target = TargetVillage(500, 500, 0)

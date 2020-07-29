@@ -1,12 +1,12 @@
+import io.github.stiv3ns.twactionorganizer.core.World
+import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.BadDomainException
+import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFoundException
+import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
-import io.github.stiv3ns.twactionorganizer.core.World
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.BadDomainException
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFoundException
-import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 class WorldTest : WordSpec({
     "World" When {
@@ -17,7 +17,6 @@ class WorldTest : WordSpec({
                 }
             }
         }
-
 
         "given good domain /*test domain viable until 2021*/" should {
             val world = World("plp6.plemiona.pl")
@@ -37,9 +36,9 @@ class WorldTest : WordSpec({
 
             "load proper Village.id" {
                 forall(
-                    row(Village(500,499), 15),
-                    row(Village(497,506), 44),
-                    row(Village(508,499), 66)
+                    row(Village(500, 499), 15),
+                    row(Village(497, 506), 44),
+                    row(Village(508, 499), 66)
                 ) { village, id ->
                     world.fetchVillageID(village) shouldBe id
                 }
@@ -48,9 +47,9 @@ class WorldTest : WordSpec({
             /* this test may (and will) randomly crash when village changes owner... */
             "load proper Village.owner" {
                 forall(
-                    row(Village(500,499), "Lucky1369"),
-                    row(Village(497,506), "cmentarz125"),
-                    row(Village(508,499), "adam11145")
+                    row(Village(500, 499), "Lucky1369"),
+                    row(Village(497, 506), "adam11145"),
+                    row(Village(508, 499), "adam11145")
                 ) { vil, owner ->
                     world.fetchVillageOwner(vil) shouldBe owner
                 }
@@ -58,7 +57,7 @@ class WorldTest : WordSpec({
 
             "throw an exception when trying to handle non-existing village" {
                 shouldThrow<VillageNotFoundException> {
-                    world.fetchVillageID(Village(-1,-1))
+                    world.fetchVillageID(Village(-1, -1))
                 }
             }
         }

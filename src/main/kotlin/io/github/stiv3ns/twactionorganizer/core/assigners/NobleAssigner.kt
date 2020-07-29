@@ -6,23 +6,22 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 class NobleAssigner internal constructor(
-        targets: MutableList<TargetVillage>,
-        resources: MutableList<AllyVillage>,
-        mainReferencePoint: Village,
-        isAssigningFakes: Boolean,
-        private val maxNobleRange: Int
-) : Assigner (targets, resources, mainReferencePoint, isAssigningFakes) {
+    targets: MutableList<TargetVillage>,
+    resources: MutableList<AllyVillage>,
+    mainReferencePoint: Village,
+    isAssigningFakes: Boolean,
+    private val maxNobleRange: Int
+) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes) {
 
     override val offAction = Player::putNobleAssignment
     override val fakeAction = Player::putFakeNobleAssignment
 
-    private var resWithNobles = resources.filter { it.owner.hasNoble() }.toMutableList()
+    private val resWithNobles = resources.filter { it.owner.hasNoble() }.toMutableList()
 
     override fun putResourcesToQueue(referencePoint: Village) {
         resourcesQueue.clear()
-        resWithNobles.forEach { resourcesQueue.offer( Pair(it, it distanceTo referencePoint) ) }
+        resWithNobles.forEach { resourcesQueue.offer(Pair(it, it distanceTo referencePoint)) }
     }
-
 
 
     override fun call(): AssignerReport {
@@ -68,13 +67,12 @@ class NobleAssigner internal constructor(
 
         if (!nearestAllyVillage.owner.hasNoble()) {
             updateResWithNobles()
-        }
-        else {
+        } else {
             resWithNobles.remove(nearestAllyVillage)
         }
     }
 
     private fun updateResWithNobles() {
-        resWithNobles = resWithNobles.filter { it.owner.hasNoble() }.toMutableList()
+        resWithNobles.removeAll { !it.owner.hasNoble() }
     }
 }

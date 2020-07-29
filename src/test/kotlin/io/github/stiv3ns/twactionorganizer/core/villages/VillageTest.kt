@@ -1,6 +1,6 @@
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
-import io.kotlintest.*
 import io.kotlintest.data.forall
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
 
@@ -11,10 +11,9 @@ class VillageTest : WordSpec({
         }
     }
 
-
     "Village.distance" should {
         "return proper squared distance between given villages" {
-            forall (
+            forall(
                 row(Village(500, 500), Village(500, 501), 1),
                 row(Village(500, 500), Village(500, 510), 100),
                 row(Village(500, 500), Village(523, 614), 13525),

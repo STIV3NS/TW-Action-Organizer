@@ -1,11 +1,11 @@
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
 import io.github.stiv3ns.twactionorganizer.core.Player
 import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
+import io.kotlintest.matchers.collections.shouldBeEmpty
+import io.kotlintest.matchers.collections.shouldContainExactly
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.WordSpec
 
 class PlayerTest : WordSpec({
     "Player [nobles]" When {
@@ -35,7 +35,6 @@ class PlayerTest : WordSpec({
         }
     }
 
-
     "Player [villages]" should {
         val player = Player("test")
 
@@ -61,56 +60,71 @@ class PlayerTest : WordSpec({
         }
     }
 
-
     "Player [assigments]" should {
         val player = Player("test")
-        val assignment_1 = VillageAssignment(AllyVillage(1,1,player), TargetVillage(2,2,0),2)
-        val assignment_2 = VillageAssignment(AllyVillage(3,3,player), TargetVillage(4,4,0),2)
-        val assignment_3 = VillageAssignment(AllyVillage(5,5,player), TargetVillage(6,6,0),2)
-        val assignment_4 = VillageAssignment(AllyVillage(7,7,player), TargetVillage(8,8,0),2)
+        val assignment_1 = VillageAssignment(
+            departure = AllyVillage(1, 1, player),
+            destination = TargetVillage(2, 2, 0),
+            squaredDistance = 2
+        )
+        val assignment_2 = VillageAssignment(
+            departure = AllyVillage(3, 3, player),
+            destination = TargetVillage(4, 4, 0),
+            squaredDistance = 2
+        )
+        val assignment_3 = VillageAssignment(
+            departure = AllyVillage(5, 5, player),
+            destination = TargetVillage(6, 6, 0),
+            squaredDistance = 2
+        )
+        val assignment_4 = VillageAssignment(
+            departure = AllyVillage(7, 7, player),
+            destination = TargetVillage(8, 8, 0),
+            squaredDistance = 2
+        )
 
         "be initialized as empty lists" {
             with(player) {
-                offAssignmentsCopy.shouldBeEmpty()
-                fakeAssignmentsCopy.shouldBeEmpty()
-                nobleAssignmentsCopy.shouldBeEmpty()
-                fakeNobleAssignmentsCopy.shouldBeEmpty()
+                offAssignments.shouldBeEmpty()
+                fakeAssignments.shouldBeEmpty()
+                nobleAssignments.shouldBeEmpty()
+                fakeNobleAssignments.shouldBeEmpty()
             }
         }
 
-        "put off-assigment to offAssigments" {
+        "put off-assigment to offAssignments" {
             player.putOffAssignment(assignment_1)
 
-            player.offAssignmentsCopy.shouldContainExactly(assignment_1)
+            player.offAssignments.shouldContainExactly(assignment_1)
         }
 
-        "put fake-assigment to fakeAssigments" {
+        "put fake-assigment to fakeAssignments" {
             player.putFakeAssignment(assignment_2)
 
-            player.fakeAssignmentsCopy.shouldContainExactly(assignment_2)
+            player.fakeAssignments.shouldContainExactly(assignment_2)
         }
 
-        "put noble-assigment to nobleAssigments" {
+        "put noble-assigment to nobleAssignments" {
             player.putNobleAssignment(assignment_3)
 
-            player.nobleAssignmentsCopy.shouldContainExactly(assignment_3)
+            player.nobleAssignments.shouldContainExactly(assignment_3)
         }
 
-        "put fake-noble-assigment to fakeNobleAssigments" {
+        "put fake-noble-assigment to fakeNobleAssignments" {
             player.putFakeNobleAssignment(assignment_4)
 
-            player.fakeNobleAssignmentsCopy.shouldContainExactly(assignment_4)
+            player.fakeNobleAssignments.shouldContainExactly(assignment_4)
         }
 
-        "properly put multiple assigments" {
-            val new_player = Player("test").apply {
+        "properly put multiple assignments" {
+            val newPlayer = Player("test").apply {
                 putOffAssignment(assignment_1)
                 putOffAssignment(assignment_2)
                 putOffAssignment(assignment_3)
                 putOffAssignment(assignment_4)
             }
 
-            new_player.offAssignmentsCopy.shouldContainExactly(assignment_1, assignment_2, assignment_3, assignment_4)
+            newPlayer.offAssignments.shouldContainExactly(assignment_1, assignment_2, assignment_3, assignment_4)
         }
     }
 })

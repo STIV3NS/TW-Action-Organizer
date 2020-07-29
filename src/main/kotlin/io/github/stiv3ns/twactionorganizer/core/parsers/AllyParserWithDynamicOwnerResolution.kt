@@ -18,18 +18,18 @@ class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
 
     @Throws(IOException::class)
     override fun parseAndGetResources(): Resources {
-        if ( ! txtFilePath.isNullOrBlank() ) {
+        if (!txtFilePath.isNullOrBlank()) {
             parseFile()
 
             return Resources(players.toMutableList(), villages.toMutableList())
-            .also {
-                players.clear()
-                villages.clear()
-                knownPlayers.clear()
-            }
+                .also {
+                    players.clear()
+                    villages.clear()
+                    knownPlayers.clear()
+                }
 
         } else {
-            throw IOException("Input file not specified.");
+            throw IOException("Input file not specified.")
         }
     }
 
@@ -43,22 +43,22 @@ class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
         coordinatesRegex.findAll(fileContent).forEach { matchResult ->
             val coordinates = matchResult.value
 
-            with (xyRegex.findAll(coordinates)) {
+            with(xyRegex.findAll(coordinates)) {
                 val x = first().value.toInt()
                 val y = last().value.toInt()
 
-                val ownerNick = world.fetchVillageOwner( Village(x, y) )
+                val ownerNick = world.fetchVillageOwner(Village(x, y))
 
                 val owner = getPlayerObject(ownerNick)
 
-                villages.add( AllyVillage(x, y, owner) )
+                villages.add(AllyVillage(x, y, owner))
                 owner.registerVillage()
             }
         }
     }
 
     private fun getPlayerObject(nickname: String): Player {
-        if ( !knownPlayers.containsKey(nickname) ) {
+        if (!knownPlayers.containsKey(nickname)) {
 
             val newPlayer = Player(nickname)
 

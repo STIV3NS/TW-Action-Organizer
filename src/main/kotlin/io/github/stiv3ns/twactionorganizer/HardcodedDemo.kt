@@ -47,18 +47,18 @@ fun main() {
     TWAOExecutor.shutdownNow()
 
     val formatter = PMFormatter(
-            world,
-            LocalDateTime.of(2020, 7, 27, 7, 0, 0, 0)
+        world,
+        dateOfArrival = LocalDateTime.of(2020, 7, 27, 7, 0, 0, 0)
     )
 
     for (player in resources.players) {
-        if (player.fakeAssignmentsCopy.isNotEmpty()) {
+        if (player.fakeAssignments.isNotEmpty()) {
             println(player.nickname)
 
             println(formatter.getFormattedMsgFor(player))
-            println("===================================================================================")
-            println("===================================================================================\n\n\n")
-        }
 
+            println("============================================")
+            println("============================================\n\n\n")
+        }
     }
 }

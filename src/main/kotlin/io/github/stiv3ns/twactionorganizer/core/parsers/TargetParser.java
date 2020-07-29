@@ -2,16 +2,18 @@ package io.github.stiv3ns.twactionorganizer.core.parsers;
 
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.io.File;
 
 public class TargetParser {
-    /** Parses [filePath] and loads its content into List<TargetVillage>[outputList] 
-      * with number of attacks equal [attacksPerVillage]
-      */
+    /**
+     * Parses [filePath] and loads its content into List<TargetVillage>[outputList]
+     * with number of attacks equal [attacksPerVillage]
+     */
     public static void parse(
             String filePath,
             int attacksPerVillage,
@@ -42,7 +44,7 @@ public class TargetParser {
 
     private static void addToOutputList(String[] coordinates, int attacksPerVillage, List<TargetVillage> outputList) {
         outputList.add(new TargetVillage(Integer.parseInt(coordinates[0]),
-                                         Integer.parseInt(coordinates[1]),
-                                         attacksPerVillage));
+                Integer.parseInt(coordinates[1]),
+                attacksPerVillage));
     }
 }

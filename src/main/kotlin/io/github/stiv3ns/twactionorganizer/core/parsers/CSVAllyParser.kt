@@ -3,8 +3,8 @@ package io.github.stiv3ns.twactionorganizer.core.parsers
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import io.github.stiv3ns.twactionorganizer.core.Player
 import io.github.stiv3ns.twactionorganizer.core.Resources
-import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
+import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import java.io.File
 import java.io.IOException
 
@@ -17,8 +17,8 @@ class CSVAllyParser : AllyParser {
     var villagesHeader: String? = null
     var villageRegexLiteral: String = "\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{1,3}"
 
-    private val requiredHeadersAreSet
-        get() = !(nicknameHeader.isNullOrBlank()) && !(villagesHeader.isNullOrBlank()) && !(csvFilePath.isNullOrBlank())
+    private val requiredHeadersAreSet get() =
+        !(nicknameHeader.isNullOrBlank()) && !(villagesHeader.isNullOrBlank()) && !(csvFilePath.isNullOrBlank())
 
     private val players = mutableListOf<Player>()
     private var villages = mutableListOf<AllyVillage>()
@@ -33,14 +33,12 @@ class CSVAllyParser : AllyParser {
             registerVillages()
 
             return Resources(players.toMutableList(), villages.toMutableList())
-            .also {
-                players.clear()
-                villages.clear()
-                knownPlayers.clear()
-            }
-        }
-
-        else {
+                .also {
+                    players.clear()
+                    villages.clear()
+                    knownPlayers.clear()
+                }
+        } else {
             var exceptionMsg = "CSVAllyParser missing: "
 
             if (nicknameHeader.isNullOrBlank()) exceptionMsg += "nicknameHeader, "
@@ -57,18 +55,24 @@ class CSVAllyParser : AllyParser {
         val rows = csvReader().readAllWithHeader(file)
 
         rows.forEach { r ->
-            val player= parsePlayer(r)
+            val player = parsePlayer(r)
             parseVillages(r, forPlayer = player)
         }
     }
 
     private fun parsePlayer(row: Map<String, String>): Player {
-        val nickname = row.getOrElse(nicknameHeader!!, { throw IOException() })
+        val nickname = row.getOrElse(
+            nicknameHeader!!,
+            { throw IOException() }
+        )
 
-        if ( !knownPlayers.containsKey(nickname) ) {
-            val numberOfNobles = when(noblesHeader) {
+        if (!knownPlayers.containsKey(nickname)) {
+            val numberOfNobles = when (noblesHeader) {
                 null -> 0
-                else -> row.getOrElse(noblesHeader!!, { throw IOException() }).toInt()
+                else -> row.getOrElse(
+                    noblesHeader!!,
+                    { throw IOException() }
+                ).toInt()
             }
 
             val newPlayer = Player(nickname, numberOfNobles)
@@ -84,16 +88,19 @@ class CSVAllyParser : AllyParser {
         val coordinatesRegex = villageRegexLiteral.toRegex()
         val xyRegex = Regex("\\d{3}")
 
-        val rawVillages = row.getOrElse(villagesHeader!!, { throw IOException() })
+        val rawVillages = row.getOrElse(
+            villagesHeader!!,
+            { throw IOException() }
+        )
 
         coordinatesRegex.findAll(rawVillages).forEach { matchResult ->
             val coordinates = matchResult.value
 
-            with (xyRegex.findAll(coordinates)) {
+            with(xyRegex.findAll(coordinates)) {
                 val x = first().value.toInt()
                 val y = last().value.toInt()
 
-                villages.add( AllyVillage(x, y, owner = forPlayer) )
+                villages.add(AllyVillage(x, y, owner = forPlayer))
             }
         }
     }
@@ -103,7 +110,7 @@ class CSVAllyParser : AllyParser {
     }
 
     private fun registerVillages() {
-        villages.forEach{ v ->
+        villages.forEach { v ->
             v.owner.registerVillage()
         }
     }

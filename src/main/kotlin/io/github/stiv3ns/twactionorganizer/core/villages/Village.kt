@@ -2,10 +2,10 @@ package io.github.stiv3ns.twactionorganizer.core.villages
 
 import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFoundException
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
 
 @Serializable
-open class Village (
+open class Village(
     open val x: Int,
     open val y: Int
 ) {

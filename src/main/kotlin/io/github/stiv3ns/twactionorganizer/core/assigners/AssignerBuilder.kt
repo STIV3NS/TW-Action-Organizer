@@ -4,7 +4,6 @@ import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigur
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
-import java.util.*
 
 class AssignerBuilder {
     /**
@@ -46,42 +45,43 @@ class AssignerBuilder {
     @Throws(MissingConfigurationException::class)
     fun build(): Assigner {
         if (obligatoryHeadersAreNotSet()
-            || ( requestedNobleAssigner() && maxNobleRangeIsNotSet()) ) {
+            || (requestedNobleAssigner() && maxNobleRangeIsNotSet())
+        ) {
             throwException()
         }
 
         val assigner = when (type!!) {
             AssignerType.RAM -> StandardRamAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = false
+                targets!!,
+                resources!!,
+                mainReferencePoint!!,
+                isAssigningFakes = false
             )
             AssignerType.REVERSED_RAM -> ReversedRamAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = false
+                targets!!,
+                resources!!,
+                mainReferencePoint!!,
+                isAssigningFakes = false
             )
             AssignerType.FAKE_RAM -> StandardRamAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = true
+                targets!!,
+                resources!!,
+                mainReferencePoint!!,
+                isAssigningFakes = true
             )
             AssignerType.NOBLE -> NobleAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = false,
-                    maxNobleRange = maxNobleRange!!
+                targets!!,
+                resources!!,
+                mainReferencePoint!!,
+                isAssigningFakes = false,
+                maxNobleRange = maxNobleRange!!
             )
             AssignerType.FAKE_NOBLE -> NobleAssigner(
-                    targets!!,
-                    resources!!,
-                    mainReferencePoint!!,
-                    isAssigningFakes = true,
-                    maxNobleRange = maxNobleRange!!
+                targets!!,
+                resources!!,
+                mainReferencePoint!!,
+                isAssigningFakes = true,
+                maxNobleRange = maxNobleRange!!
             )
         }
 
@@ -90,48 +90,39 @@ class AssignerBuilder {
     }
 
 
-    fun targets(targets: MutableList<TargetVillage>)
-        = apply { this.targets = targets }
+    fun targets(targets: MutableList<TargetVillage>) = apply { this.targets = targets }
 
-    fun resources(resources: MutableList<AllyVillage>)
-        = apply { this.resources = resources }
+    fun resources(resources: MutableList<AllyVillage>) = apply { this.resources = resources }
 
-    fun mainReferencePoint(referencePoint: Village)
-        = apply { this.mainReferencePoint = referencePoint }
+    fun mainReferencePoint(referencePoint: Village) = apply { this.mainReferencePoint = referencePoint }
 
-    fun type(type: AssignerType)
-        = apply { this.type = type }
+    fun type(type: AssignerType) = apply { this.type = type }
 
-    fun maxNobleRange(range: Int)
-        = apply { this.maxNobleRange = range }
+    fun maxNobleRange(range: Int) = apply { this.maxNobleRange = range }
 
-    fun clear() {
-        apply {
-            targets = null
-            resources = null
-            mainReferencePoint = null
-            type = null
-            maxNobleRange = null
-        }
+    fun clear() = apply {
+        targets = null
+        resources = null
+        mainReferencePoint = null
+        type = null
+        maxNobleRange = null
     }
 
 
-    private fun obligatoryHeadersAreNotSet()
-        = targets == null || resources == null || mainReferencePoint == null || type == null
+    private fun obligatoryHeadersAreNotSet() =
+        targets == null || resources == null || mainReferencePoint == null || type == null
 
-    private fun requestedNobleAssigner()
-        = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
+    private fun requestedNobleAssigner() = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
 
-    private fun maxNobleRangeIsNotSet()
-        = maxNobleRange == null
+    private fun maxNobleRangeIsNotSet() = maxNobleRange == null
 
     private fun throwException() {
         var exceptionMsg = "AssignerBuilder missing: "
-        if ( !obligatoryHeadersAreNotSet() ) {
-            if (targets == null)            exceptionMsg += "targets, "
-            if (resources == null)          exceptionMsg += "resources, "
+        if (!obligatoryHeadersAreNotSet()) {
+            if (targets == null) exceptionMsg += "targets, "
+            if (resources == null) exceptionMsg += "resources, "
             if (mainReferencePoint == null) exceptionMsg += "mainReferencePoint, "
-            if (type == null)               exceptionMsg += "type, "
+            if (type == null) exceptionMsg += "type, "
         }
 
         if (requestedNobleAssigner() && maxNobleRangeIsNotSet()) exceptionMsg += "maxNobleRange"

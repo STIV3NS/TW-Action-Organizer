@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VillageAssignment(
-        val departure: Village,
-        val destination: Village,
-        val squaredDistance: Int
+    val departure: Village,
+    val destination: Village,
+    val squaredDistance: Int
 ) {
     override fun toString() = "$departure -> $destination"
 }

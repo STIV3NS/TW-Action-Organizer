@@ -7,15 +7,15 @@ import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.util.*
 
 class StandardRamAssigner internal constructor(
-        targets: MutableList<TargetVillage>,
-        resources: MutableList<AllyVillage>,
-        mainReferencePoint: Village,
-        isAssigningFakes: Boolean
-) : Assigner (targets, resources, mainReferencePoint, isAssigningFakes) {
+    targets: MutableList<TargetVillage>,
+    resources: MutableList<AllyVillage>,
+    mainReferencePoint: Village,
+    isAssigningFakes: Boolean
+) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes) {
 
-    override val resourcesQueue = PriorityQueue< Pair<AllyVillage, Int> >(
-            resources.size,
-            distanceComparator.reversed()
+    override val resourcesQueue = PriorityQueue<Pair<AllyVillage, Int>>(
+        resources.size,
+        distanceComparator.reversed()
     )
 
     override val offAction = Player::putOffAssignment

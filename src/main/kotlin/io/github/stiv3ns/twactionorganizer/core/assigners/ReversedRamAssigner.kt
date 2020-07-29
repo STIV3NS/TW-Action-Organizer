@@ -6,11 +6,11 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 class ReversedRamAssigner internal constructor(
-        targets: MutableList<TargetVillage>,
-        resources: MutableList<AllyVillage>,
-        mainReferencePoint: Village,
-        isAssigningFakes: Boolean
-) : Assigner (targets, resources, mainReferencePoint, isAssigningFakes) {
+    targets: MutableList<TargetVillage>,
+    resources: MutableList<AllyVillage>,
+    mainReferencePoint: Village,
+    isAssigningFakes: Boolean
+) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes) {
 
     override val offAction = Player::putOffAssignment
     override val fakeAction = Player::putFakeAssignment
