@@ -49,7 +49,8 @@ class WorldTest : WordSpec({
                 forall(
                     row(Village(500, 499), "Lucky1369"),
                     row(Village(497, 506), "adam11145"),
-                    row(Village(508, 499), "adam11145")
+                    row(Village(508, 499), "adam11145"),
+                    row(Village(707, 411), "Lord Królewski Aromat")
                 ) { vil, owner ->
                     world.fetchVillageOwner(vil) shouldBe owner
                 }

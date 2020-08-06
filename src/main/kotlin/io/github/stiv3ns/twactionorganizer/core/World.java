@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +50,11 @@ public class World {
 
     public String fetchVillageOwner(Village vil) throws VillageNotFoundException {
         int ownerId = Integer.parseInt(fetchVillageEntity(vil).split(",")[4]);
-        return fetchPlayerEntity(ownerId).split(",")[1];
+
+        String encodedOwnerNickname = fetchPlayerEntity(ownerId).split(",")[1];
+        String actualOwnerNickname = URLDecoder.decode(encodedOwnerNickname);
+
+        return actualOwnerNickname;
     }
 
     private String fetchVillageEntity(Village vil) throws VillageNotFoundException {
