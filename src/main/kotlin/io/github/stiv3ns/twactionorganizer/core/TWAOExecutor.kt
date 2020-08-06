@@ -70,7 +70,23 @@ object TWAOExecutor {
     }
 
     private fun startFakeNobleAssigners(uow: TWAOUnitOfWork) {
-        TODO("Not yet implemented")
+        uow.getTargetGroups(AssignerType.FAKE_NOBLE).forEach { group ->
+            val task = executorService.submit(
+                AssignerBuilder()
+                    .mainReferencePoint(group.averagedCoordsAsVillage)
+                    .targets(group.villageList.toMutableList())
+                    .resources(uow.getConcreteResourceVillages().apply {
+                        addAll(uow.getAdditionalResourceVillages())
+                    })
+                    .type(group.type)
+                    .maxNobleRange(uow.getWorld().maxNobleRange)
+                    .build()
+            )
+
+            runningTasks[group] = task
+
+            task.get() /* <--- wait for completion ! */
+        }
     }
 
     private fun collectReports(): List<AssignerReport> {

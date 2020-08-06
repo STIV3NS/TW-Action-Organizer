@@ -29,12 +29,12 @@ class TWAOUnitOfWork {
 
     fun getConcreteResourceVillages(): MutableList<AllyVillage> = when (concreteResources) {
         null -> throw MissingConfigurationException("TWAOUnitOfWork: concreteResources not set")
-        else -> concreteResources!!.villages
+        else -> concreteResources!!.villages.toMutableList()
     }
 
     fun getAdditionalResourceVillages(): MutableList<AllyVillage> = when (additionalResources) {
         null -> mutableListOf()
-        else -> additionalResources!!.villages
+        else -> additionalResources!!.villages.toMutableList()
     }
 
     fun dropPlayer(player: Player) {
