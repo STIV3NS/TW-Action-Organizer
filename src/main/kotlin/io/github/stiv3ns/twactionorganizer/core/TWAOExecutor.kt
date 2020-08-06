@@ -59,6 +59,7 @@ object TWAOExecutor {
                     .targets(group.villageList.toMutableList())
                     .resources(sharedResourceVillages)
                     .type(group.type)
+                    .maxNobleRange(uow.getWorld().maxNobleRange)
                     .build()
             )
 
