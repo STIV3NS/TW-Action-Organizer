@@ -17,13 +17,14 @@ class CSVAllyParser : AllyParser {
     var villagesHeader: String? = null
     var villageRegexLiteral: String = "\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{1,3}"
 
+    var knownPlayers = mutableMapOf<String, Player>()
+    var shouldRegisterVillages = true
+
     private val requiredHeadersAreSet get() =
         !(nicknameHeader.isNullOrBlank()) && !(villagesHeader.isNullOrBlank()) && !(csvFilePath.isNullOrBlank())
 
     private val players = mutableListOf<Player>()
     private var villages = mutableListOf<AllyVillage>()
-
-    private val knownPlayers = mutableMapOf<String, Player>()
 
     @Throws(MissingConfigurationException::class, IOException::class)
     override fun parseAndGetResources(): Resources {
@@ -110,8 +111,10 @@ class CSVAllyParser : AllyParser {
     }
 
     private fun registerVillages() {
-        villages.forEach { v ->
-            v.owner.registerVillage()
+        if (shouldRegisterVillages) {
+            villages.forEach { v ->
+                v.owner.registerVillage()
+            }
         }
     }
 }

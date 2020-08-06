@@ -11,10 +11,11 @@ import java.io.IOException
 class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
     var txtFilePath: String? = null
 
+    var knownPlayers = mutableMapOf<String, Player>()
+    var shouldRegisterVillages = true
+
     private val players = mutableListOf<Player>()
     private var villages = mutableListOf<AllyVillage>()
-
-    private val knownPlayers = mutableMapOf<String, Player>()
 
     @Throws(IOException::class)
     override fun parseAndGetResources(): Resources {
@@ -52,7 +53,10 @@ class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
                 val owner = getPlayerObject(ownerNick)
 
                 villages.add(AllyVillage(x, y, owner))
-                owner.registerVillage()
+
+                if (shouldRegisterVillages) {
+                    owner.registerVillage()
+                }
             }
         }
     }
