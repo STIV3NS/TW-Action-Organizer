@@ -26,7 +26,6 @@ object TWAOExecutor {
     }
 
     private fun startFakeRamAssigners(uow: TWAOUnitOfWork) {
-
         uow.getTargetGroups(AssignerType.FAKE_RAM).forEach { group ->
             val task = executorService.submit(
                 AssignerBuilder()
@@ -41,7 +40,6 @@ object TWAOExecutor {
 
             runningTasks[group] = task
         }
-
     }
 
     private fun startConcreteAssigners(uow: TWAOUnitOfWork) {
