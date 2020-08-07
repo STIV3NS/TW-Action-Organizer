@@ -8,7 +8,7 @@ import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
 import io.github.stiv3ns.twactionorganizer.core.parsers.CSVAllyParser
 import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
-import io.github.stiv3ns.twactionorganizer.pmsender.PMFormatter
+import io.github.stiv3ns.twactionorganizer.core.utils.PMFormatter
 import java.time.LocalDateTime
 
 fun main() {

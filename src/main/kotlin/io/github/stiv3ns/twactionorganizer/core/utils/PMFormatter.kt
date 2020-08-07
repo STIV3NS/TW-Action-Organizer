@@ -1,4 +1,4 @@
-package io.github.stiv3ns.twactionorganizer.pmsender
+package io.github.stiv3ns.twactionorganizer.core.utils
 
 import io.github.stiv3ns.twactionorganizer.core.Player
 import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
