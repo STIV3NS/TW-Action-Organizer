@@ -18,9 +18,17 @@ class AssignerBuilder {
      * output assigment: Concrete attack without noble
      * behavior: Pick TARGET village that is closest to the referencePoint and link it with nearest ally village.
      *---------------------------------------------------------------------------------------------------------------
+     * [RANDOMIZED_RAM]:
+     * output assigment: Concrete attack without noble
+     * behavior: Pick RANDOM target village and link it with RANDOM ally village.
+     *---------------------------------------------------------------------------------------------------------------
      * [FAKE_RAM]:
      * output assigment: Fake attack without noble
      * behavior: Pick ALLY village that is the farthest from referencePoint and link it with nearest target.
+     *---------------------------------------------------------------------------------------------------------------
+     * [RANDOMIZED_FAKE_RAM]:
+     * output assigment: Fake attack without noble
+     * behavior: Pick RANDOM target village and link it with RANDOM ally village.
      *---------------------------------------------------------------------------------------------------------------
      * [NOBLE]:
      * output assigment: Concrete attack with noble
@@ -40,7 +48,8 @@ class AssignerBuilder {
 
     /**
      * Requires [targets], [resources], [mainReferencePoint], [type] to be set.
-     * When assigning (fake)nobles [maxNobleRange] is also obligatory. !!!
+     * When assigning (fake)nobles [maxNobleRange] is also obligatory.
+     * When using randomized assigner [mainReferencePoint] is not obligatory.
      */
     @Throws(MissingConfigurationException::class)
     fun build(): Assigner {
@@ -63,10 +72,20 @@ class AssignerBuilder {
                 mainReferencePoint!!,
                 isAssigningFakes = false
             )
+            AssignerType.RANDOMIZED_RAM -> RandomizedRamAssigner(
+                targets!!,
+                resources!!,
+                isAssigningFakes = false
+            )
             AssignerType.FAKE_RAM -> StandardRamAssigner(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
+                isAssigningFakes = true
+            )
+            AssignerType.RANDOMIZED_FAKE_RAM -> RandomizedRamAssigner(
+                targets!!,
+                resources!!,
                 isAssigningFakes = true
             )
             AssignerType.NOBLE -> NobleAssigner(
@@ -110,7 +129,13 @@ class AssignerBuilder {
 
 
     private fun obligatoryHeadersAreNotSet() =
-        targets == null || resources == null || mainReferencePoint == null || type == null
+        targets == null
+        || resources == null
+        || type == null
+        || nonRandomAssignerRequestedButReferencePointNotSet()
+
+    private fun nonRandomAssignerRequestedButReferencePointNotSet() =
+        (mainReferencePoint == null) && (type!! !in setOf(AssignerType.RANDOMIZED_RAM, AssignerType.RANDOMIZED_FAKE_RAM))
 
     private fun requestedNobleAssigner() = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
 
