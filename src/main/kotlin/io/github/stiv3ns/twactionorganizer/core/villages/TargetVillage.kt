@@ -7,6 +7,8 @@ data class TargetVillage(
     var numberOfAttacks: Int = 0
         private set
 
+    var delayInMinutes: Long = 0
+
     constructor(x: Int, y: Int, numberOfAttacks: Int) : this(x, y) {
         this.numberOfAttacks = numberOfAttacks
     }

@@ -18,4 +18,8 @@ class TargetGroup(
         x = villageList.map { it.x }.average().roundToInt(),
         y = villageList.map { it.y }.average().roundToInt()
     )
+
+    fun setDelayInMinutes(delay: Long) {
+        villageList.map { it.delayInMinutes = delay }
+    }
 }

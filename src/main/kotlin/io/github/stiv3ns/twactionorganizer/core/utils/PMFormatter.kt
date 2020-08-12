@@ -3,6 +3,7 @@ package io.github.stiv3ns.twactionorganizer.core.utils
 import io.github.stiv3ns.twactionorganizer.core.Player
 import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
 import io.github.stiv3ns.twactionorganizer.core.World
+import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -88,7 +89,11 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         var previousDayOfMonth = -1
 
         for (assignment in sortedAssignments) {
-            val departureTime = designateDepartureTime(assignment.squaredDistance, slowestTroop)
+            val departureTime = designateDepartureTime(
+                assignment.squaredDistance,
+                slowestTroop,
+                (assignment.destination as TargetVillage).delayInMinutes
+            )
 
             val verticalSpaceIfNextDay = if (previousDayOfMonth !in listOf(departureTime.dayOfMonth, -1))
                                                      "\n\n\n\n\n!"
@@ -119,11 +124,11 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
     private fun sortedRequirementsByVillage(requirementsByVillage: Map<Village, Int>): SortedMap<Village, Int> =
         requirementsByVillage.toSortedMap(compareBy { requirementsByVillage[it] }) /* sort by values */
 
-    private fun designateDepartureTime(squaredDistance: Int, slowestTroop: TroopType): LocalDateTime {
+    private fun designateDepartureTime(squaredDistance: Int, slowestTroop: TroopType, delayInMinutes: Long): LocalDateTime {
         val actualDistance = sqrt(squaredDistance.toDouble())
         val travelTime = actualDistance * troopTravelTime(slowestTroop)
 
-        return dateOfArrival.minusMinutes(travelTime.toLong())
+        return dateOfArrival.minusMinutes(travelTime.toLong()).plusMinutes(delayInMinutes)
     }
 
     private fun formatDepartureTime(departureTime: LocalDateTime): String =

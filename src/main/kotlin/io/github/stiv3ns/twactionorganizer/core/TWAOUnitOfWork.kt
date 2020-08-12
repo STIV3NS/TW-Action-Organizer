@@ -67,6 +67,10 @@ class TWAOUnitOfWork {
         targetGroups[group.type]?.remove(group)
     }
 
+    fun setDelayInMinutes(group: TargetGroup, delay: Long) {
+        group.setDelayInMinutes(delay)
+    }
+
     fun getTargetGroups(type: AssignerType): List<TargetGroup> =
         targetGroups.getOrDefault(
             key = type,
