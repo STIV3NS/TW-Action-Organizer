@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
 data class VillageAssignment(
     val departure: Village,
     val destination: Village,
-    val squaredDistance: Int
+    val squaredDistance: Int,
+    val delayInMinutes: Long = 0
 ) {
     override fun toString() = "$departure -> $destination"
 }

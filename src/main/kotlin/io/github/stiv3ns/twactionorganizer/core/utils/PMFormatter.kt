@@ -3,7 +3,6 @@ package io.github.stiv3ns.twactionorganizer.core.utils
 import io.github.stiv3ns.twactionorganizer.core.Player
 import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
 import io.github.stiv3ns.twactionorganizer.core.World
-import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -92,7 +91,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
             val departureTime = designateDepartureTime(
                 assignment.squaredDistance,
                 slowestTroop,
-                (assignment.destination as TargetVillage).delayInMinutes
+                assignment.delayInMinutes
             )
 
             val verticalSpaceIfNextDay = if (previousDayOfMonth !in listOf(departureTime.dayOfMonth, -1))

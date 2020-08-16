@@ -44,7 +44,8 @@ abstract class Assigner internal constructor(
         val assignment = VillageAssignment(
             departure = allyVillage,
             destination = targetVillage,
-            squaredDistance = distance
+            squaredDistance = distance,
+            delayInMinutes = targetVillage.delayInMinutes
         )
 
         when (isAssigningFakes) {
