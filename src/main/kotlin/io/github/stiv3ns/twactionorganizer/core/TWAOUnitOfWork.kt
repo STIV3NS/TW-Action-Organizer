@@ -37,6 +37,15 @@ class TWAOUnitOfWork {
         else -> fakeResources!!.villages
     }
 
+    fun getAllPlayers(): List<Player> {
+        val players = mutableListOf<Player>()
+
+        concreteResources?.players?.let { players.addAll(it) }
+        fakeResources?.players?.let { players.addAll(it) }
+
+        return players
+    }
+
     fun dropPlayer(player: Player) {
         concreteResources?.players?.remove(player)
         fakeResources?.players?.remove(player)
