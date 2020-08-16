@@ -26,7 +26,13 @@ object TWAOExecutor {
     }
 
     private fun startFakeRamAssigners(uow: TWAOUnitOfWork) {
-        uow.getTargetGroups(AssignerType.FAKE_RAM).forEach { group ->
+        val groups = uow.getTargetGroups(
+            AssignerType.RANDOMIZED_FAKE_RAM
+        ).toMutableList().apply {
+            addAll(uow.getTargetGroups(AssignerType.FAKE_RAM))
+        }
+
+        groups.forEach { group ->
             val task = executorService.submit(
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
@@ -47,6 +53,7 @@ object TWAOExecutor {
             AssignerType.NOBLE
         ).toMutableList().apply {
             addAll(uow.getTargetGroups(AssignerType.REVERSED_RAM))
+            addAll(uow.getTargetGroups(AssignerType.RANDOMIZED_RAM))
             addAll(uow.getTargetGroups(AssignerType.RAM))
         }
 
