@@ -80,7 +80,7 @@ object TWAOExecutor {
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villageList.toMutableList())
-                    .resources(uow.getFakeResourceVillages())
+                    .resources(uow.getFakeResourceVillages().toMutableList())
                     .type(group.type)
                     .maxNobleRange(uow.getWorld().maxNobleRange)
                     .build()
