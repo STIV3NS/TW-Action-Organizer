@@ -122,7 +122,7 @@ public class World {
     }
 
     public int getMaxNobleRange() {
-        return maxNobleRange;
+        return maxNobleRange * maxNobleRange;
     }
 
     public int getNightBonusEndHour() {

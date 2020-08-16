@@ -48,6 +48,9 @@ class NobleAssigner internal constructor(
             if (distance > maxNobleRange) {
                 break
             }
+            if (!nearestAllyVillage.owner.hasNoble()) {
+                continue
+            }
 
             assign(nearestAllyVillage, target, distance)
             updateOwnerAndResources(nearestAllyVillage)
