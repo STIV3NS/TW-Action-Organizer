@@ -32,7 +32,7 @@ object TWAOExecutor {
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villageList.toMutableList())
                     .resources(uow.getConcreteResourceVillages().apply {
-                        addAll(uow.getAdditionalResourceVillages())
+                        addAll(uow.getFakeResourceVillages())
                     })
                     .type(group.type)
                     .build()
@@ -76,7 +76,7 @@ object TWAOExecutor {
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villageList.toMutableList())
                     .resources(uow.getConcreteResourceVillages().apply {
-                        addAll(uow.getAdditionalResourceVillages())
+                        addAll(uow.getFakeResourceVillages())
                     })
                     .type(group.type)
                     .maxNobleRange(uow.getWorld().maxNobleRange)

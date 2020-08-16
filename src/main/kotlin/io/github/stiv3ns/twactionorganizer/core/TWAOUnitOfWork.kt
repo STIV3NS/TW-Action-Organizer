@@ -3,13 +3,12 @@ package io.github.stiv3ns.twactionorganizer.core
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
-import java.lang.IllegalStateException
 
 class TWAOUnitOfWork {
     private var world: World? = null
 
     private var concreteResources: Resources? = null
-    private var additionalResources: Resources? = null
+    private var fakeResources: Resources? = null
 
     private val targetGroups = mutableMapOf<AssignerType, MutableList<TargetGroup>>()
 
@@ -17,39 +16,40 @@ class TWAOUnitOfWork {
         this.world = world
     }
 
-    fun getWorld(): World = world ?: throw MissingConfigurationException("TWAOUnitOfWork: world not set")
+    fun getWorld(): World =
+        world ?: throw MissingConfigurationException("TWAOUnitOfWork: world not set")
 
     fun setConcreteResources(resources: Resources) {
         concreteResources = resources
     }
 
-    fun setAdditionalResources(resources: Resources) {
-        additionalResources = resources
+    fun setFakeResources(resources: Resources) {
+        fakeResources = resources
     }
 
     fun getConcreteResourceVillages(): MutableList<AllyVillage> = when (concreteResources) {
-        null -> throw MissingConfigurationException("TWAOUnitOfWork: concreteResources not set")
-        else -> concreteResources!!.villages.toMutableList()
+        null -> mutableListOf()
+        else -> concreteResources!!.villages
     }
 
-    fun getAdditionalResourceVillages(): MutableList<AllyVillage> = when (additionalResources) {
+    fun getFakeResourceVillages(): MutableList<AllyVillage> = when (fakeResources) {
         null -> mutableListOf()
-        else -> additionalResources!!.villages.toMutableList()
+        else -> fakeResources!!.villages
     }
 
     fun dropPlayer(player: Player) {
         concreteResources?.players?.remove(player)
-        additionalResources?.players?.remove(player)
+        fakeResources?.players?.remove(player)
 
         concreteResources?.villages?.removeAll { it.owner == player }
-        additionalResources?.villages?.removeAll { it.owner == player }
+        fakeResources?.villages?.removeAll { it.owner == player }
     }
 
     fun dropVillage(vil: AllyVillage) {
         val wasConcrete: Boolean? = concreteResources?.villages?.remove(vil)
 
         if (wasConcrete == true) vil.owner.unregisterVillage()
-        else additionalResources?.villages?.remove(vil)
+        else fakeResources?.villages?.remove(vil)
     }
 
     fun setPlayerNumberOfNobles(player: Player, newValue: Int) {
@@ -71,9 +71,8 @@ class TWAOUnitOfWork {
         group.setDelayInMinutes(delay)
     }
 
-    fun getTargetGroups(type: AssignerType): List<TargetGroup> =
-        targetGroups.getOrDefault(
-            key = type,
-            defaultValue = mutableListOf()
-        ).toList()
+    fun getTargetGroups(type: AssignerType): List<TargetGroup> = targetGroups.getOrDefault(
+        key = type,
+        defaultValue = mutableListOf()
+    ).toList()
 }
