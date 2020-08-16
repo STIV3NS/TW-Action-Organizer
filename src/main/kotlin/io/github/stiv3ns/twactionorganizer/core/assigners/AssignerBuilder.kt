@@ -12,31 +12,31 @@ class AssignerBuilder {
      * ---------------------------------------------------------------------------------------------------------------
      * [RAM]:
      * output assigment: Concrete attack without noble
-     * behavior: Pick ALLY village that is the farthest from referencePoint and link it with nearest target.
+     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with nearest target.
      *---------------------------------------------------------------------------------------------------------------
      * [REVERSED_RAM]:
      * output assigment: Concrete attack without noble
-     * behavior: Pick TARGET village that is closest to the referencePoint and link it with nearest ally village.
+     * behavior: Pick an TARGET village that is closest to the referencePoint and link it with nearest ally village.
      *---------------------------------------------------------------------------------------------------------------
      * [RANDOMIZED_RAM]:
      * output assigment: Concrete attack without noble
-     * behavior: Pick RANDOM target village and link it with RANDOM ally village.
+     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with RANDOM target.
      *---------------------------------------------------------------------------------------------------------------
      * [FAKE_RAM]:
      * output assigment: Fake attack without noble
-     * behavior: Pick ALLY village that is the farthest from referencePoint and link it with nearest target.
+     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with nearest target.
      *---------------------------------------------------------------------------------------------------------------
      * [RANDOMIZED_FAKE_RAM]:
      * output assigment: Fake attack without noble
-     * behavior: Pick RANDOM target village and link it with RANDOM ally village.
+     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with RANDOM target.
      *---------------------------------------------------------------------------------------------------------------
      * [NOBLE]:
      * output assigment: Concrete attack with noble
-     * behavior: Pick TARGET village that is closest to the relativityPoint and link it with nearest ally village.
+     * behavior: Pick an TARGET village that is closest to the relativityPoint and link it with nearest ally village.
      *---------------------------------------------------------------------------------------------------------------
      * [FAKE_NOBKE]:
      * output assigment: Fake attack with noble
-     * behavior: Pick TARGET village that is closest to the relativityPoint and link it with nearest ally village.
+     * behavior: Pick an TARGET village that is closest to the relativityPoint and link it with nearest ally village.
      * ---------------------------------------------------------------------------------------------------------------
      */
 
@@ -75,6 +75,7 @@ class AssignerBuilder {
             AssignerType.RANDOMIZED_RAM -> RandomizedRamAssigner(
                 targets!!,
                 resources!!,
+                mainReferencePoint!!,
                 isAssigningFakes = false
             )
             AssignerType.FAKE_RAM -> StandardRamAssigner(
@@ -86,6 +87,7 @@ class AssignerBuilder {
             AssignerType.RANDOMIZED_FAKE_RAM -> RandomizedRamAssigner(
                 targets!!,
                 resources!!,
+                mainReferencePoint!!,
                 isAssigningFakes = true
             )
             AssignerType.NOBLE -> NobleAssigner(
@@ -132,10 +134,7 @@ class AssignerBuilder {
         targets == null
         || resources == null
         || type == null
-        || nonRandomAssignerRequestedButReferencePointNotSet()
-
-    private fun nonRandomAssignerRequestedButReferencePointNotSet() =
-        (mainReferencePoint == null) && (type!! !in setOf(AssignerType.RANDOMIZED_RAM, AssignerType.RANDOMIZED_FAKE_RAM))
+        || mainReferencePoint == null
 
     private fun requestedNobleAssigner() = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
 

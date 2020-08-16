@@ -6,7 +6,7 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.util.*
 
-class StandardRamAssigner internal constructor(
+open class StandardRamAssigner internal constructor(
     targets: MutableList<TargetVillage>,
     resources: MutableList<AllyVillage>,
     mainReferencePoint: Village,
@@ -35,7 +35,7 @@ class StandardRamAssigner internal constructor(
         )
     }
 
-    private fun processAllyVillage(allyVillage: AllyVillage) {
+    protected open fun processAllyVillage(allyVillage: AllyVillage) {
         putTargetsToQueue(referencePoint = allyVillage)
 
         val (nearestTarget, distance) = targetsQueue.poll()
