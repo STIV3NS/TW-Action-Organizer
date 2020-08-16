@@ -120,8 +120,8 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         return requirementsByVillage
     }
 
-    private fun sortedRequirementsByVillage(requirementsByVillage: Map<Village, Int>): SortedMap<Village, Int> =
-        requirementsByVillage.toSortedMap(compareBy { requirementsByVillage[it] }) /* sort by values */
+    private fun sortedRequirementsByVillage(requirementsByVillage: Map<Village, Int>): Map<Village, Int> =
+        requirementsByVillage.toList().sortedByDescending { (_, cnt) -> cnt }.toMap()
 
     private fun designateDepartureTime(squaredDistance: Int, slowestTroop: TroopType, delayInMinutes: Long): LocalDateTime {
         val actualDistance = sqrt(squaredDistance.toDouble())
