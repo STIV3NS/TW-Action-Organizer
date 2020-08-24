@@ -34,7 +34,10 @@ public class World {
 
             worldSPeed = Double.parseDouble(doc.getElementsByTagName("speed").item(0).getTextContent());
             unitSpeed = Double.parseDouble(doc.getElementsByTagName("unit_speed").item(0).getTextContent());
-            maxNobleRange = Integer.parseInt(doc.getElementsByTagName("max_dist").item(0).getTextContent());
+
+            int actualNobleRange = Integer.parseInt(doc.getElementsByTagName("max_dist").item(0).getTextContent());
+            maxNobleRange = actualNobleRange*actualNobleRange;
+
             nightBonusEndHour = Integer.parseInt(doc.getElementsByTagName("end_hour").item(0).getTextContent());
 
             fetchVillagesRawText();
@@ -122,7 +125,7 @@ public class World {
     }
 
     public int getMaxNobleRange() {
-        return maxNobleRange * maxNobleRange;
+        return maxNobleRange;
     }
 
     public int getNightBonusEndHour() {

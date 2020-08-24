@@ -28,7 +28,7 @@ class WorldTest : WordSpec({
 
             "load proper settings" {
                 with(world) {
-                    maxNobleRange shouldBe 1000
+                    maxNobleRange shouldBe 1000000
                     nightBonusEndHour shouldBe 8
                     speed shouldBe 1.0
                 }
