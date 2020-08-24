@@ -1,64 +1,161 @@
 package io.github.stiv3ns.twactionorganizer
 
-import io.github.stiv3ns.twactionorganizer.core.TWAOExecutor
-import io.github.stiv3ns.twactionorganizer.core.TWAOUnitOfWork
+import io.github.stiv3ns.twactionorganizer.core.Executor
 import io.github.stiv3ns.twactionorganizer.core.TargetGroup
+import io.github.stiv3ns.twactionorganizer.core.UnitOfWork
 import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
-import io.github.stiv3ns.twactionorganizer.core.parsers.CSVAllyParser
+import io.github.stiv3ns.twactionorganizer.core.parsers.AllyParserWithDynamicOwnerResolution
 import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
-import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.utils.PMFormatter
+import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
+import io.github.stiv3ns.twactionorganizer.core.utils.idInitializer
+import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
+import kotlinx.coroutines.runBlocking
+import java.io.File
 import java.time.LocalDateTime
 
-fun main() {
+fun main() = runBlocking {
     val world = World("pl150.plemiona.pl")
-    val uow = TWAOUnitOfWork()
+    val uow = UnitOfWork()
+    uow.setWorld(world)
 
-    val allyParser = CSVAllyParser().apply {
-        csvFilePath = "/home/stivens/rozpiski/tpk7/allies.csv"
-        nicknameHeader = "nick"
-        villagesHeader = "village"
-        villageRegexLiteral = "\\d{3}\\|\\d{3}"
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    val allyParser = AllyParserWithDynamicOwnerResolution(world)
+        .apply {
+            txtFilePath = "/home/stivens/rozpiski/tpk11/res_concrete.txt"
+        }
+
+    val concreteResources = allyParser.parseAndGetResources()
+    uow.setConcreteResources(concreteResources)
+
+    with(allyParser) {
+        txtFilePath = "/home/stivens/rozpiski/tpk11/res_fake.txt"
+        knownPlayers = uow.getAllPlayers().associateBy { it.nickname }.toMutableMap()
     }
 
-    val resources = allyParser.parseAndGetResources()
-    resources.villages.forEach { it.initID(world) }
+    val fakeResources = allyParser.parseAndGetResources()
+    uow.setFakeResources(fakeResources)
+
+    with(allyParser) {
+        txtFilePath = "/home/stivens/rozpiski/tpk11/res_demolition.txt"
+        knownPlayers = uow.getAllPlayers().associateBy { it.nickname }.toMutableMap()
+    }
+
+    val demolitionResources = allyParser.parseAndGetResources()
+    uow.setDemolitionResources(demolitionResources)
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    val off = mutableListOf<TargetVillage>()
+    TargetParser.parse("/home/stivens/rozpiski/tpk11/off3.txt", 3, off)
+
+    val demolition = mutableListOf<TargetVillage>()
+    TargetParser.parse("/home/stivens/rozpiski/tpk11/off3.txt", 15, demolition)
 
     val fakeA = mutableListOf<TargetVillage>()
+    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeA40.txt", 40, fakeA)
+
     val fakeB = mutableListOf<TargetVillage>()
+    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeB10.txt", 10, fakeB)
 
-    TargetParser.parse("/home/stivens/rozpiski/tpk7/fakeA5.txt", 5, fakeA)
-    TargetParser.parse("/home/stivens/rozpiski/tpk7/fakeA6.txt", 6, fakeA)
-    TargetParser.parse("/home/stivens/rozpiski/tpk7/fakeA7.txt", 7, fakeA)
+    val fakeC = mutableListOf<TargetVillage>()
+    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeC10.txt", 10, fakeC)
 
-    TargetParser.parse("/home/stivens/rozpiski/tpk7/fakeB3.txt", 3, fakeB)
+    val fakeD = mutableListOf<TargetVillage>()
+    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeD16.txt", 16, fakeD)
 
-    fakeA.forEach { it.initID(world) }
-    fakeB.forEach { it.initID(world) }
+    val fakeE = mutableListOf<TargetVillage>()
+    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeE13.txt", 13, fakeE)
 
-    uow.setWorld(world)
-    uow.setConcreteResources(resources)
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-    uow.addTargetGroup(TargetGroup("Fake A", AssignerType.FAKE_RAM, fakeA))
-    uow.addTargetGroup(TargetGroup("Fake B", AssignerType.FAKE_RAM, fakeB))
-
-    val reports = TWAOExecutor.execute(uow)
-    TWAOExecutor.shutdownNow()
-
-    val formatter = PMFormatter(
-        world,
-        dateOfArrival = LocalDateTime.of(2020, 7, 27, 7, 0, 0, 0)
+    val idInits = setOf(
+        idInitializer(concreteResources.villages, world),
+        idInitializer(fakeResources.villages, world),
+        idInitializer(demolitionResources.villages, world),
+        idInitializer(off, world),
+        idInitializer(demolition, world),
+        idInitializer(fakeA, world),
+        idInitializer(fakeB, world),
+        idInitializer(fakeC, world),
+        idInitializer(fakeD, world),
+        idInitializer(fakeE, world)
     )
 
-    for (player in resources.players) {
-        if (player.fakeAssignments.isNotEmpty()) {
-            println(player.nickname)
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-            println(formatter.getFormattedMsgFor(player))
+    uow.addTargetGroup(
+        TargetGroup(name = "OFF x3", type = AssignerType.RANDOMIZED_RAM, villageList = off)
+    )
 
-            println("============================================")
-            println("============================================\n\n\n")
+    val MINUTES_PER_HOUR = 60L
+    uow.addTargetGroup(
+        TargetGroup(name = "Demolition x15", type = AssignerType.RANDOMIZED_DEMOLITION, villageList = demolition)
+            .withDelayInMinutes(6 * MINUTES_PER_HOUR)
+    )
+
+    uow.addTargetGroup(
+        TargetGroup(name = "Fake A", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeA)
+    )
+
+    uow.addTargetGroup(
+        TargetGroup(name = "Fake B", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeB)
+    )
+
+    uow.addTargetGroup(
+        TargetGroup(name = "Fake C", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeC)
+    )
+
+    uow.addTargetGroup(
+        TargetGroup(name = "Fake D", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeD)
+    )
+
+    uow.addTargetGroup(
+        TargetGroup(name = "Fake E", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeE)
+    )
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    Executor.execute(uow).forEach { report ->
+        println("${report.name} failed to assign ${report.numberOfUnassignedTargets} targets " +
+                "/ ${report.numberOfMissingResources} attacks.")
+    }
+    Executor.shutdownNow()
+
+    idInits.forEach { it.join() }
+
+    Serializer.save(uow.getAllPlayers(), "/home/stivens/rozpiski/tpk11/rozpiska.json")
+
+    File("/home/stivens/rozpiski/tpk11/rozpiska.txt").printWriter().use {  pw ->
+
+        val formatter = PMFormatter(world, dateOfArrival = LocalDateTime.of(2020, 8, 29, 7, 0))
+
+        uow.getAllPlayers().forEach { player ->
+            pw.println(
+                """${player.nickname}
+                Cześć, oto Twoja rozpiska.
+                Ataki mają wchodzić na 29 sierpnia. Obok rozkazu jest podany czas T0 pierwszego możliwego terminu wysyłki.
+                
+                Kilka uwag:
+                1. Offy wysyłamy razem z katapultami (!patrz. podpunkt 2). Tym razem jeszcze bardziej staramy
+                   się w miarę możliwości dosyłać ataki regularnie co 2/3/4 godziny. No ale tak jak zawsze off wysłany
+                   na wieczór to lepszy off niż taki nie wysłany w ogóle.
+                2. Katapultami celujemy na zmianę w zagrodę/ratusz/hute żelaza.
+                3. Do fejków fajnie jest dorzucić ze dwie katapulty wycelowane w pałac (dwie wystarczą żeby go zburzyć).
+                4. Przy wysyłaniu ataków pamiętaj o zostawieniu wojska na w sumie 5 fejków.
+                5. Przy wysyłaniu ataków zawsze upewniaj sie, czy atak wchodzi na dobrą datę (a nie np. dzień wcześniej).
+                6. Jeśli na koncie jest zastępca to linki dla niego można wygenerować za pomocą tego:
+                    https://pl150.plemiona.pl/game.php?screen=forum&screenmode=view_thread&forum_id=617&thread_id=44897
+                
+                
+                ${formatter.getFormattedMsgFor(player)}
+                
+                Ave (T)PK!
+                ==============================================================================
+                ==============================================================================""".trimIndent()
+            )
         }
     }
 }
