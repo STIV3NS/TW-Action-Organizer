@@ -4,7 +4,7 @@ import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
-class RandomizedRamAssigner internal constructor(
+open class RandomizedRamAssigner internal constructor(
     targets: MutableList<TargetVillage>,
     resources: MutableList<AllyVillage>,
     mainReferencePoint: Village,

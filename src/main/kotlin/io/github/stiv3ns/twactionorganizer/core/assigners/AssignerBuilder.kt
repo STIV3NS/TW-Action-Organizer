@@ -38,6 +38,14 @@ class AssignerBuilder {
      * output assigment: Fake attack with noble
      * behavior: Pick an TARGET village that is closest to the relativityPoint and link it with nearest ally village.
      * ---------------------------------------------------------------------------------------------------------------
+     * [DEMOLITION]:
+     * output assigment: Demolition attack
+     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with nearest target.
+     *---------------------------------------------------------------------------------------------------------------
+     * [RANDOMIZED_DEMOLITION]:
+     * output assigment: Demolition attack
+     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with RANDOM target.
+     *---------------------------------------------------------------------------------------------------------------
      */
 
     var targets: MutableList<TargetVillage>? = null
@@ -103,6 +111,16 @@ class AssignerBuilder {
                 mainReferencePoint!!,
                 isAssigningFakes = true,
                 maxNobleRange = maxNobleRange!!
+            )
+            AssignerType.DEMOLITION -> StandardDemolitionAssigner(
+                targets!!,
+                resources!!,
+                mainReferencePoint!!
+            )
+            AssignerType.RANDOMIZED_DEMOLITION -> RandomizedDemolitionAssigner(
+                targets!!,
+                resources!!,
+                mainReferencePoint!!
             )
         }
 

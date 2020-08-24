@@ -9,6 +9,7 @@ class UnitOfWork {
 
     private var concreteResources: Resources? = null
     private var fakeResources: Resources? = null
+    private var demolitionResources: Resources? = null
 
     private val targetGroups = mutableMapOf<AssignerType, MutableList<TargetGroup>>()
 
@@ -17,7 +18,7 @@ class UnitOfWork {
     }
 
     fun getWorld(): World =
-        world ?: throw MissingConfigurationException("TWAOUnitOfWork: world not set")
+        world ?: throw MissingConfigurationException("UnitOfWork: world not set")
 
     fun setConcreteResources(resources: Resources) {
         concreteResources = resources
@@ -25,6 +26,10 @@ class UnitOfWork {
 
     fun setFakeResources(resources: Resources) {
         fakeResources = resources
+    }
+
+    fun setDemolitionResources(resources: Resources) {
+        demolitionResources = resources
     }
 
     fun getConcreteResourceVillages(): MutableList<AllyVillage> = when (concreteResources) {
@@ -37,11 +42,17 @@ class UnitOfWork {
         else -> fakeResources!!.villages
     }
 
+    fun getDemolitionResourceVillages(): MutableList<AllyVillage> = when (demolitionResources) {
+        null -> mutableListOf()
+        else -> demolitionResources!!.villages
+    }
+
     fun getAllPlayers(): List<Player> {
         val players = mutableListOf<Player>()
 
         concreteResources?.players?.let { players.addAll(it) }
         fakeResources?.players?.let { players.addAll(it) }
+        demolitionResources?.players?.let { players.addAll(it) }
 
         return players
     }
@@ -49,16 +60,21 @@ class UnitOfWork {
     fun dropPlayer(player: Player) {
         concreteResources?.players?.remove(player)
         fakeResources?.players?.remove(player)
+        demolitionResources?.players?.remove(player)
 
         concreteResources?.villages?.removeAll { it.owner == player }
         fakeResources?.villages?.removeAll { it.owner == player }
+        demolitionResources?.villages?.removeAll { it.owner == player }
     }
 
-    fun dropVillage(vil: AllyVillage) {
-        val wasConcrete: Boolean? = concreteResources?.villages?.remove(vil)
+    fun dropVillage(village: AllyVillage) {
+        val wasConcrete: Boolean? = concreteResources?.villages?.remove(village)
 
-        if (wasConcrete == true) vil.owner.unregisterVillage()
-        else fakeResources?.villages?.remove(vil)
+        if (wasConcrete == true) village.owner.unregisterVillage()
+        else {
+            fakeResources?.villages?.remove(village)
+            demolitionResources?.villages?.remove(village)
+        }
     }
 
     fun setPlayerNumberOfNobles(player: Player, newValue: Int) {

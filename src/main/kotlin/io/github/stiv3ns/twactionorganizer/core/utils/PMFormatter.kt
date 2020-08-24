@@ -20,18 +20,21 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
     private val OFF_HEADER          by lazy { bundle.getString("OFF_HEADER") }
     private val FAKE_HEADER         by lazy { bundle.getString("FAKE_HEADER") }
     private val FAKENOBLE_HEADER    by lazy { bundle.getString("FAKENOBLE_HEADER") }
+    private val DEMOLITION_HEADER   by lazy { bundle.getString("DEMOLITION_HEADER") }
     private val EXECUTION_TEXT      by lazy { bundle.getString("EXECUTION_TEXT") }
 
     private val GROUP_SIZE = 5
 
     private enum class TroopType {
         RAM,
-        NOBLE
+        NOBLE,
+        CATAPULT
     }
 
     private fun troopTravelTime(type: TroopType) = when (type) {
         TroopType.RAM -> 30
         TroopType.NOBLE -> 35
+        TroopType.CATAPULT -> 30
     } / world.speed
 
     fun getFormattedMsgFor(player: Player): String {
@@ -60,6 +63,11 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         if (player.fakeAssignments.isNotEmpty()) {
             msg.append(FAKE_HEADER)
             appendAssignments(msg, player.fakeAssignments, TroopType.RAM)
+        }
+
+        if (player.demolitionAssignments.isNotEmpty()) {
+            msg.append(DEMOLITION_HEADER)
+            appendAssignments(msg, player.demolitionAssignments, TroopType.CATAPULT)
         }
 
         return msg.toString()

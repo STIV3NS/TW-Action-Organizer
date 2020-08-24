@@ -7,5 +7,7 @@ enum class AssignerType {
     FAKE_RAM,
     RANDOMIZED_FAKE_RAM,
     NOBLE,
-    FAKE_NOBLE
+    FAKE_NOBLE,
+    DEMOLITION,
+    RANDOMIZED_DEMOLITION
 }

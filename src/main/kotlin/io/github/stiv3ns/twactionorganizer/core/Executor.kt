@@ -21,6 +21,7 @@ object Executor {
         startFakeRamAssigners(uow)
         startConcreteAssigners(uow)
         startFakeNobleAssigners(uow)
+        startDemolitionAssigners(uow)
 
         return collectReports()
     }
@@ -43,6 +44,31 @@ object Executor {
             )
 
             runningTasks[group] = task
+        }
+    }
+
+    private fun startDemolitionAssigners(uow: UnitOfWork) {
+        val sharedResourceVillages = uow.getDemolitionResourceVillages()
+
+        val groups = uow.getTargetGroups(
+            AssignerType.RANDOMIZED_DEMOLITION
+        ).toMutableList().apply {
+            addAll(uow.getTargetGroups(AssignerType.DEMOLITION))
+        }
+
+        groups.forEach { group ->
+            val task = executorService.submit(
+                AssignerBuilder()
+                    .mainReferencePoint(group.averagedCoordsAsVillage)
+                    .targets(group.villageList.toMutableList())
+                    .resources(sharedResourceVillages)
+                    .type(group.type)
+                    .build()
+            )
+
+            runningTasks[group] = task
+
+            task.get() /* <--- wait for completion ! */
         }
     }
 
