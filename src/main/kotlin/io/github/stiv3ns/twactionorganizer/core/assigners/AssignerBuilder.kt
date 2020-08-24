@@ -111,23 +111,29 @@ class AssignerBuilder {
     }
 
 
-    fun targets(targets: MutableList<TargetVillage>) = apply { this.targets = targets }
+    fun targets(targets: MutableList<TargetVillage>) =
+        apply { this.targets = targets }
 
-    fun resources(resources: MutableList<AllyVillage>) = apply { this.resources = resources }
+    fun resources(resources: MutableList<AllyVillage>) =
+        apply { this.resources = resources }
 
-    fun mainReferencePoint(referencePoint: Village) = apply { this.mainReferencePoint = referencePoint }
+    fun mainReferencePoint(referencePoint: Village) =
+        apply { this.mainReferencePoint = referencePoint }
 
-    fun type(type: AssignerType) = apply { this.type = type }
+    fun type(type: AssignerType) =
+        apply { this.type = type }
 
-    fun maxNobleRange(range: Int) = apply { this.maxNobleRange = range }
+    fun maxNobleRange(range: Int) =
+        apply { this.maxNobleRange = range }
 
-    fun clear() = apply {
-        targets = null
-        resources = null
-        mainReferencePoint = null
-        type = null
-        maxNobleRange = null
-    }
+    fun clear() =
+        apply {
+            targets = null
+            resources = null
+            mainReferencePoint = null
+            type = null
+            maxNobleRange = null
+        }
 
 
     private fun obligatoryHeadersAreNotSet() =
@@ -136,9 +142,11 @@ class AssignerBuilder {
         || type == null
         || mainReferencePoint == null
 
-    private fun requestedNobleAssigner() = type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
+    private fun requestedNobleAssigner() =
+        type!! in listOf(AssignerType.NOBLE, AssignerType.FAKE_NOBLE)
 
-    private fun maxNobleRangeIsNotSet() = maxNobleRange == null
+    private fun maxNobleRangeIsNotSet() =
+        maxNobleRange == null
 
     private fun throwException() {
         var exceptionMsg = "AssignerBuilder missing: "
