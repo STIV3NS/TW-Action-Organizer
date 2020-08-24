@@ -4,7 +4,7 @@ import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class VillageAssignment(
+data class Assignment(
     val departure: Village,
     val destination: Village,
     val squaredDistance: Int,

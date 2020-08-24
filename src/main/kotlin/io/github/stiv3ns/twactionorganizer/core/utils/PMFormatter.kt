@@ -1,7 +1,7 @@
 package io.github.stiv3ns.twactionorganizer.core.utils
 
 import io.github.stiv3ns.twactionorganizer.core.Player
-import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
+import io.github.stiv3ns.twactionorganizer.core.Assignment
 import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.time.LocalDateTime
@@ -80,7 +80,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         msg.append(CLOSE_SPOILER)
     }
 
-    private fun appendAssignments(msg: StringBuilder, assignments: List<VillageAssignment>, slowestTroop: TroopType) {
+    private fun appendAssignments(msg: StringBuilder, assignments: List<Assignment>, slowestTroop: TroopType) {
         msg.append(OPEN_SPOILER)
 
         val sortedAssignments = sortedAssignments(assignments)
@@ -113,7 +113,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         msg.append(CLOSE_SPOILER)
     }
 
-    private fun numberOfNobleRequirementsByVillage(allNobleAssignments: List<VillageAssignment>): Map<Village, Int> {
+    private fun numberOfNobleRequirementsByVillage(allNobleAssignments: List<Assignment>): Map<Village, Int> {
         val assignmentsByDeparture = allNobleAssignments.groupBy { it.departure }
         val requirementsByVillage = assignmentsByDeparture.mapValues { it.value.size }
 
@@ -133,7 +133,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
     private fun formatDepartureTime(departureTime: LocalDateTime): String =
         departureTime.format(DateTimeFormatter.ofPattern("dd/MM/YY | HH:mm:ss"))
 
-    private fun sortedAssignments(assignments: List<VillageAssignment>) =
+    private fun sortedAssignments(assignments: List<Assignment>) =
         assignments.sortedByDescending { it.squaredDistance }
 
     private fun troopTravelTime(type: TroopType) = when (type) {

@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import java.io.File
 
-object ActionSerializer {
+object Serializer {
     private val json = Json(JsonConfiguration.Stable)
 
     fun save(players: List<Player>, outputFile: File) {

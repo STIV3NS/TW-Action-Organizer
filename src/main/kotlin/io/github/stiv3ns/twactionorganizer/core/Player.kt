@@ -9,10 +9,10 @@ data class Player(val nickname: String) {
     var numberOfVillages: Int = 0
         private set
 
-    private val _offAssignments = mutableListOf<VillageAssignment>()
-    private val _fakeAssignments = mutableListOf<VillageAssignment>()
-    private val _nobleAssignments = mutableListOf<VillageAssignment>()
-    private val _fakeNobleAssignments = mutableListOf<VillageAssignment>()
+    private val _offAssignments = mutableListOf<Assignment>()
+    private val _fakeAssignments = mutableListOf<Assignment>()
+    private val _nobleAssignments = mutableListOf<Assignment>()
+    private val _fakeNobleAssignments = mutableListOf<Assignment>()
 
     val offAssignments get() = _offAssignments.toList()
     val fakeAssignments get() = _fakeAssignments.toList()
@@ -37,20 +37,20 @@ data class Player(val nickname: String) {
         numberOfVillages--
     }
 
-    fun putOffAssignment(assignment: VillageAssignment) {
+    fun putOffAssignment(assignment: Assignment) {
         _offAssignments.add(assignment)
     }
 
     @Synchronized
-    fun putFakeAssignment(assignment: VillageAssignment) {
+    fun putFakeAssignment(assignment: Assignment) {
         _fakeAssignments.add(assignment)
     }
 
-    fun putNobleAssignment(assignment: VillageAssignment) {
+    fun putNobleAssignment(assignment: Assignment) {
         _nobleAssignments.add(assignment)
     }
 
-    fun putFakeNobleAssignment(assignment: VillageAssignment) {
+    fun putFakeNobleAssignment(assignment: Assignment) {
         _fakeNobleAssignments.add(assignment)
     }
 }

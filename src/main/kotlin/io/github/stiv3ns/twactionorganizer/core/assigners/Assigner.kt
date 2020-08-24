@@ -1,7 +1,7 @@
 package io.github.stiv3ns.twactionorganizer.core.assigners
 
 import io.github.stiv3ns.twactionorganizer.core.Player
-import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
+import io.github.stiv3ns.twactionorganizer.core.Assignment
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
@@ -27,8 +27,8 @@ abstract class Assigner internal constructor(
         distanceComparator
     )
 
-    protected abstract val offAction: Player.(VillageAssignment) -> Unit
-    protected abstract val fakeAction: Player.(VillageAssignment) -> Unit
+    protected abstract val offAction: Player.(Assignment) -> Unit
+    protected abstract val fakeAction: Player.(Assignment) -> Unit
 
     protected open fun putResourcesToQueue(referencePoint: Village) {
         resourcesQueue.clear()
@@ -41,7 +41,7 @@ abstract class Assigner internal constructor(
     }
 
     protected fun assign(allyVillage: AllyVillage, targetVillage: TargetVillage, distance: Int) {
-        val assignment = VillageAssignment(
+        val assignment = Assignment(
             departure = allyVillage,
             destination = targetVillage,
             squaredDistance = distance,

@@ -1,5 +1,5 @@
 import io.github.stiv3ns.twactionorganizer.core.Player
-import io.github.stiv3ns.twactionorganizer.core.VillageAssignment
+import io.github.stiv3ns.twactionorganizer.core.Assignment
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.kotlintest.matchers.collections.shouldBeEmpty
@@ -62,22 +62,22 @@ class PlayerTest : WordSpec({
 
     "Player [assigments]" should {
         val player = Player("test")
-        val assignment_1 = VillageAssignment(
+        val assignment_1 = Assignment(
             departure = AllyVillage(1, 1, player),
             destination = TargetVillage(2, 2, 0),
             squaredDistance = 2
         )
-        val assignment_2 = VillageAssignment(
+        val assignment_2 = Assignment(
             departure = AllyVillage(3, 3, player),
             destination = TargetVillage(4, 4, 0),
             squaredDistance = 2
         )
-        val assignment_3 = VillageAssignment(
+        val assignment_3 = Assignment(
             departure = AllyVillage(5, 5, player),
             destination = TargetVillage(6, 6, 0),
             squaredDistance = 2
         )
-        val assignment_4 = VillageAssignment(
+        val assignment_4 = Assignment(
             departure = AllyVillage(7, 7, player),
             destination = TargetVillage(8, 8, 0),
             squaredDistance = 2

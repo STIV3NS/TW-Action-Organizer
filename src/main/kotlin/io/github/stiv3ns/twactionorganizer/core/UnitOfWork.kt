@@ -4,7 +4,7 @@ import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.MissingConfigurationException
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 
-class TWAOUnitOfWork {
+class UnitOfWork {
     private var world: World? = null
 
     private var concreteResources: Resources? = null

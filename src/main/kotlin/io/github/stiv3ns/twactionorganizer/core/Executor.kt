@@ -8,7 +8,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
-object TWAOExecutor {
+object Executor {
     private val executorService: ExecutorService
     private val runningTasks = mutableMapOf<TargetGroup, Future<AssignerReport>>()
 
@@ -17,7 +17,7 @@ object TWAOExecutor {
         executorService = Executors.newFixedThreadPool(nCores)
     }
 
-    fun execute(uow: TWAOUnitOfWork): List<AssignerReport> {
+    fun execute(uow: UnitOfWork): List<AssignerReport> {
         startFakeRamAssigners(uow)
         startConcreteAssigners(uow)
         startFakeNobleAssigners(uow)
@@ -25,7 +25,7 @@ object TWAOExecutor {
         return collectReports()
     }
 
-    private fun startFakeRamAssigners(uow: TWAOUnitOfWork) {
+    private fun startFakeRamAssigners(uow: UnitOfWork) {
         val groups = uow.getTargetGroups(
             AssignerType.RANDOMIZED_FAKE_RAM
         ).toMutableList().apply {
@@ -46,7 +46,7 @@ object TWAOExecutor {
         }
     }
 
-    private fun startConcreteAssigners(uow: TWAOUnitOfWork) {
+    private fun startConcreteAssigners(uow: UnitOfWork) {
         val sharedResourceVillages = uow.getConcreteResourceVillages()
 
         val groups = uow.getTargetGroups(
@@ -74,7 +74,7 @@ object TWAOExecutor {
         }
     }
 
-    private fun startFakeNobleAssigners(uow: TWAOUnitOfWork) {
+    private fun startFakeNobleAssigners(uow: UnitOfWork) {
         uow.getTargetGroups(AssignerType.FAKE_NOBLE).forEach { group ->
             val task = executorService.submit(
                 AssignerBuilder()
