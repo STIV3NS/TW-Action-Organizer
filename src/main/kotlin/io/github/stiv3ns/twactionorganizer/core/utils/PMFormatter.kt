@@ -29,6 +29,11 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         NOBLE
     }
 
+    private fun troopTravelTime(type: TroopType) = when (type) {
+        TroopType.RAM -> 30
+        TroopType.NOBLE -> 35
+    } / world.speed
+
     fun getFormattedMsgFor(player: Player): String {
         val msg = StringBuilder()
 
@@ -61,10 +66,14 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
     }
 
     private fun appendNobleRequirements(msg: StringBuilder, player: Player) {
-        val allNobleAssignments = player.nobleAssignments + player.fakeNobleAssignments
+        val allNobleAssignments =
+            player.nobleAssignments + player.fakeNobleAssignments
 
-        val requirementsByVillage = numberOfNobleRequirementsByVillage(allNobleAssignments)
-        val sortedRequirements = sortedRequirementsByVillage(requirementsByVillage)
+        val requirementsByVillage =
+            allNobleAssignments.groupBy { it.departure }.mapValues { it.value.size }
+
+        val sortedRequirements =
+            requirementsByVillage.toList().sortedByDescending { (_, cnt) -> cnt }.toMap()
 
         msg.append(OPEN_SPOILER)
 
@@ -72,9 +81,8 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         for ((village, numberOfRequiredNobles) in sortedRequirements) {
             msg.append("$numberOfRequiredNobles __ $village\n")
 
-            if (++iteratorCounter % GROUP_SIZE == 0) {
+            if (++iteratorCounter % GROUP_SIZE == 0)
                 msg.append("\n")
-            }
         }
 
         msg.append(CLOSE_SPOILER)
@@ -83,7 +91,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
     private fun appendAssignments(msg: StringBuilder, assignments: List<Assignment>, slowestTroop: TroopType) {
         msg.append(OPEN_SPOILER)
 
-        val sortedAssignments = sortedAssignments(assignments)
+        val sortedAssignments = assignments.sortedByDescending { it.squaredDistance }
         var counter = 0
         var previousDayOfMonth = -1
 
@@ -94,9 +102,10 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
                 assignment.delayInMinutes
             )
 
-            val verticalSpaceIfNextDay = if (previousDayOfMonth !in listOf(departureTime.dayOfMonth, -1))
-                                                     "\n\n\n\n\n!"
-                                                else ""
+            val verticalSpaceIfNextDay =
+                if (previousDayOfMonth !in listOf(departureTime.dayOfMonth, -1))
+                    "\n\n\n\n\n!"
+                else ""
 
             val verticalSpaceIfNextGroup = if (counter % GROUP_SIZE == 0) "\n" else ""
 
@@ -113,16 +122,6 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         msg.append(CLOSE_SPOILER)
     }
 
-    private fun numberOfNobleRequirementsByVillage(allNobleAssignments: List<Assignment>): Map<Village, Int> {
-        val assignmentsByDeparture = allNobleAssignments.groupBy { it.departure }
-        val requirementsByVillage = assignmentsByDeparture.mapValues { it.value.size }
-
-        return requirementsByVillage
-    }
-
-    private fun sortedRequirementsByVillage(requirementsByVillage: Map<Village, Int>): Map<Village, Int> =
-        requirementsByVillage.toList().sortedByDescending { (_, cnt) -> cnt }.toMap()
-
     private fun designateDepartureTime(squaredDistance: Int, slowestTroop: TroopType, delayInMinutes: Long): LocalDateTime {
         val actualDistance = sqrt(squaredDistance.toDouble())
         val travelTime = actualDistance * troopTravelTime(slowestTroop)
@@ -132,12 +131,4 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
 
     private fun formatDepartureTime(departureTime: LocalDateTime): String =
         departureTime.format(DateTimeFormatter.ofPattern("dd/MM/YY | HH:mm:ss"))
-
-    private fun sortedAssignments(assignments: List<Assignment>) =
-        assignments.sortedByDescending { it.squaredDistance }
-
-    private fun troopTravelTime(type: TroopType) = when (type) {
-        TroopType.RAM -> 30
-        TroopType.NOBLE -> 35
-    } / world.speed
 }
