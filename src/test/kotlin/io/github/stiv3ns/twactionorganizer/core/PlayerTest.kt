@@ -35,31 +35,6 @@ class PlayerTest : WordSpec({
         }
     }
 
-    "Player [villages]" should {
-        val player = Player("test")
-
-        "be initialized with 0 villages" {
-            player.numberOfVillages shouldBe 0
-        }
-
-        "::registerVillage increments ::numberOfVillages" {
-            player.registerVillage()
-            player.registerVillage()
-            player.numberOfVillages shouldBe 2
-
-            player.registerVillage()
-            player.numberOfVillages shouldBe 3
-        }
-
-        "::unregisterVillage decrements ::numberOfVillages" {
-            player.unregisterVillage()
-            player.numberOfVillages shouldBe 2
-
-            player.unregisterVillage()
-            player.numberOfVillages shouldBe 1
-        }
-    }
-
     "Player [assigments]" should {
         val player = Player("test")
         val assignment_1 = Assignment(

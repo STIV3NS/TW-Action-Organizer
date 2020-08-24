@@ -18,7 +18,6 @@ class CSVAllyParser : AllyParser {
     var villageRegexLiteral: String = "\\(\\d{3}\\|\\d{3}\\) [a-zA-Z]\\d{1,3}"
 
     var knownPlayers = mutableMapOf<String, Player>()
-    var shouldRegisterVillages = true
 
     private val requiredHeadersAreSet get() =
         !(nicknameHeader.isNullOrBlank()) && !(villagesHeader.isNullOrBlank()) && !(csvFilePath.isNullOrBlank())
@@ -31,7 +30,6 @@ class CSVAllyParser : AllyParser {
         if (requiredHeadersAreSet) {
             parseCSV()
             removeDuplicates()
-            registerVillages()
 
             return Resources(players.toMutableList(), villages.toMutableList())
                 .also {
@@ -108,13 +106,5 @@ class CSVAllyParser : AllyParser {
 
     private fun removeDuplicates() {
         villages = villages.distinctBy { it.toString() }.toMutableList()
-    }
-
-    private fun registerVillages() {
-        if (shouldRegisterVillages) {
-            villages.forEach { v ->
-                v.owner.registerVillage()
-            }
-        }
     }
 }

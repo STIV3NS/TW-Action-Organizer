@@ -68,13 +68,9 @@ class UnitOfWork {
     }
 
     fun dropVillage(village: AllyVillage) {
-        val wasConcrete: Boolean? = concreteResources?.villages?.remove(village)
-
-        if (wasConcrete == true) village.owner.unregisterVillage()
-        else {
-            fakeResources?.villages?.remove(village)
-            demolitionResources?.villages?.remove(village)
-        }
+        concreteResources?.villages?.remove(village)
+        fakeResources?.villages?.remove(village)
+        demolitionResources?.villages?.remove(village)
     }
 
     fun setPlayerNumberOfNobles(player: Player, newValue: Int) {

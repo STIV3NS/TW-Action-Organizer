@@ -8,9 +8,6 @@ data class Player(val nickname: String) {
     var numberOfNobles: Int = 0
         internal set
 
-    var numberOfVillages: Int = 0
-        private set
-
     private val _offAssignments = mutableListOf<Assignment>()
     private val _fakeAssignments = mutableListOf<Assignment>()
     private val _nobleAssignments = mutableListOf<Assignment>()
@@ -31,14 +28,6 @@ data class Player(val nickname: String) {
 
     fun delegateNoble() {
         numberOfNobles--
-    }
-
-    fun registerVillage() {
-        numberOfVillages++
-    }
-
-    fun unregisterVillage() {
-        numberOfVillages--
     }
 
     fun putOffAssignment(assignment: Assignment) {

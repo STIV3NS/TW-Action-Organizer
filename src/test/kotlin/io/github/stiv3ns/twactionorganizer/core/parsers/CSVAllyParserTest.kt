@@ -58,12 +58,11 @@ class CSVAllyParserTest : WordSpec({
 
                 if (parsedPlayers.size == 3) {
                     forall(
-                        row("tomjo", 4, 24),
-                        row("darek0729", 2, 60),
-                        row("nicoleesme", 1, 50)
-                    ) { nick, vilNum, nobNum ->
+                        row("tomjo", 24),
+                        row("darek0729", 60),
+                        row("nicoleesme", 50)
+                    ) { nick, nobNum ->
                         with(parsedPlayers.filter { it.nickname == nick }.first()) {
-                            numberOfVillages shouldBe vilNum
                             numberOfNobles shouldBe nobNum
                         }
                     }
@@ -90,7 +89,6 @@ class CSVAllyParserTest : WordSpec({
                 val parsedPlayer = resources.players.first()
                 val parsedVillages = resources.villages
 
-                parsedPlayer.numberOfVillages shouldBe 3
                 parsedVillages.size shouldBe 3
                 parsedVillages.shouldBeUnique()
             }
