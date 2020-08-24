@@ -12,7 +12,6 @@ class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
     var txtFilePath: String? = null
 
     var knownPlayers = mutableMapOf<String, Player>()
-    var shouldRegisterVillages = true
 
     private val players = mutableListOf<Player>()
     private var villages = mutableListOf<AllyVillage>()
@@ -53,10 +52,6 @@ class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
                 val owner = getPlayerObject(ownerNick)
 
                 villages.add(AllyVillage(x, y, owner))
-
-                if (shouldRegisterVillages) {
-                    owner.registerVillage()
-                }
             }
         }
     }
