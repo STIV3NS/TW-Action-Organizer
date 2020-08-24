@@ -13,7 +13,7 @@ open class Village(
         private set
 
     @Throws(VillageNotFoundException::class)
-    fun initID(world: World) {
+    fun initId(world: World) {
         id = world.fetchVillageID(this)
     }
 
