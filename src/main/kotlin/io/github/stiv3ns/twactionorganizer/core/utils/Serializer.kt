@@ -1,17 +1,16 @@
 package io.github.stiv3ns.twactionorganizer.core.utils
 
 import io.github.stiv3ns.twactionorganizer.core.Player
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import java.io.File
 
 object Serializer {
-    private val json = Json(JsonConfiguration.Stable)
-
     fun save(players: List<Player>, outputFile: File) {
-        val jsonData = json.stringify(Player.serializer().list, players)
-        outputFile.writeText(jsonData)
+        outputFile.writeText(
+            Json.encodeToString(players)
+        )
     }
 
     fun save(players: List<Player>, outFilePath: String) {
@@ -21,7 +20,7 @@ object Serializer {
 
     fun restore(inputFile: File): List<Player> {
         val jsonData = inputFile.readText()
-        return json.parse(Player.serializer().list, jsonData)
+        return Json.decodeFromString(jsonData)
     }
 
     fun restore(inputFilePath: String): List<Player> {
