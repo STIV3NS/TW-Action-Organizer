@@ -22,4 +22,8 @@ class TargetGroup(
     fun setDelayInMinutes(delay: Long) {
         villageList.map { it.delayInMinutes = delay }
     }
+
+    fun withDelayInMinutes(delay: Long) = apply {
+        setDelayInMinutes(delay)
+    }
 }
