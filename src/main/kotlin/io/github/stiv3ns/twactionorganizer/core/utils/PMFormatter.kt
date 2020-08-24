@@ -130,5 +130,5 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
     }
 
     private fun formatDepartureTime(departureTime: LocalDateTime): String =
-        departureTime.format(DateTimeFormatter.ofPattern("dd/MM/YY | HH:mm:ss"))
+        departureTime.format(DateTimeFormatter.ofPattern("dd/MM/YY (E) | HH:mm:ss"))
 }
