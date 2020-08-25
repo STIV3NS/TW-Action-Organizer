@@ -166,7 +166,7 @@ class AssignerBuilder {
     private fun maxNobleRangeIsNotSet() =
         maxNobleRange == null
 
-    private fun throwException() {
+    private fun throwException(): Nothing {
         var exceptionMsg = "AssignerBuilder missing: "
         if (!obligatoryHeadersAreNotSet()) {
             if (targets == null) exceptionMsg += "targets, "
@@ -176,5 +176,7 @@ class AssignerBuilder {
         }
 
         if (requestedNobleAssigner() && maxNobleRangeIsNotSet()) exceptionMsg += "maxNobleRange"
+
+        throw MissingConfigurationException(exceptionMsg)
     }
 }
