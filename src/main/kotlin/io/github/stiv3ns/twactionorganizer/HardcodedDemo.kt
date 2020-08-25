@@ -118,13 +118,15 @@ fun main() = runBlocking {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
+    idInits.forEach { it.join() }
+
     Executor.execute(uow).forEach { report ->
         println("${report.name} failed to assign ${report.numberOfUnassignedTargets} targets " +
                 "/ ${report.numberOfMissingResources} attacks.")
     }
     Executor.shutdownNow()
 
-    idInits.forEach { it.join() }
+
 
     Serializer.save(uow.getAllPlayers(), "/home/stivens/rozpiski/tpk11/rozpiska.json")
 
