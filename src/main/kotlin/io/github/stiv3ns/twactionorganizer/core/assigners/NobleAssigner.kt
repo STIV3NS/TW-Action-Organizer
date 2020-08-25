@@ -6,13 +6,13 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 class NobleAssigner internal constructor(
-    targets: MutableList<TargetVillage>,
-    resources: MutableList<AllyVillage>,
+    targets: Collection<TargetVillage>,
+    resources: Collection<AllyVillage>,
     mainReferencePoint: Village,
     isAssigningFakes: Boolean,
-    private val maxNobleRange: Int
-) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes) {
-
+    protected val maxNobleRange: Int
+) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes)
+{
     override val offAction = Player::putNobleAssignment
     override val fakeAction = Player::putFakeNobleAssignment
 
@@ -42,15 +42,14 @@ class NobleAssigner internal constructor(
         putResourcesToQueue(referencePoint = target)
 
         for ((nearestAllyVillage, distance) in resourcesQueue) {
-            if (target.isAssignCompleted()) {
+            if (target.isAssignCompleted())
                 break
-            }
-            if (distance > maxNobleRange) {
+
+            if (distance > maxNobleRange)
                 break
-            }
-            if (!nearestAllyVillage.owner.hasNoble()) {
+
+            if (!nearestAllyVillage.owner.hasNoble())
                 continue
-            }
 
             assign(nearestAllyVillage, target, distance)
             updateOwnerAndResources(nearestAllyVillage)
@@ -58,9 +57,8 @@ class NobleAssigner internal constructor(
             target.attack()
         }
 
-        if (target.isAssignCompleted()) {
+        if (target.isAssignCompleted())
             targets.remove(target)
-        }
     }
 
     private fun updateOwnerAndResources(nearestAllyVillage: AllyVillage) {
@@ -68,11 +66,10 @@ class NobleAssigner internal constructor(
 
         resources.remove(nearestAllyVillage)
 
-        if (!nearestAllyVillage.owner.hasNoble()) {
+        if (!nearestAllyVillage.owner.hasNoble())
             updateResWithNobles()
-        } else {
+        else
             resWithNobles.remove(nearestAllyVillage)
-        }
     }
 
     private fun updateResWithNobles() {

@@ -32,22 +32,22 @@ class UnitOfWork {
         demolitionResources = resources
     }
 
-    fun getConcreteResourceVillages(): MutableList<AllyVillage> = when (concreteResources) {
-        null -> mutableListOf()
+    fun getConcreteResourceVillages(): Collection<AllyVillage> = when (concreteResources) {
+        null -> listOf()
         else -> concreteResources!!.villages
     }
 
-    fun getFakeResourceVillages(): MutableList<AllyVillage> = when (fakeResources) {
-        null -> mutableListOf()
+    fun getFakeResourceVillages(): Collection<AllyVillage> = when (fakeResources) {
+        null -> listOf()
         else -> fakeResources!!.villages
     }
 
-    fun getDemolitionResourceVillages(): MutableList<AllyVillage> = when (demolitionResources) {
-        null -> mutableListOf()
+    fun getDemolitionResourceVillages(): Collection<AllyVillage> = when (demolitionResources) {
+        null -> listOf()
         else -> demolitionResources!!.villages
     }
 
-    fun getAllPlayers(): List<Player> {
+    fun getAllPlayers(): Collection<Player> {
         val players = mutableListOf<Player>()
 
         concreteResources?.players?.let { players.addAll(it) }
@@ -58,19 +58,23 @@ class UnitOfWork {
     }
 
     fun dropPlayer(player: Player) {
-        concreteResources?.players?.remove(player)
-        fakeResources?.players?.remove(player)
-        demolitionResources?.players?.remove(player)
+        concreteResources = concreteResources
+            ?.copy(
+                players = concreteResources?.players?.minusElement(player) ?: listOf(),
+                villages = concreteResources?.villages?.filter { it.owner != player } ?: listOf()
+            )
 
-        concreteResources?.villages?.removeAll { it.owner == player }
-        fakeResources?.villages?.removeAll { it.owner == player }
-        demolitionResources?.villages?.removeAll { it.owner == player }
-    }
+        fakeResources = fakeResources
+            ?.copy(
+                players = fakeResources?.players?.minusElement(player) ?: listOf(),
+                villages = fakeResources?.villages?.filterNot { it.owner != player } ?: listOf()
+            )
 
-    fun dropVillage(village: AllyVillage) {
-        concreteResources?.villages?.remove(village)
-        fakeResources?.villages?.remove(village)
-        demolitionResources?.villages?.remove(village)
+        demolitionResources = demolitionResources
+            ?.copy(
+                players = demolitionResources?.players?.minusElement(player) ?: listOf(),
+                villages = demolitionResources?.villages?.filterNot { it.owner != player } ?: listOf()
+            )
     }
 
     fun setPlayerNumberOfNobles(player: Player, newValue: Int) {
@@ -88,12 +92,12 @@ class UnitOfWork {
         targetGroups[group.type]?.remove(group)
     }
 
-    fun getTargetGroups(type: AssignerType): List<TargetGroup> =
+    fun getTargetGroups(type: AssignerType): Collection<TargetGroup> =
         targetGroups.getOrDefault(
             key = type,
             defaultValue = listOf()
         ).toList()
 
-    fun getTargetGroups(vararg types: AssignerType): List<TargetGroup> =
+    fun getTargetGroups(vararg types: AssignerType): Collection<TargetGroup> =
         types.flatMap { type -> getTargetGroups(type) }
 }

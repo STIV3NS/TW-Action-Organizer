@@ -3,71 +3,88 @@ package io.github.stiv3ns.twactionorganizer.core
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerBuilder
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerReport
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlin.coroutines.CoroutineContext
 
-object Executor {
-    private val executorService: ExecutorService
-    private val runningTasks = mutableMapOf<TargetGroup, Future<AssignerReport>>()
+class Executor(
+    val uow: UnitOfWork,
+    override val coroutineContext: CoroutineContext
+) : CoroutineScope
+{
+    val channel = Channel<AssignerReport>()
 
-    init {
-        val nCores = Runtime.getRuntime().availableProcessors()
-        executorService = Executors.newFixedThreadPool(nCores)
+    fun execute(): ReceiveChannel<AssignerReport> {
+        startExecutors()
+
+        return channel
     }
 
-    fun execute(uow: UnitOfWork): List<AssignerReport> {
-        startFakeRamAssigners(uow)
-        startConcreteAssigners(uow)
-        startFakeNobleAssigners(uow)
-        startDemolitionAssigners(uow)
+    private fun startExecutors() = launch {
+        val jobs = mutableListOf<Job>()
 
-        return collectReports()
+        startFakeRamAssigners(jobs)
+        startDemolitionAssigners(jobs)
+        startConcreteAssigners(jobs)
+
+        jobs.forEach { it.join() }
+        jobs.clear()
+
+        startFakeNobleAssigners(jobs)
+
+        jobs.forEach { it.join() }
+
+        channel.close()
     }
 
-    private fun startFakeRamAssigners(uow: UnitOfWork) {
-            uow.getTargetGroups(
-                AssignerType.RANDOMIZED_FAKE_RAM,
-                AssignerType.FAKE_RAM,
-            ).forEach { group ->
-            val task = executorService.submit(
+    private fun startFakeRamAssigners(jobs: MutableList<Job>) {
+        uow.getTargetGroups(
+            AssignerType.RANDOMIZED_FAKE_RAM,
+            AssignerType.FAKE_RAM,
+        )
+        .forEach { group ->
+            jobs += GlobalScope.launch(CoroutineName(group.name)) {
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
-                    .targets(group.villageList.toMutableList())
-                    .resources(uow.getFakeResourceVillages().toMutableList())
+                    .targets(group.villages)
+                    .resources(uow.getFakeResourceVillages())
                     .type(group.type)
                     .build()
-            )
-
-            runningTasks[group] = task
+                    .call()
+                    .let { sendReport(it, name = group.name) }
+            }
         }
     }
 
-    private fun startDemolitionAssigners(uow: UnitOfWork) {
-        val sharedResourceVillages = uow.getDemolitionResourceVillages()
+    private suspend fun startDemolitionAssigners(jobs: MutableList<Job>) {
+        var sharedResourceVillages = uow.getDemolitionResourceVillages()
 
         uow.getTargetGroups(
             AssignerType.RANDOMIZED_DEMOLITION,
             AssignerType.DEMOLITION,
         ).forEach { group ->
-            val task = executorService.submit(
+            val job = GlobalScope.async(CoroutineName(group.name)) {
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
-                    .targets(group.villageList.toMutableList())
+                    .targets(group.villages)
                     .resources(sharedResourceVillages)
                     .type(group.type)
                     .build()
-            )
+                    .call()
+                    .let { report ->
+                        sendReport(report, name = group.name)
+                        report.unusedResourceVillages
+                    }
+            }
 
-            runningTasks[group] = task
-
-            task.get() /* <--- wait for completion ! */
+            jobs += job
+            sharedResourceVillages = job.await()
         }
     }
 
-    private fun startConcreteAssigners(uow: UnitOfWork) {
-        val sharedResourceVillages = uow.getConcreteResourceVillages()
+    private suspend fun startConcreteAssigners(jobs: MutableList<Job>) {
+        var sharedResourceVillages = uow.getConcreteResourceVillages()
 
         uow.getTargetGroups(
             AssignerType.NOBLE,
@@ -75,67 +92,48 @@ object Executor {
             AssignerType.RANDOMIZED_RAM,
             AssignerType.RAM,
         ).forEach { group ->
-            val task = executorService.submit(
+            val job = GlobalScope.async(CoroutineName(group.name)) {
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
-                    .targets(group.villageList.toMutableList())
+                    .targets(group.villages)
                     .resources(sharedResourceVillages)
                     .type(group.type)
                     .maxNobleRange(uow.getWorld().maxNobleRange)
                     .build()
-            )
+                    .call()
+                    .let { report ->
+                        sendReport(report, name = group.name)
+                        report.unusedResourceVillages
+                    }
+            }
 
-            runningTasks[group] = task
-
-            task.get() /* <--- wait for completion ! */
+            jobs += job
+            sharedResourceVillages = job.await()
         }
     }
 
-    private fun startFakeNobleAssigners(uow: UnitOfWork) {
+    private fun startFakeNobleAssigners(jobs: MutableList<Job>) {
         uow.getTargetGroups(
             AssignerType.FAKE_NOBLE
         ).forEach { group ->
-            val task = executorService.submit(
+            val job = launch {
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
-                    .targets(group.villageList.toMutableList())
-                    .resources(uow.getFakeResourceVillages().toMutableList())
+                    .targets(group.villages)
+                    .resources(uow.getFakeResourceVillages())
                     .type(group.type)
                     .maxNobleRange(uow.getWorld().maxNobleRange)
                     .build()
-            )
+                    .call()
+                    .let { sendReport(it, name = group.name) }
+            }
 
-            runningTasks[group] = task
-
-            task.get() /* <--- wait for completion ! */
+            jobs += job
         }
     }
 
-    private fun collectReports(): List<AssignerReport> {
-        val completedTasks = mutableListOf<AssignerReport>()
-
-        runningTasks.forEach { group, task ->
-            completedTasks.add(task.get().apply {
-                name = group.name
-            })
-        }
-
-        runningTasks.clear()
-
-        return completedTasks
-    }
-
-    fun shutdownNow() {
-        cancelAllAssigners()
-        executorService.shutdownNow()
-        executorService.awaitTermination(5, TimeUnit.SECONDS)
-    }
-
-    fun cancelAllAssigners() {
-        runningTasks.forEach { group, task ->
-            task.cancel(true)
-        }
-
-        runningTasks.clear()
+    private suspend fun sendReport(report: AssignerReport, name: String) {
+        report.name = name
+        channel.send(report)
     }
 }

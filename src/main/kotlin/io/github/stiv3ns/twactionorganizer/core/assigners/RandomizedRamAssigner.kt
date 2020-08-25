@@ -5,12 +5,12 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 open class RandomizedRamAssigner internal constructor(
-    targets: MutableList<TargetVillage>,
-    resources: MutableList<AllyVillage>,
+    targets: Collection<TargetVillage>,
+    resources: Collection<AllyVillage>,
     mainReferencePoint: Village,
     isAssigningFakes: Boolean
-) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes) {
-
+) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes)
+{
     override fun processAllyVillage(allyVillage: AllyVillage) {
         val randomTarget = targets.random()
 

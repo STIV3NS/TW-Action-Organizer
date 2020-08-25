@@ -7,13 +7,23 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.util.*
 import java.util.concurrent.Callable
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.runBlocking
 
 abstract class Assigner internal constructor(
-    protected val targets: MutableList<TargetVillage>,
-    protected val resources: MutableList<AllyVillage>,
+    targets: Collection<TargetVillage>,
+    resources: Collection<AllyVillage>,
     protected val mainReferencePoint: Village,
     protected val isAssigningFakes: Boolean
-) : Callable<AssignerReport> {
+) : Callable<AssignerReport>
+{
+    protected val targets: MutableCollection<TargetVillage>
+    protected val resources: MutableCollection<AllyVillage>
+
+    init {
+        this.targets = targets.toMutableList()
+        this.resources = resources.toMutableList()
+    }
 
     protected val distanceComparator = Comparator.comparing(Pair<Village, Int>::second)
 

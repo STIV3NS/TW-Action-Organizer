@@ -5,67 +5,22 @@ import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
-class AssignerBuilder {
-    /**
-     * Determines assigner behavior
-     *
-     * ---------------------------------------------------------------------------------------------------------------
-     * [RAM]:
-     * output assigment: Concrete attack without noble
-     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with nearest target.
-     *---------------------------------------------------------------------------------------------------------------
-     * [REVERSED_RAM]:
-     * output assigment: Concrete attack without noble
-     * behavior: Pick an TARGET village that is closest to the referencePoint and link it with nearest ally village.
-     *---------------------------------------------------------------------------------------------------------------
-     * [RANDOMIZED_RAM]:
-     * output assigment: Concrete attack without noble
-     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with RANDOM target.
-     *---------------------------------------------------------------------------------------------------------------
-     * [FAKE_RAM]:
-     * output assigment: Fake attack without noble
-     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with nearest target.
-     *---------------------------------------------------------------------------------------------------------------
-     * [RANDOMIZED_FAKE_RAM]:
-     * output assigment: Fake attack without noble
-     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with RANDOM target.
-     *---------------------------------------------------------------------------------------------------------------
-     * [NOBLE]:
-     * output assigment: Concrete attack with noble
-     * behavior: Pick an TARGET village that is closest to the relativityPoint and link it with nearest ally village.
-     *---------------------------------------------------------------------------------------------------------------
-     * [FAKE_NOBKE]:
-     * output assigment: Fake attack with noble
-     * behavior: Pick an TARGET village that is closest to the relativityPoint and link it with nearest ally village.
-     * ---------------------------------------------------------------------------------------------------------------
-     * [DEMOLITION]:
-     * output assigment: Demolition attack
-     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with nearest target.
-     *---------------------------------------------------------------------------------------------------------------
-     * [RANDOMIZED_DEMOLITION]:
-     * output assigment: Demolition attack
-     * behavior: Pick an ALLY village that is the farthest from referencePoint and link it with RANDOM target.
-     *---------------------------------------------------------------------------------------------------------------
-     */
-
-    var targets: MutableList<TargetVillage>? = null
-    var resources: MutableList<AllyVillage>? = null
-    var mainReferencePoint: Village? = null
-    var type: AssignerType? = null
-    var maxNobleRange: Int? = null
-
+data class AssignerBuilder(
+    val targets: Collection<TargetVillage>? = null,
+    val resources: Collection<AllyVillage>? = null,
+    val mainReferencePoint: Village? = null,
+    val type: AssignerType? = null,
+    val maxNobleRange: Int? = null,
+) {
     /**
      * Requires [targets], [resources], [mainReferencePoint], [type] to be set.
      * When assigning (fake)nobles [maxNobleRange] is also obligatory.
-     * When using randomized assigner [mainReferencePoint] is not obligatory.
      */
     @Throws(MissingConfigurationException::class)
     fun build(): Assigner {
         if (obligatoryHeadersAreNotSet()
-            || (requestedNobleAssigner() && maxNobleRangeIsNotSet())
-        ) {
-            throwException()
-        }
+            or (requestedNobleAssigner() and maxNobleRangeIsNotSet())
+        ) throwException()
 
         val assigner = when (type!!) {
             AssignerType.RAM -> StandardRamAssigner(
@@ -124,34 +79,33 @@ class AssignerBuilder {
             )
         }
 
-        clear()
         return assigner
     }
 
 
-    fun targets(targets: MutableList<TargetVillage>) =
-        apply { this.targets = targets }
+    fun targets(newTargets: Collection<TargetVillage>) =
+        copy(targets = newTargets)
 
-    fun resources(resources: MutableList<AllyVillage>) =
-        apply { this.resources = resources }
+    fun resources(newResources: Collection<AllyVillage>) =
+        copy(resources = newResources)
 
-    fun mainReferencePoint(referencePoint: Village) =
-        apply { this.mainReferencePoint = referencePoint }
+    fun mainReferencePoint(newReferencePoint: Village) =
+        copy(mainReferencePoint = newReferencePoint)
 
-    fun type(type: AssignerType) =
-        apply { this.type = type }
+    fun type(newType: AssignerType) =
+        copy(type = newType)
 
-    fun maxNobleRange(range: Int) =
-        apply { this.maxNobleRange = range }
+    fun maxNobleRange(newRange: Int) =
+        copy(maxNobleRange = newRange)
 
     fun clear() =
-        apply {
-            targets = null
-            resources = null
-            mainReferencePoint = null
-            type = null
+        copy(
+            targets = null,
+            resources = null,
+            mainReferencePoint = null,
+            type = null,
             maxNobleRange = null
-        }
+        )
 
 
     private fun obligatoryHeadersAreNotSet() =

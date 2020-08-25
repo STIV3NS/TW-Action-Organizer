@@ -5,18 +5,15 @@ import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFound
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.logging.Logger
 
-fun <T : Village> CoroutineScope.idInitializer(villages: MutableCollection<T>, world: World) = launch {
-    val invalidVillages = mutableListOf<T>()
-
+fun <T : Village> CoroutineScope.idInitializer(villages: Collection<T>, world: World) = launch {
     villages.forEach { village ->
         try {
             village.initId(world)
         }
         catch (e: VillageNotFoundException) {
-            invalidVillages.add(village)
+            Logger.getAnonymousLogger().warning(e.toString())
         }
     }
-
-    villages.removeAll(invalidVillages)
 }

@@ -8,19 +8,18 @@ import kotlin.math.roundToInt
 class TargetGroup(
     val name: String,
     val type: AssignerType,
-    val villageList: List<TargetVillage>
+    val villages: Collection<TargetVillage>
 ) {
-    val villageCount: Int get() = villageList.size
-
-    val totalAttackCount: Int get() = villageList.map { it.numberOfAttacks }.sum()
+    val villageCount get() = villages.size
+    val totalAttackCount get() = villages.map { it.numberOfAttacks }.sum()
 
     val averagedCoordsAsVillage get() = Village(
-        x = villageList.map { it.x }.average().roundToInt(),
-        y = villageList.map { it.y }.average().roundToInt()
+        x = villages.map { it.x }.average().roundToInt(),
+        y = villages.map { it.y }.average().roundToInt()
     )
 
     fun setDelayInMinutes(delay: Long) {
-        villageList.map { it.delayInMinutes = delay }
+        villages.map { it.delayInMinutes = delay }
     }
 
     fun withDelayInMinutes(delay: Long) = apply {

@@ -1,9 +1,6 @@
 package io.github.stiv3ns.twactionorganizer
 
-import io.github.stiv3ns.twactionorganizer.core.Executor
-import io.github.stiv3ns.twactionorganizer.core.TargetGroup
-import io.github.stiv3ns.twactionorganizer.core.UnitOfWork
-import io.github.stiv3ns.twactionorganizer.core.World
+import io.github.stiv3ns.twactionorganizer.core.*
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
 import io.github.stiv3ns.twactionorganizer.core.parsers.AllyParserWithDynamicOwnerResolution
 import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
@@ -11,6 +8,7 @@ import io.github.stiv3ns.twactionorganizer.core.utils.PMFormatter
 import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
 import io.github.stiv3ns.twactionorganizer.core.utils.idInitializer
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.time.LocalDateTime
@@ -72,66 +70,46 @@ fun main() = runBlocking {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     val idInits = setOf(
-        idInitializer(concreteResources.villages, world),
-        idInitializer(fakeResources.villages, world),
-        idInitializer(demolitionResources.villages, world),
-        idInitializer(off, world),
-        idInitializer(demolition, world),
-        idInitializer(fakeA, world),
-        idInitializer(fakeB, world),
-        idInitializer(fakeC, world),
-        idInitializer(fakeD, world),
-        idInitializer(fakeE, world)
-    )
+        concreteResources.villages,
+        fakeResources.villages,
+        demolitionResources.villages,
+        off,
+        fakeA,
+        fakeB,
+        fakeC,
+        fakeD,
+        fakeE,
+    ).map { villages -> idInitializer(villages, world) }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
+    uow.addTargetGroup(TargetGroup(name = "OFF x3", type = AssignerType.RANDOMIZED_RAM, villages = off))
     uow.addTargetGroup(
-        TargetGroup(name = "OFF x3", type = AssignerType.RANDOMIZED_RAM, villageList = off)
+        run {
+            val MINUTES_PER_HOUR = 60L
+            TargetGroup(name = "Demolition x15", type = AssignerType.RANDOMIZED_DEMOLITION, villages = demolition)
+                .withDelayInMinutes(6 * MINUTES_PER_HOUR)
+        }
     )
-
-    val MINUTES_PER_HOUR = 60L
-    uow.addTargetGroup(
-        TargetGroup(name = "Demolition x15", type = AssignerType.RANDOMIZED_DEMOLITION, villageList = demolition)
-            .withDelayInMinutes(6 * MINUTES_PER_HOUR)
-    )
-
-    uow.addTargetGroup(
-        TargetGroup(name = "Fake A", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeA)
-    )
-
-    uow.addTargetGroup(
-        TargetGroup(name = "Fake B", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeB)
-    )
-
-    uow.addTargetGroup(
-        TargetGroup(name = "Fake C", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeC)
-    )
-
-    uow.addTargetGroup(
-        TargetGroup(name = "Fake D", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeD)
-    )
-
-    uow.addTargetGroup(
-        TargetGroup(name = "Fake E", type = AssignerType.RANDOMIZED_FAKE_RAM, villageList = fakeE)
-    )
+    uow.addTargetGroup(TargetGroup(name = "Fake A", type = AssignerType.RANDOMIZED_FAKE_RAM, villages = fakeA))
+    uow.addTargetGroup(TargetGroup(name = "Fake B", type = AssignerType.RANDOMIZED_FAKE_RAM, villages = fakeB))
+    uow.addTargetGroup(TargetGroup(name = "Fake C", type = AssignerType.RANDOMIZED_FAKE_RAM, villages = fakeC))
+    uow.addTargetGroup(TargetGroup(name = "Fake D", type = AssignerType.RANDOMIZED_FAKE_RAM, villages = fakeD))
+    uow.addTargetGroup(TargetGroup(name = "Fake E", type = AssignerType.RANDOMIZED_FAKE_RAM, villages = fakeE))
 
     ///////////////////////////////////////////////////////////////////////////////////////////
+
+    for (report in Executor(uow, Dispatchers.Default).execute()) {
+        println("""
+            ${report.name} failed to assign ${report.numberOfUnassignedTargets} targets / ${report.numberOfMissingResources} attacks.
+        """.trimIndent())
+    }
 
     idInits.forEach { it.join() }
 
-    Executor.execute(uow).forEach { report ->
-        println("${report.name} failed to assign ${report.numberOfUnassignedTargets} targets " +
-                "/ ${report.numberOfMissingResources} attacks.")
-    }
-    Executor.shutdownNow()
+    Serializer.save(uow.getAllPlayers() as List<Player>, "/home/stivens/rozpiski/tpk11/rozpiska.json")
 
-
-
-    Serializer.save(uow.getAllPlayers(), "/home/stivens/rozpiski/tpk11/rozpiska.json")
-
-    File("/home/stivens/rozpiski/tpk11/rozpiska.txt").printWriter().use {  pw ->
-
+    File("/home/stivens/rozpiski/tpk11/rozpiska.txt").printWriter().use { pw ->
         val formatter = PMFormatter(world, dateOfArrival = LocalDateTime.of(2020, 8, 29, 7, 0))
 
         uow.getAllPlayers().forEach { player ->
