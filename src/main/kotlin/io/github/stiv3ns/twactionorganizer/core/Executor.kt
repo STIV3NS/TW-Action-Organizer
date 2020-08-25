@@ -27,13 +27,10 @@ object Executor {
     }
 
     private fun startFakeRamAssigners(uow: UnitOfWork) {
-        val groups = uow.getTargetGroups(
-            AssignerType.RANDOMIZED_FAKE_RAM
-        ).toMutableList().apply {
-            addAll(uow.getTargetGroups(AssignerType.FAKE_RAM))
-        }
-
-        groups.forEach { group ->
+            uow.getTargetGroups(
+                AssignerType.RANDOMIZED_FAKE_RAM,
+                AssignerType.FAKE_RAM,
+            ).forEach { group ->
             val task = executorService.submit(
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
@@ -50,13 +47,10 @@ object Executor {
     private fun startDemolitionAssigners(uow: UnitOfWork) {
         val sharedResourceVillages = uow.getDemolitionResourceVillages()
 
-        val groups = uow.getTargetGroups(
-            AssignerType.RANDOMIZED_DEMOLITION
-        ).toMutableList().apply {
-            addAll(uow.getTargetGroups(AssignerType.DEMOLITION))
-        }
-
-        groups.forEach { group ->
+        uow.getTargetGroups(
+            AssignerType.RANDOMIZED_DEMOLITION,
+            AssignerType.DEMOLITION,
+        ).forEach { group ->
             val task = executorService.submit(
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
@@ -75,15 +69,12 @@ object Executor {
     private fun startConcreteAssigners(uow: UnitOfWork) {
         val sharedResourceVillages = uow.getConcreteResourceVillages()
 
-        val groups = uow.getTargetGroups(
-            AssignerType.NOBLE
-        ).toMutableList().apply {
-            addAll(uow.getTargetGroups(AssignerType.REVERSED_RAM))
-            addAll(uow.getTargetGroups(AssignerType.RANDOMIZED_RAM))
-            addAll(uow.getTargetGroups(AssignerType.RAM))
-        }
-
-        groups.forEach { group ->
+        uow.getTargetGroups(
+            AssignerType.NOBLE,
+            AssignerType.REVERSED_RAM,
+            AssignerType.RANDOMIZED_RAM,
+            AssignerType.RAM,
+        ).forEach { group ->
             val task = executorService.submit(
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
@@ -101,7 +92,9 @@ object Executor {
     }
 
     private fun startFakeNobleAssigners(uow: UnitOfWork) {
-        uow.getTargetGroups(AssignerType.FAKE_NOBLE).forEach { group ->
+        uow.getTargetGroups(
+            AssignerType.FAKE_NOBLE
+        ).forEach { group ->
             val task = executorService.submit(
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)

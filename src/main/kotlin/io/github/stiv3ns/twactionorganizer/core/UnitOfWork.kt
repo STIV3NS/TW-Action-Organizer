@@ -88,8 +88,12 @@ class UnitOfWork {
         targetGroups[group.type]?.remove(group)
     }
 
-    fun getTargetGroups(type: AssignerType): List<TargetGroup> = targetGroups.getOrDefault(
-        key = type,
-        defaultValue = mutableListOf()
-    ).toList()
+    fun getTargetGroups(type: AssignerType): List<TargetGroup> =
+        targetGroups.getOrDefault(
+            key = type,
+            defaultValue = listOf()
+        ).toList()
+
+    fun getTargetGroups(vararg types: AssignerType): List<TargetGroup> =
+        types.flatMap { type -> getTargetGroups(type) }
 }
