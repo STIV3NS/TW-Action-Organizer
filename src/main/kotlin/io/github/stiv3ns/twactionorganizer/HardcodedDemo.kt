@@ -135,26 +135,27 @@ fun main() = runBlocking {
         uow.getAllPlayers().forEach { player ->
             pw.println(
                 """${player.nickname}
-                Cześć, oto Twoja rozpiska.
-                Ataki mają wchodzić na 29 sierpnia. Obok rozkazu jest podany czas T0 pierwszego możliwego terminu wysyłki.
-                
-                Kilka uwag:
-                1. Offy wysyłamy razem z katapultami (!patrz. podpunkt 2). Tym razem jeszcze bardziej staramy
-                   się w miarę możliwości dosyłać ataki regularnie co 2/3/4 godziny. No ale tak jak zawsze off wysłany
-                   na wieczór to lepszy off niż taki nie wysłany w ogóle.
-                2. Katapultami celujemy na zmianę w zagrodę/ratusz/hute żelaza.
-                3. Do fejków fajnie jest dorzucić ze dwie katapulty wycelowane w pałac (dwie wystarczą żeby go zburzyć).
-                4. Przy wysyłaniu ataków pamiętaj o zostawieniu wojska na w sumie 5 fejków.
-                5. Przy wysyłaniu ataków zawsze upewniaj sie, czy atak wchodzi na dobrą datę (a nie np. dzień wcześniej).
-                6. Jeśli na koncie jest zastępca to linki dla niego można wygenerować za pomocą tego:
-                    https://pl150.plemiona.pl/game.php?screen=forum&screenmode=view_thread&forum_id=617&thread_id=44897
-                
-                
-                ${formatter.getFormattedMsgFor(player)}
-                
-                Ave (T)PK!
-                ==============================================================================
-                ==============================================================================""".trimIndent()
+                |Cześć, oto Twoja rozpiska.
+                |Ataki mają wchodzić na 29 sierpnia. Obok rozkazu jest podany czas T0 pierwszego możliwego terminu wysyłki.
+                |
+                |Kilka uwag:
+                |1. Offy wysyłamy razem z katapultami (!patrz. podpunkt 2). Tym razem jeszcze bardziej staramy
+                |   się w miarę możliwości dosyłać ataki regularnie co 2/3/4 godziny. No ale tak jak zawsze off wysłany
+                |   na wieczór to lepszy off niż taki nie wysłany w ogóle.
+                |2. Katapultami celujemy na zmianę w zagrodę/ratusz/hute żelaza.
+                |3. Do fejków fajnie jest dorzucić ze dwie katapulty wycelowane w pałac (dwie wystarczą żeby go zburzyć).
+                |4. Przy wysyłaniu ataków pamiętaj o zostawieniu wojska na w sumie 5 fejków.
+                |5. Przy wysyłaniu ataków zawsze upewniaj sie, czy atak wchodzi na dobrą datę (a nie np. dzień wcześniej).
+                |6. Jeśli na koncie jest zastępca to linki dla niego można wygenerować za pomocą tego:
+                |    https://pl150.plemiona.pl/game.php?screen=forum&screenmode=view_thread&forum_id=617&thread_id=44897
+                |
+                |
+                |${formatter.getFormattedMsgFor(player)}
+                |
+                |Ave (T)PK!
+                |==============================================================================
+                |==============================================================================
+                """.trimMargin()
             )
         }
     }
