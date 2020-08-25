@@ -4,4 +4,8 @@ public class VillageNotFoundException extends Exception {
     public VillageNotFoundException() {
         super();
     }
+
+    public VillageNotFoundException(String msg) {
+        super(msg);
+    }
 }

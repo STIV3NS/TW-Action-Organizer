@@ -14,7 +14,7 @@ open class Village(
 
     @Throws(VillageNotFoundException::class)
     fun initId(world: World) {
-        id = world.fetchVillageID(this)
+        id = world.fetchVillageId(this)
     }
 
     infix fun distanceTo(v2: Village): Int {
