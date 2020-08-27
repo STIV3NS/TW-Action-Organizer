@@ -24,11 +24,11 @@ object Logger {
         log.send(Error(text))
     }
 
-    suspend fun subscribe(messageType: KClass<LogMessage>, channel: SendChannel<LogMessage>) {
+    suspend fun subscribe(messageType: KClass<out LogMessage>, channel: SendChannel<LogMessage>) {
         log.send( SubscribeRequest(messageType, channel) )
     }
 
-    suspend fun unSubscribe(messageType: KClass<LogMessage>, channel: SendChannel<LogMessage>) {
+    suspend fun unSubscribe(messageType: KClass<out LogMessage>, channel: SendChannel<LogMessage>) {
         log.send( UnsubscribeRequest(messageType, channel) )
     }
 }
