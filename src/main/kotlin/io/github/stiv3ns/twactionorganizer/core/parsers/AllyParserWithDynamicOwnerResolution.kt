@@ -8,9 +8,7 @@ import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.io.File
 import java.io.IOException
 
-class AllyParserWithDynamicOwnerResolution(val world: World) : AllyParser {
-    var txtFilePath: String? = null
-
+class AllyParserWithDynamicOwnerResolution(val world: World) {
     var knownPlayers = mutableMapOf<String, Player>()
 
     private val players = mutableListOf<Player>()

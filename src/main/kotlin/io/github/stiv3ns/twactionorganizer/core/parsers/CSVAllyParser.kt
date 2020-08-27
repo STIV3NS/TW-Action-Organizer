@@ -9,7 +9,7 @@ import java.io.File
 import java.io.IOException
 
 
-class CSVAllyParser : AllyParser {
+class CSVAllyParser {
     var csvFilePath: String? = null
 
     var nicknameHeader: String? = null
@@ -26,7 +26,7 @@ class CSVAllyParser : AllyParser {
     private var villages = mutableListOf<AllyVillage>()
 
     @Throws(MissingConfigurationException::class, IOException::class)
-    override fun parseAndGetResources(): Resources {
+    fun parseAndGetResources(): Resources {
         if (requiredHeadersAreSet) {
             parseCSV()
             removeDuplicates()
