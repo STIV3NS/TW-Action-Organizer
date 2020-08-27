@@ -5,18 +5,14 @@ import io.github.stiv3ns.twactionorganizer.core.Assignment
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
-import java.util.*
-import java.util.concurrent.Callable
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.runBlocking
+import java.util.PriorityQueue
 
 abstract class Assigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Collection<AllyVillage>,
     protected val mainReferencePoint: Village,
     protected val isAssigningFakes: Boolean
-) : Callable<AssignerReport>
-{
+) {
     protected val targets: MutableCollection<TargetVillage>
     protected val resources: MutableCollection<AllyVillage>
 
@@ -39,6 +35,8 @@ abstract class Assigner internal constructor(
 
     protected abstract val offAction: Player.(Assignment) -> Unit
     protected abstract val fakeAction: Player.(Assignment) -> Unit
+
+    abstract fun call(): AssignerReport
 
     protected open fun putResourcesToQueue(referencePoint: Village) {
         resourcesQueue.clear()
