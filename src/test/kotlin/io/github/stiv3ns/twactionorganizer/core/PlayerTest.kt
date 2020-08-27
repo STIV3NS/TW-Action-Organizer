@@ -57,6 +57,11 @@ class PlayerTest : WordSpec({
             destination = TargetVillage(8, 8, 0),
             squaredDistance = 2
         )
+        val assignment_5 = Assignment(
+            departure = AllyVillage(7, 7, player),
+            destination = TargetVillage(3, 8, 0),
+            squaredDistance = 5
+        )
 
         "be initialized as empty lists" {
             with(player) {
@@ -67,28 +72,34 @@ class PlayerTest : WordSpec({
             }
         }
 
-        "put off-assigment to offAssignments" {
+        "put off-assignment to offAssignments" {
             player.putOffAssignment(assignment_1)
 
             player.offAssignments.shouldContainExactly(assignment_1)
         }
 
-        "put fake-assigment to fakeAssignments" {
+        "put fake-assignment to fakeAssignments" {
             player.putFakeAssignment(assignment_2)
 
             player.fakeAssignments.shouldContainExactly(assignment_2)
         }
 
-        "put noble-assigment to nobleAssignments" {
+        "put noble-assignment to nobleAssignments" {
             player.putNobleAssignment(assignment_3)
 
             player.nobleAssignments.shouldContainExactly(assignment_3)
         }
 
-        "put fake-noble-assigment to fakeNobleAssignments" {
+        "put fake-noble-assignment to fakeNobleAssignments" {
             player.putFakeNobleAssignment(assignment_4)
 
             player.fakeNobleAssignments.shouldContainExactly(assignment_4)
+        }
+
+        "put demolition-assignment to demolitionAssignments" {
+            player.putDemolitionAssignment(assignment_5)
+
+            player.demolitionAssignments.shouldContainExactly(assignment_5)
         }
 
         "properly put multiple assignments" {
