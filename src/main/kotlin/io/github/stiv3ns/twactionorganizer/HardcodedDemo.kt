@@ -8,6 +8,7 @@ import io.github.stiv3ns.twactionorganizer.core.PMFormatter
 import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
 import io.github.stiv3ns.twactionorganizer.core.utils.idInitializer
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
+import io.github.stiv3ns.twactionorganizer.localization.PL_PMFormatterLocalization
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -114,7 +115,11 @@ fun main() = runBlocking {
     Serializer.save(uow.getAllPlayers() as List<Player>, "/home/stivens/rozpiski/tpk11/rozpiska.json.asd")
 
     File("/home/stivens/rozpiski/tpk11/rozpiska.txt").printWriter().use { pw ->
-        val formatter = PMFormatter(world, dateOfArrival = LocalDateTime.of(2020, 8, 29, 7, 0))
+        val formatter = PMFormatter(
+            world,
+            dateOfArrival = LocalDateTime.of(2020, 8, 29, 7, 0),
+            localization = PL_PMFormatterLocalization
+        )
 
         uow.getAllPlayers().forEach { player ->
             pw.println(

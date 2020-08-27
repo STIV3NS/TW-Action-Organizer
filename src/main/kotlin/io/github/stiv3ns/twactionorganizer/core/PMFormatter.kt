@@ -1,25 +1,17 @@
 package io.github.stiv3ns.twactionorganizer.core
 
+import io.github.stiv3ns.twactionorganizer.localization.PMFormatterLocalization
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.math.sqrt
 
-class PMFormatter(private val world: World, private val dateOfArrival: LocalDateTime) {
-
-    private val bundle = ResourceBundle.getBundle("localization/pmformatter")
-
-    private val OPEN_SPOILER        by lazy { bundle.getString("OPEN_SPOILER") }
-    private val CLOSE_SPOILER       by lazy { bundle.getString("CLOSE_SPOILER") }
-    private val REQUIREMENTS_HEADER by lazy { bundle.getString("REQUIREMENTS_HEADER") }
-    private val NOBLE_HEADER        by lazy { bundle.getString("NOBLE_HEADER") }
-    private val OFF_HEADER          by lazy { bundle.getString("OFF_HEADER") }
-    private val FAKE_HEADER         by lazy { bundle.getString("FAKE_HEADER") }
-    private val FAKENOBLE_HEADER    by lazy { bundle.getString("FAKENOBLE_HEADER") }
-    private val DEMOLITION_HEADER   by lazy { bundle.getString("DEMOLITION_HEADER") }
-    private val EXECUTION_TEXT      by lazy { bundle.getString("EXECUTION_TEXT") }
-
-    private val GROUP_SIZE = 5
+class PMFormatter(
+    private val world: World,
+    private val dateOfArrival: LocalDateTime,
+    private val localization: PMFormatterLocalization
+) : PMFormatterLocalization by localization
+{
+    var batchSize = 5
 
     private enum class TroopType {
         RAM,
@@ -85,7 +77,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
         for ((village, numberOfRequiredNobles) in sortedRequirements) {
             msg.append("$numberOfRequiredNobles __ $village\n")
 
-            if (++iteratorCounter % GROUP_SIZE == 0)
+            if (++iteratorCounter % batchSize == 0)
                 msg.append("\n")
         }
 
@@ -111,7 +103,7 @@ class PMFormatter(private val world: World, private val dateOfArrival: LocalDate
                     "\n\n\n\n\n!"
                 else ""
 
-            val verticalSpaceIfNextGroup = if (counter % GROUP_SIZE == 0) "\n" else ""
+            val verticalSpaceIfNextGroup = if (counter % batchSize == 0) "\n" else ""
 
             msg.append("$verticalSpaceIfNextDay ${++counter}. ${formatDepartureTime(departureTime)} $assignment \n")
                 .append("[url=${world.domain}/game.php")
