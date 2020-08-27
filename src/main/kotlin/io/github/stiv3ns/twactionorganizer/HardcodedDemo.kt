@@ -47,25 +47,25 @@ fun main() = runBlocking {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     val off = mutableListOf<TargetVillage>()
-    TargetParser.parse("/home/stivens/rozpiski/tpk11/off3.txt", 3, off)
+    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/off3.txt").readText(), 3, off)
 
     val demolition = mutableListOf<TargetVillage>()
-    TargetParser.parse("/home/stivens/rozpiski/tpk11/off3.txt", 15, demolition)
+    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/off3.txt").readText(), 15, demolition)
 
     val fakeA = mutableListOf<TargetVillage>()
-    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeA40.txt", 40, fakeA)
+    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeA40.txt").readText(), 40, fakeA)
 
     val fakeB = mutableListOf<TargetVillage>()
-    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeB10.txt", 10, fakeB)
+    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeB10.txt").readText(), 10, fakeB)
 
     val fakeC = mutableListOf<TargetVillage>()
-    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeC10.txt", 10, fakeC)
+    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeC10.txt").readText(), 10, fakeC)
 
     val fakeD = mutableListOf<TargetVillage>()
-    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeD16.txt", 16, fakeD)
+    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeD16.txt").readText(), 16, fakeD)
 
     val fakeE = mutableListOf<TargetVillage>()
-    TargetParser.parse("/home/stivens/rozpiski/tpk11/fakeE13.txt", 13, fakeE)
+    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeE13.txt").readText(), 13, fakeE)
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
