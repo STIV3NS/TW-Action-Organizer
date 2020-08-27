@@ -4,7 +4,7 @@ import io.github.stiv3ns.twactionorganizer.core.*
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
 import io.github.stiv3ns.twactionorganizer.core.parsers.AllyParserWithDynamicOwnerResolution
 import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
-import io.github.stiv3ns.twactionorganizer.core.utils.PMFormatter
+import io.github.stiv3ns.twactionorganizer.core.PMFormatter
 import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
 import io.github.stiv3ns.twactionorganizer.core.utils.idInitializer
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage

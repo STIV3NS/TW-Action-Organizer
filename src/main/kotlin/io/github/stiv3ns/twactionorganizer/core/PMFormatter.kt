@@ -1,9 +1,5 @@
-package io.github.stiv3ns.twactionorganizer.core.utils
+package io.github.stiv3ns.twactionorganizer.core
 
-import io.github.stiv3ns.twactionorganizer.core.Player
-import io.github.stiv3ns.twactionorganizer.core.Assignment
-import io.github.stiv3ns.twactionorganizer.core.World
-import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
