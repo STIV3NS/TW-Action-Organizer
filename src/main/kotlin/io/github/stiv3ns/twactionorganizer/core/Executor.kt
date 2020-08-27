@@ -3,25 +3,21 @@ package io.github.stiv3ns.twactionorganizer.core
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerBuilder
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerReport
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
+import io.github.stiv3ns.twactionorganizer.logging.Logger
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlin.coroutines.CoroutineContext
 
+@ObsoleteCoroutinesApi
 class Executor(
     val uow: UnitOfWork,
     override val coroutineContext: CoroutineContext
 ) : CoroutineScope
 {
-    val channel = Channel<AssignerReport>()
+    fun execute(): Job = launch { launchExecutors() }
 
-    fun execute(): ReceiveChannel<AssignerReport> {
-        startExecutors()
+    private suspend fun launchExecutors() {
+        Logger.info("Execution started")
 
-        return channel
-    }
-
-    private fun startExecutors() = launch {
         val jobs = mutableListOf<Job>()
 
         startFakeRamAssigners(jobs)
@@ -35,7 +31,7 @@ class Executor(
 
         jobs.forEach { it.join() }
 
-        channel.close()
+        Logger.info("Execution finished")
     }
 
     private fun startFakeRamAssigners(jobs: MutableList<Job>) {
@@ -45,6 +41,7 @@ class Executor(
         )
         .forEach { group ->
             jobs += GlobalScope.launch(CoroutineName(group.name)) {
+                Logger.info("Assigner for ${group.name} called")
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
@@ -65,6 +62,7 @@ class Executor(
             AssignerType.DEMOLITION,
         ).forEach { group ->
             val job = GlobalScope.async(CoroutineName(group.name)) {
+                Logger.info("Assigner for ${group.name} called")
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
@@ -93,6 +91,7 @@ class Executor(
             AssignerType.RAM,
         ).forEach { group ->
             val job = GlobalScope.async(CoroutineName(group.name)) {
+                Logger.info("Assigner for ${group.name} called")
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
@@ -117,6 +116,7 @@ class Executor(
             AssignerType.FAKE_NOBLE
         ).forEach { group ->
             val job = launch {
+                Logger.info("Assigner for ${group.name} called")
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
@@ -133,7 +133,6 @@ class Executor(
     }
 
     private suspend fun sendReport(report: AssignerReport, name: String) {
-        report.name = name
-        channel.send(report)
+        Logger.report(report.apply { this.name = name })
     }
 }

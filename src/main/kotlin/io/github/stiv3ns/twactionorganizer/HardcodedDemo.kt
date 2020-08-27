@@ -9,12 +9,17 @@ import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
 import io.github.stiv3ns.twactionorganizer.core.utils.idInitializer
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.localization.PL_PMFormatterLocalization
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import io.github.stiv3ns.twactionorganizer.logging.Info
+import io.github.stiv3ns.twactionorganizer.logging.LogMessage
+import io.github.stiv3ns.twactionorganizer.logging.Logger
+import io.github.stiv3ns.twactionorganizer.logging.Report
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.actor
 import java.io.File
 import java.time.LocalDateTime
 
-fun main() = runBlocking {
+@ObsoleteCoroutinesApi
+fun main(): Unit = runBlocking {
     val world = World("pl150.plemiona.pl")
     val uow = UnitOfWork()
     uow.setWorld(world)
@@ -104,13 +109,24 @@ fun main() = runBlocking {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    for (report in Executor(uow, Dispatchers.Default).execute()) {
-        println("""
-            ${report.name} failed to assign ${report.numberOfUnassignedTargets} targets / ${report.numberOfMissingResources} attacks.
-        """.trimIndent())
+    val infoActor = actor<LogMessage> {
+        for (msg in channel) {
+            when (msg) {
+                is Info ->
+                    println(msg.text)
+                is Report ->
+                    println("${msg.assignerReport.name} failed to assign ${msg.assignerReport.numberOfMissingResources} attacks")
+                else -> print("")
+            }
+        }
     }
+    Logger.subscribe(Info::class, infoActor)
+    Logger.subscribe(Report::class, infoActor)
+
+    Executor(uow, Dispatchers.Default).execute().join()
 
     idInits.forEach { it.join() }
+    infoActor.close()
 
     Serializer.save(uow.getAllPlayers() as List<Player>, "/home/stivens/rozpiski/tpk11/rozpiska.json.asd")
 

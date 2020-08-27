@@ -1,5 +1,6 @@
 package io.github.stiv3ns.twactionorganizer.logging
 
+import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerReport
 import kotlinx.coroutines.channels.SendChannel
 import kotlin.reflect.KClass
 
@@ -18,3 +19,5 @@ internal class UnsubscribeRequest(
 class Info(val text: String) : LogMessage()
 class Warn(val text: String) : LogMessage()
 class Error(val text: String) : LogMessage()
+
+class Report(val assignerReport: AssignerReport) : LogMessage()

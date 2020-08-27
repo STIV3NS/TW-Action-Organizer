@@ -1,5 +1,6 @@
 package io.github.stiv3ns.twactionorganizer.logging
 
+import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerReport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -23,6 +24,10 @@ object Logger : CoroutineScope {
 
     suspend fun error(text: String) {
         log.send(Error(text))
+    }
+
+    suspend fun report(assignerReport: AssignerReport) {
+        log.send(Report(assignerReport))
     }
 
     suspend fun subscribe(messageType: KClass<out LogMessage>, channel: SendChannel<LogMessage>) {
