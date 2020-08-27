@@ -5,8 +5,6 @@ import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
-import java.io.File
-import java.io.IOException
 
 class AllyParserWithDynamicOwnerResolution(val world: World) {
     var knownPlayers = mutableMapOf<String, Player>()
@@ -14,55 +12,36 @@ class AllyParserWithDynamicOwnerResolution(val world: World) {
     private val players = mutableListOf<Player>()
     private var villages = mutableListOf<AllyVillage>()
 
-    @Throws(IOException::class)
-    override fun parseAndGetResources(): Resources {
-        if (!txtFilePath.isNullOrBlank()) {
-            parseFile()
+    private val coordinatesRegex = Regex("\\d{3}\\|\\d{3}")
 
-            return Resources(players.toMutableList(), villages.toMutableList())
-                .also {
-                    players.clear()
-                    villages.clear()
-                    knownPlayers.clear()
-                }
+    fun parseAndGetResources(text: String): Resources {
+        parseText(text)
 
-        } else {
-            throw IOException("Input file not specified.")
-        }
-    }
-
-    private fun parseFile() {
-        val file = File(txtFilePath!!)
-        val fileContent = file.readText()
-
-        val coordinatesRegex = Regex("\\d{3}\\|\\d{3}")
-        val xyRegex = Regex("\\d{3}")
-
-        coordinatesRegex.findAll(fileContent).forEach { matchResult ->
-            val coordinates = matchResult.value
-
-            with(xyRegex.findAll(coordinates)) {
-                val x = first().value.toInt()
-                val y = last().value.toInt()
-
-                val ownerNick = world.fetchVillageOwner(Village(x, y))
-
-                val owner = getPlayerObject(ownerNick)
-
-                villages.add(AllyVillage(x, y, owner))
+        return Resources(players.toList(), villages.toList())
+            .also {
+                players.clear()
+                villages.clear()
             }
+    }
+
+    private fun parseText(text: String) {
+        coordinatesRegex.findAll(text).forEach { matchResult ->
+            val coords = matchResult.value
+            val (x, y) = coords.split("|").map { it.toInt() }
+
+            val ownerNickname = world.fetchVillageOwner(Village(x, y))
+
+            val owner = getPlayerObject(ownerNickname)
+
+            villages.add(AllyVillage(x, y, owner))
         }
     }
 
-    private fun getPlayerObject(nickname: String): Player {
-        if (!knownPlayers.containsKey(nickname)) {
-
-            val newPlayer = Player(nickname)
-
-            knownPlayers[nickname] = newPlayer
-            players.add(newPlayer)
-        }
-
-        return knownPlayers[nickname]!!
-    }
+    private fun getPlayerObject(nickname: String): Player =
+        knownPlayers.getOrPut(
+            key = nickname,
+            defaultValue = {
+                Player(nickname).also { players.add(it) }
+            }
+        )
 }

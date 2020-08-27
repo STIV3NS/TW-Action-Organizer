@@ -21,51 +21,55 @@ fun main() = runBlocking {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     val allyParser = AllyParserWithDynamicOwnerResolution(world)
-        .apply {
-            txtFilePath = "/home/stivens/rozpiski/tpk11/res_concrete.txt"
-        }
 
-    val concreteResources = allyParser.parseAndGetResources()
+    val concreteResources = allyParser.parseAndGetResources(
+        File("/home/stivens/rozpiski/tpk11/res_concrete.txt").readText())
     uow.setConcreteResources(concreteResources)
 
-    with(allyParser) {
-        txtFilePath = "/home/stivens/rozpiski/tpk11/res_fake.txt"
-        knownPlayers = uow.getAllPlayers().associateBy { it.nickname }.toMutableMap()
-    }
-
-    val fakeResources = allyParser.parseAndGetResources()
+    val fakeResources = allyParser.parseAndGetResources(
+        File("/home/stivens/rozpiski/tpk11/res_fake.txt").readText())
     uow.setFakeResources(fakeResources)
 
-    with(allyParser) {
-        txtFilePath = "/home/stivens/rozpiski/tpk11/res_demolition.txt"
-        knownPlayers = uow.getAllPlayers().associateBy { it.nickname }.toMutableMap()
-    }
-
-    val demolitionResources = allyParser.parseAndGetResources()
+    val demolitionResources = allyParser.parseAndGetResources(
+        File("/home/stivens/rozpiski/tpk11/res_demolition.txt").readText())
     uow.setDemolitionResources(demolitionResources)
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     val off = mutableListOf<TargetVillage>()
-    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/off3.txt").readText(), 3, off)
+    TargetParser.parse(
+        File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
+        attacksPerVillage = 3, appendTo = off)
 
     val demolition = mutableListOf<TargetVillage>()
-    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/off3.txt").readText(), 15, demolition)
+    TargetParser.parse(
+        File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
+        attacksPerVillage = 15, appendTo = demolition)
 
     val fakeA = mutableListOf<TargetVillage>()
-    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeA40.txt").readText(), 40, fakeA)
+    TargetParser.parse(
+        File("/home/stivens/rozpiski/tpk11/fakeA40.txt").readText(),
+        attacksPerVillage = 40, appendTo = fakeA)
 
     val fakeB = mutableListOf<TargetVillage>()
-    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeB10.txt").readText(), 10, fakeB)
+    TargetParser.parse(
+        File("/home/stivens/rozpiski/tpk11/fakeB10.txt").readText(),
+        attacksPerVillage = 10, appendTo = fakeB)
 
     val fakeC = mutableListOf<TargetVillage>()
-    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeC10.txt").readText(), 10, fakeC)
+    TargetParser.parse(
+        File("/home/stivens/rozpiski/tpk11/fakeC10.txt").readText(),
+        attacksPerVillage = 10, appendTo = fakeC)
 
     val fakeD = mutableListOf<TargetVillage>()
-    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeD16.txt").readText(), 16, fakeD)
+    TargetParser.parse(
+        File("/home/stivens/rozpiski/tpk11/fakeD16.txt").readText(),
+        attacksPerVillage = 16, appendTo = fakeD)
 
     val fakeE = mutableListOf<TargetVillage>()
-    TargetParser.parse(File("/home/stivens/rozpiski/tpk11/fakeE13.txt").readText(), 13, fakeE)
+    TargetParser.parse(
+        File("/home/stivens/rozpiski/tpk11/fakeE13.txt").readText(),
+        attacksPerVillage = 13, appendTo = fakeE)
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,7 +111,7 @@ fun main() = runBlocking {
 
     idInits.forEach { it.join() }
 
-    Serializer.save(uow.getAllPlayers() as List<Player>, "/home/stivens/rozpiski/tpk11/rozpiska.json")
+    Serializer.save(uow.getAllPlayers() as List<Player>, "/home/stivens/rozpiski/tpk11/rozpiska.json.asd")
 
     File("/home/stivens/rozpiski/tpk11/rozpiska.txt").printWriter().use { pw ->
         val formatter = PMFormatter(world, dateOfArrival = LocalDateTime.of(2020, 8, 29, 7, 0))
