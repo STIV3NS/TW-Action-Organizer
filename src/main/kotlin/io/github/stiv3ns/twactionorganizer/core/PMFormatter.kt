@@ -29,32 +29,32 @@ class PMFormatter(
         val msg = StringBuilder()
 
         if (player.nobleAssignments.isNotEmpty() || player.fakeNobleAssignments.isNotEmpty()) {
-            msg.append(REQUIREMENTS_HEADER)
+            msg.append(REQUIREMENTS_HEADER, "\n")
             appendNobleRequirements(msg, player)
         }
 
         if (player.nobleAssignments.isNotEmpty()) {
-            msg.append(NOBLE_HEADER)
+            msg.append(NOBLE_HEADER, "\n")
             appendAssignments(msg, player.nobleAssignments, TroopType.NOBLE)
         }
 
         if (player.offAssignments.isNotEmpty()) {
-            msg.append(OFF_HEADER)
+            msg.append(OFF_HEADER, "\n")
             appendAssignments(msg, player.offAssignments, TroopType.RAM)
         }
 
         if (player.fakeNobleAssignments.isNotEmpty()) {
-            msg.append(FAKENOBLE_HEADER)
+            msg.append(FAKENOBLE_HEADER, "\n")
             appendAssignments(msg, player.fakeNobleAssignments, TroopType.NOBLE)
         }
 
         if (player.fakeAssignments.isNotEmpty()) {
-            msg.append(FAKE_HEADER)
+            msg.append(FAKE_HEADER, "\n")
             appendAssignments(msg, player.fakeAssignments, TroopType.RAM)
         }
 
         if (player.demolitionAssignments.isNotEmpty()) {
-            msg.append(DEMOLITION_HEADER)
+            msg.append(DEMOLITION_HEADER, "\n")
             appendAssignments(msg, player.demolitionAssignments, TroopType.CATAPULT)
         }
 
@@ -71,7 +71,7 @@ class PMFormatter(
         val sortedRequirements =
             requirementsByVillage.toList().sortedByDescending { (_, cnt) -> cnt }.toMap()
 
-        msg.append(OPEN_SPOILER)
+        msg.append(OPEN_SPOILER, "\n")
 
         var iteratorCounter = 0
         for ((village, numberOfRequiredNobles) in sortedRequirements) {
@@ -81,11 +81,11 @@ class PMFormatter(
                 msg.append("\n")
         }
 
-        msg.append(CLOSE_SPOILER)
+        msg.append(CLOSE_SPOILER, "\n")
     }
 
     private fun appendAssignments(msg: StringBuilder, assignments: List<Assignment>, slowestTroop: TroopType) {
-        msg.append(OPEN_SPOILER)
+        msg.append(OPEN_SPOILER, "\n")
 
         val sortedAssignments = assignments.sortedByDescending { it.squaredDistance }
         var counter = 0
@@ -115,7 +115,7 @@ class PMFormatter(
             previousDayOfMonth = departureTime.dayOfMonth
         }
 
-        msg.append(CLOSE_SPOILER)
+        msg.append(CLOSE_SPOILER, "\n")
     }
 
     private fun designateDepartureTime(squaredDistance: Int, slowestTroop: TroopType, delayInMinutes: Long): LocalDateTime {
