@@ -103,14 +103,14 @@ class PMFormatter(
                     "\n\n\n\n\n!"
                 else ""
 
-            val verticalSpaceIfNextGroup = if (counter % batchSize == 0) "\n" else ""
+            val verticalSpaceIfNextBatch = if (counter % batchSize == 0) "\n" else ""
 
             msg.append("$verticalSpaceIfNextDay ${++counter}. ${formatDepartureTime(departureTime)} $assignment \n")
                 .append("[url=${world.domain}/game.php")
                 .append("?village=${assignment.departure.id ?: 0}")
                 .append("&screen=place&target=${assignment.destination.id ?: 0}]")
                 .append("$EXECUTION_TEXT[/url]\n")
-                .append(verticalSpaceIfNextGroup)
+                .append(verticalSpaceIfNextBatch)
 
             previousDayOfMonth = departureTime.dayOfMonth
         }
