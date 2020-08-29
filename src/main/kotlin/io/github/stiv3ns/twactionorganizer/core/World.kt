@@ -23,7 +23,7 @@ class World(domain: String) {
 
     init {
         if (!domain.startsWith("https://")) {
-            this.domain = "https://" + domain;
+            this.domain = "https://$domain";
         } else {
             this.domain = domain
         }
