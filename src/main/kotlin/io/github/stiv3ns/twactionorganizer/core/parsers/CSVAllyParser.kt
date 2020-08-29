@@ -37,16 +37,20 @@ class CSVAllyParser {
                     villages.clear()
                     knownPlayers.clear()
                 }
-        } else {
-            var exceptionMsg = "CSVAllyParser missing: "
-
-            if (nicknameHeader.isNullOrBlank()) exceptionMsg += "nicknameHeader, "
-            if (villagesHeader.isNullOrBlank()) exceptionMsg += "villagesHeader, "
-            if (csvFilePath.isNullOrBlank()) exceptionMsg += "csvFilePath"
-
-
-            throw MissingConfigurationException(exceptionMsg)
         }
+        else
+            throwMissingConfigurationException()
+    }
+
+    private fun throwMissingConfigurationException(): Nothing {
+        var exceptionMsg = "CSVAllyParser missing: "
+
+        if (nicknameHeader.isNullOrBlank()) exceptionMsg += "nicknameHeader, "
+        if (villagesHeader.isNullOrBlank()) exceptionMsg += "villagesHeader, "
+        if (csvFilePath.isNullOrBlank())    exceptionMsg += "csvFilePath"
+
+
+        throw MissingConfigurationException(exceptionMsg)
     }
 
     private fun parseCSV() {
