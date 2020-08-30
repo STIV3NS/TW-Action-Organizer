@@ -1,7 +1,6 @@
 package io.github.stiv3ns.twactionorganizer.core
 
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.BadDomainException
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFoundException
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import org.w3c.dom.Document
 import java.net.URL
@@ -15,15 +14,11 @@ class World(domain: String) {
     val speed: Double get() = worldSpeed * unitSpeed
     val maxNobleRange: Int
     val nightBonusEndHour: Int
-
-    private lateinit var playerIdToNicknameMap: Map<Int, String>
-    private lateinit var villageCoordsToEntityMap: Map<String, VillageEntity>
-
-    private class VillageEntity(val id: Int, val ownerId: Int)
+    val villages: Map<String, Village>
 
     init {
         if (!domain.startsWith("https://")) {
-            this.domain = "https://$domain";
+            this.domain = "https://$domain"
         } else {
             this.domain = domain
         }
@@ -38,7 +33,7 @@ class World(domain: String) {
 
             nightBonusEndHour = doc.getElementsByTagName("end_hour").item(0).textContent.toInt()
 
-            initializeMaps()
+            villages = initializeVillages()
         }
         catch (e: Exception) {
             throw BadDomainException("$domain is not a valid TW server or a connection error occurred")
@@ -52,52 +47,45 @@ class World(domain: String) {
         return docBuilder.parse(url.openStream()).apply { documentElement.normalize() }
     }
 
-    private fun initializeMaps() {
-        playerIdToNicknameMap = URL("$domain/map/player.txt")
+    private fun initializeVillages(): Map<String, Village> {
+        val playerIdToNicknameMap = getPlayerIdToNicknameMap()
+
+        return URL("$domain/map/village.txt")
             .openStream()
             .reader()
             .use { r ->
                 r.readLines()
-                    .map { line ->
-                        line.split(",")
-                            .let { arr ->
-                                val id = arr[0].toInt()
-                                val nickname = arr[1].let { URLDecoder.decode(it) }
+                .mapNotNull { line ->
+                    line.split(",")
+                        .let { arr ->
+                            val (x, y) = listOf(arr[2], arr[3]).map { it.toInt() }
+                            val coords = "$x|$y"
+                            val id = arr[0].toInt()
+                            val ownerId = arr[4].toInt()
+                            val ownerNickname = playerIdToNicknameMap[ownerId]
 
-                                Pair(id, nickname)
-                            }
-                    }
-                    .toMap()
-            }
-
-        villageCoordsToEntityMap = URL("$domain/map/village.txt")
-            .openStream()
-            .reader()
-            .use { r ->
-                r.readLines()
-                    .map { line ->
-                        line.split(",")
-                            .let { arr ->
-                                val id = arr[0].toInt()
-                                val ownerId = arr[4].toInt()
-                                val coords = "${arr[2]}|${arr[3]}"
-
-                                Pair(coords, VillageEntity(id, ownerId))
-                            }
-                    }
-                    .toMap()
+                            if (ownerNickname != null)
+                                coords to Village(x, y, id, ownerNickname)
+                            else null
+                        }
+                }.toMap()
             }
     }
 
-    @Throws(VillageNotFoundException::class)
-    fun fetchVillageId(village: Village): Int =
-        villageCoordsToEntityMap[village.toString()]
-            ?.id ?: throw VillageNotFoundException("$village cannot be found on $domain")
+    private fun getPlayerIdToNicknameMap(): Map<Int, String> =
+        URL("$domain/map/player.txt")
+            .openStream()
+            .reader()
+            .use { r ->
+                r.readLines()
+                .map { line ->
+                    line.split(",")
+                        .let { arr ->
+                            val id = arr[0].toInt()
+                            val nickname = arr[1].let { URLDecoder.decode(it) }
 
-    @Throws(VillageNotFoundException::class)
-    fun fetchVillageOwner(village: Village): String =
-        villageCoordsToEntityMap[village.toString()]
-            ?.ownerId?.let { ownerId ->
-                playerIdToNicknameMap[ownerId]
-            } ?: throw VillageNotFoundException("$village cannot be found on $domain")
+                            id to nickname
+                        }
+                }.toMap()
+            }
 }

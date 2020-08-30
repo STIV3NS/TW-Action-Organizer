@@ -1,21 +1,28 @@
 package io.github.stiv3ns.twactionorganizer.core.parsers
 
+import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
+import io.github.stiv3ns.twactionorganizer.logging.Logger
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 object TargetParser {
-    private val coordinatesRegex = Regex("\\d{3}\\|\\d{3}")
-
-    fun parse(
-        text: String,
+    @ObsoleteCoroutinesApi
+    suspend fun parse(
+        plainText: String,
         attacksPerVillage: Int,
-        appendTo: MutableCollection<TargetVillage>
+        appendTo: MutableCollection<TargetVillage>,
+        world: World,
+        coordinatesRegex: Regex = Regex("\\d{3}\\|\\d{3}")
     )
     {
-        coordinatesRegex.findAll(text).forEach { matchResult ->
+        coordinatesRegex.findAll(plainText).forEach { matchResult ->
             val coords = matchResult.value
-            val (x, y) = coords.split("|").map { it.toInt() }
+            val village = world.villages[coords]
 
-            appendTo += TargetVillage(x, y, attacksPerVillage)
+            if (village != null)
+                appendTo += TargetVillage(village, attacksPerVillage)
+            else
+                Logger.warn("[TargetParser] : $coords cannot be found on server ${world.domain}")
         }
     }
 }

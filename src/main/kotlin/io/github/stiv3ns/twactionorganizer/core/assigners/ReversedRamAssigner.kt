@@ -1,35 +1,29 @@
 package io.github.stiv3ns.twactionorganizer.core.assigners
 
-import io.github.stiv3ns.twactionorganizer.core.Player
-import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
+import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
-class ReversedRamAssigner internal constructor(
+open class ReversedRamAssigner internal constructor(
     targets: Collection<TargetVillage>,
-    resources: Collection<AllyVillage>,
+    resources: Resources,
     mainReferencePoint: Village,
-    isAssigningFakes: Boolean
-) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes)
+    isAssigningFakes: Boolean,
+    type: AssignerType = AssignerType.REVERSED_RAM
+) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes, type)
 {
-    override val offAction = Player::putOffAssignment
-    override val fakeAction = Player::putFakeAssignment
-
     override fun call(): AssignerReport {
         putTargetsToQueue(referencePoint = mainReferencePoint)
 
-        while (targetsQueue.isNotEmpty() && resources.isNotEmpty()) {
+        while (targetsQueue.isNotEmpty() && allyVillages.isNotEmpty()) {
             val (target, _) = targetsQueue.poll()
             handleTarget(target)
         }
 
-        return AssignerReport(
-            unusedResourceVillages = resources,
-            unassignedTargetVillages = targets
-        )
+        return prepareReport()
     }
 
-    private fun handleTarget(target: TargetVillage) {
+    protected open fun handleTarget(target: TargetVillage) {
         putResourcesToQueue(referencePoint = target)
 
         for ((nearestAllyVillage, distance) in resourcesQueue) {
@@ -38,7 +32,7 @@ class ReversedRamAssigner internal constructor(
 
             assign(nearestAllyVillage, target, distance)
 
-            resources.remove(nearestAllyVillage)
+            allyVillages.remove(nearestAllyVillage)
 
             target.attack()
         }

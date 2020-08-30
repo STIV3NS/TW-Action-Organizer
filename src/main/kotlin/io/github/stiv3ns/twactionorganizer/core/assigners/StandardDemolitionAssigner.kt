@@ -1,16 +1,12 @@
 package io.github.stiv3ns.twactionorganizer.core.assigners
 
 import io.github.stiv3ns.twactionorganizer.core.Player
-import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
+import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
-class StandardDemolitionAssigner internal constructor(
+open class StandardDemolitionAssigner internal constructor(
     targets: Collection<TargetVillage>,
-    resources: Collection<AllyVillage>,
-    mainReferencePoint: Village
-) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes = true)
-{
-    override val fakeAction = Player::putDemolitionAssignment
-    override val offAction = Player::putDemolitionAssignment
-}
+    resources: Resources,
+    mainReferencePoint: Village,
+) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes = true, type = AssignerType.DEMOLITION)

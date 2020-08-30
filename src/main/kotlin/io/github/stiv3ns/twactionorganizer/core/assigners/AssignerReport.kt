@@ -1,20 +1,19 @@
 package io.github.stiv3ns.twactionorganizer.core.assigners
 
-import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
+import io.github.stiv3ns.twactionorganizer.core.Assignment
+import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 
 class AssignerReport(
-    val unusedResourceVillages: Collection<AllyVillage>,
-    val unassignedTargetVillages: Collection<TargetVillage>,
+    val result: List<Assignment>,
+    val unusedResources: Resources,
+    val unassignedTargets: Collection<TargetVillage>,
     var name: String = ""
 )
 {
-    val numberOfUnusedResources get() =
-        unusedResourceVillages.size
-
     val numberOfUnassignedTargets get() =
-        unassignedTargetVillages.size
+        unassignedTargets.size
 
     val numberOfMissingResources get() =
-        unassignedTargetVillages.map { it.numberOfAttacks }.sum()
+        unassignedTargets.map { it.numberOfAttacks }.sum()
 }

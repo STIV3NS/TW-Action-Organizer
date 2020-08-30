@@ -1,45 +1,47 @@
+import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
+import io.kotlintest.inspectors.forAny
 import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.shouldThrow
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import java.io.File
-import java.io.FileNotFoundException
-import java.nio.file.Paths
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+@ObsoleteCoroutinesApi
 class TargetParserTest : WordSpec({
-    "TargetParser.parse" should {
+    "TargetParser::parse" should {
+        val world = World("plp6.plemiona.pl")
+
         val outputList = mutableListOf<TargetVillage>()
 
         val attacksPerFirstGroup = 5
         val attacksPerSecondGroup = 17
 
-        val filePath = Paths.get(
-            this.javaClass
-                .classLoader
-                .getResource("TargetParser_dummy_data.txt")!!
-                .toURI()
-        ).toAbsolutePath().toString()
+        val villages_1 = listOf(
+            "497|506",
+            "499|492",
+            "499|491",
+            "506|509",
+        )
 
-        val filePath_2 = Paths.get(
-            this.javaClass
-                .classLoader
-                .getResource("TargetParser_dummy_data_2.txt")!!
-                .toURI()
-        ).toAbsolutePath().toString()
+        val villages_2 = listOf(
+            "500|499",
+            "328|218",
+        )
 
-        "properly parse the file and add data to given list" {
-            TargetParser.parse(File(filePath).readText(), attacksPerFirstGroup, outputList)
-            TargetParser.parse(File(filePath_2).readText(), attacksPerSecondGroup, outputList)
+        val plainText_1 = villages_1.map { "[coord]$it$[/coord]" }.joinToString(separator = "\n")
+        val plainText_2 = villages_2.map { "[coord]$it$[/coord]" }.joinToString(separator = "\n")
 
-            outputList.shouldContainExactly(
-                TargetVillage(x = 623, y = 574, numberOfAttacks = attacksPerFirstGroup),
-                TargetVillage(x = 626, y = 576, numberOfAttacks = attacksPerFirstGroup),
-                TargetVillage(x = 626, y = 578, numberOfAttacks = attacksPerFirstGroup),
-                TargetVillage(x = 625, y = 576, numberOfAttacks = attacksPerFirstGroup),
-                TargetVillage(x = 597, y = 541, numberOfAttacks = attacksPerSecondGroup),
-                TargetVillage(x = 612, y = 550, numberOfAttacks = attacksPerSecondGroup)
-            )
+        "properly parse the data and add villages to given list /* test may fail due to domain expiration */" {
+            TargetParser.parse(plainText_1, attacksPerFirstGroup, appendTo = outputList, world = world)
+            TargetParser.parse(plainText_2, attacksPerSecondGroup, appendTo = outputList, world = world)
+
+            val result = outputList.map { targetVillage ->
+                targetVillage.toString() to targetVillage.numberOfAttacks
+            }.toMap()
+
+            villages_1.forEach { coords -> result[coords] shouldBe attacksPerFirstGroup }
+            villages_2.forEach { coords -> result[coords] shouldBe attacksPerSecondGroup }
         }
     }
 })

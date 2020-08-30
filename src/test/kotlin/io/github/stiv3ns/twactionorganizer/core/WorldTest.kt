@@ -1,9 +1,9 @@
 import io.github.stiv3ns.twactionorganizer.core.World
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.BadDomainException
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFoundException
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.row
@@ -18,15 +18,17 @@ class WorldTest : WordSpec({
             }
         }
 
-        "given good domain /*test domain viable until 2021*/" should {
+        "given good domain /* test may fail due to domain expiration */" should {
+            /* if tests fail try changing domain since this one may be already closed */
             val world = World("plp6.plemiona.pl")
-            /* if tests fail you should try changing domain since this one may be already closed */
+            val world2 = World("https://plp6.plemiona.pl")
 
             "set proper domain" {
                 world.domain shouldBe "https://plp6.plemiona.pl"
+                world2.domain shouldBe "https://plp6.plemiona.pl"
             }
 
-            "load proper settings" {
+            "fetch proper settings" {
                 with(world) {
                     maxNobleRange shouldBe 1000000
                     nightBonusEndHour shouldBe 8
@@ -34,31 +36,25 @@ class WorldTest : WordSpec({
                 }
             }
 
-            "load proper Village.id" {
+            "fetch proper village id and owner /* this test may (and will) randomly crash when village changes owner... */" {
                 forall(
-                    row(Village(500, 499), 15),
-                    row(Village(497, 506), 44),
-                    row(Village(508, 499), 66)
-                ) { village, id ->
-                    world.fetchVillageId(village) shouldBe id
-                }
-            }
+                    row("500|499",
+                        Village(x = 500, y = 499, id = 15, ownerNickname = "Lucky1369")),
+                    row("497|506",
+                        Village(x = 497, y = 506, id = 44, ownerNickname = "adam11145")),
+                    row("508|499",
+                        Village(x = 508, y = 499, id = 66, ownerNickname = "adam11145")),
+                ) { coords, expectedVillage ->
+                    val fetched = world.villages[coords]
 
-            /* this test may (and will) randomly crash when village changes owner... */
-            "load proper Village.owner" {
-                forall(
-                    row(Village(500, 499), "Lucky1369"),
-                    row(Village(497, 506), "adam11145"),
-                    row(Village(508, 499), "adam11145"),
-                    row(Village(707, 411), "Lord Królewski Aromat")
-                ) { vil, owner ->
-                    world.fetchVillageOwner(vil) shouldBe owner
-                }
-            }
+                    fetched shouldNotBe null
 
-            "throw an exception when trying to handle non-existing village" {
-                shouldThrow<VillageNotFoundException> {
-                    world.fetchVillageId(Village(-1, -1))
+                    if (fetched != null) {
+                        fetched.x shouldBe expectedVillage.x
+                        fetched.y shouldBe expectedVillage.y
+                        fetched.id shouldBe expectedVillage.id
+                        fetched.ownerNickname shouldBe expectedVillage.ownerNickname
+                    }
                 }
             }
         }

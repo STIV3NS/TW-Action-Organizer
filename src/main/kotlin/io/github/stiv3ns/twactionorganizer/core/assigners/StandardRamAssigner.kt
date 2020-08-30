@@ -1,6 +1,6 @@
 package io.github.stiv3ns.twactionorganizer.core.assigners
 
-import io.github.stiv3ns.twactionorganizer.core.Player
+import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
@@ -8,18 +8,18 @@ import java.util.*
 
 open class StandardRamAssigner internal constructor(
     targets: Collection<TargetVillage>,
-    resources: Collection<AllyVillage>,
+    resources: Resources,
     mainReferencePoint: Village,
-    isAssigningFakes: Boolean
-) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes)
+    isAssigningFakes: Boolean,
+    type: AssignerType = AssignerType.RAM
+) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes, type)
 {
     override val resourcesQueue = PriorityQueue<Pair<AllyVillage, Int>>(
-        resources.size,
+        resources.villageCount,
         distanceComparator.reversed()
     )
 
-    override val offAction = Player::putOffAssignment
-    override val fakeAction = Player::putFakeAssignment
+
 
     override fun call(): AssignerReport {
         putResourcesToQueue(referencePoint = mainReferencePoint)
@@ -29,10 +29,7 @@ open class StandardRamAssigner internal constructor(
             processAllyVillage(allyVillage)
         }
 
-        return AssignerReport(
-            unusedResourceVillages = resources,
-            unassignedTargetVillages = targets
-        )
+        return prepareReport()
     }
 
     protected open fun processAllyVillage(allyVillage: AllyVillage) {
@@ -43,7 +40,7 @@ open class StandardRamAssigner internal constructor(
         assign(allyVillage, nearestTarget, distance)
         nearestTarget.attack()
 
-        resources.remove(allyVillage)
+        allyVillages.remove(allyVillage)
         if (nearestTarget.isAssignCompleted()) {
             targets.remove(nearestTarget)
         }

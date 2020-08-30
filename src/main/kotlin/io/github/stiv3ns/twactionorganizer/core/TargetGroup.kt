@@ -5,7 +5,7 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import kotlin.math.roundToInt
 
-class TargetGroup(
+data class TargetGroup(
     val name: String,
     val type: AssignerType,
     val villages: Collection<TargetVillage>
@@ -13,16 +13,17 @@ class TargetGroup(
     val villageCount get() = villages.size
     val totalAttackCount get() = villages.map { it.numberOfAttacks }.sum()
 
-    val averagedCoordsAsVillage get() = Village(
-        x = villages.map { it.x }.average().roundToInt(),
-        y = villages.map { it.y }.average().roundToInt()
-    )
-
-    fun setDelayInMinutes(delay: Long) {
-        villages.map { it.delayInMinutes = delay }
+    val averagedCoordsAsVillage by lazy {
+        Village(
+            x = villages.map { it.x }.average().roundToInt(),
+            y = villages.map { it.y }.average().roundToInt(),
+            id = -1,
+            ownerNickname = "--$name avg--"
+        )
     }
 
-    fun withDelayInMinutes(delay: Long) = apply {
-        setDelayInMinutes(delay)
-    }
+    fun withDelayInMinutes(delay: Long) =
+        copy(villages = villages.map { village ->
+            village.copy(delayInMinutes = delay)
+        })
 }

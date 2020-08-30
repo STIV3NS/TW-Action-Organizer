@@ -1,22 +1,14 @@
 package io.github.stiv3ns.twactionorganizer.core.villages
 
-import io.github.stiv3ns.twactionorganizer.core.World
-import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.VillageNotFoundException
 import kotlinx.serialization.Serializable
 
 @Serializable
 open class Village(
     open val x: Int,
-    open val y: Int
+    open val y: Int,
+    open val id: Int,
+    open val ownerNickname: String
 ) {
-    var id: Int? = null
-        private set
-
-    @Throws(VillageNotFoundException::class)
-    fun initId(world: World) {
-        id = world.fetchVillageId(this)
-    }
-
     infix fun distanceTo(v2: Village): Int {
         fun Int.squared(): Int = this * this
 

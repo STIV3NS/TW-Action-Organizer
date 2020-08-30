@@ -1,15 +1,17 @@
 package io.github.stiv3ns.twactionorganizer.core.assigners
 
+import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 open class RandomizedRamAssigner internal constructor(
     targets: Collection<TargetVillage>,
-    resources: Collection<AllyVillage>,
+    resources: Resources,
     mainReferencePoint: Village,
-    isAssigningFakes: Boolean
-) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes)
+    isAssigningFakes: Boolean,
+    type: AssignerType
+) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes, type)
 {
     override fun processAllyVillage(allyVillage: AllyVillage) {
         val randomTarget = targets.random()
@@ -17,7 +19,7 @@ open class RandomizedRamAssigner internal constructor(
         assign(allyVillage, randomTarget, allyVillage distanceTo randomTarget)
         randomTarget.attack()
 
-        resources.remove(allyVillage)
+        allyVillages.remove(allyVillage)
         if (randomTarget.isAssignCompleted()) {
             targets.remove(randomTarget)
         }

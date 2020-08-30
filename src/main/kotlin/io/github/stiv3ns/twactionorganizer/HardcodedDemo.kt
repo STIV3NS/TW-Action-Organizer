@@ -6,13 +6,9 @@ import io.github.stiv3ns.twactionorganizer.core.parsers.AllyParserWithDynamicOwn
 import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
 import io.github.stiv3ns.twactionorganizer.core.PMFormatter
 import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
-import io.github.stiv3ns.twactionorganizer.core.utils.idInitializer
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.localization.PL_PMFormatterLocalization
-import io.github.stiv3ns.twactionorganizer.logging.Info
-import io.github.stiv3ns.twactionorganizer.logging.LogMessage
-import io.github.stiv3ns.twactionorganizer.logging.Logger
-import io.github.stiv3ns.twactionorganizer.logging.Report
+import io.github.stiv3ns.twactionorganizer.logging.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
 import java.io.File
@@ -26,70 +22,57 @@ fun main(): Unit = runBlocking {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    val allyParser = AllyParserWithDynamicOwnerResolution(world)
+    suspend fun parseAllies(filePath: String) =
+        AllyParserWithDynamicOwnerResolution.parse(
+            plainText = File(filePath).readText(),
+            world = world
+        )
 
-    val concreteResources = allyParser.parseAndGetResources(
-        File("/home/stivens/rozpiski/tpk11/res_concrete.txt").readText())
-    uow.setConcreteResources(concreteResources)
+    val concreteResources = parseAllies("/home/stivens/rozpiski/tpk11/res_concrete.txt")
+    uow.setConcreteResources(Resources.fromVillageCollection(concreteResources))
 
-    val fakeResources = allyParser.parseAndGetResources(
-        File("/home/stivens/rozpiski/tpk11/res_fake.txt").readText())
-    uow.setFakeResources(fakeResources)
+    val fakeResources = parseAllies("/home/stivens/rozpiski/tpk11/res_fake.txt")
+    uow.setFakeResources(Resources.fromVillageCollection(fakeResources))
 
-    val demolitionResources = allyParser.parseAndGetResources(
-        File("/home/stivens/rozpiski/tpk11/res_demolition.txt").readText())
-    uow.setDemolitionResources(demolitionResources)
+    val demolitionResources = parseAllies("/home/stivens/rozpiski/tpk11/res_demolition.txt")
+    uow.setDemolitionResources(Resources.fromVillageCollection(demolitionResources))
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     val off = mutableListOf<TargetVillage>()
     TargetParser.parse(
         File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
-        attacksPerVillage = 3, appendTo = off)
+        attacksPerVillage = 3, appendTo = off, world = world)
 
     val demolition = mutableListOf<TargetVillage>()
     TargetParser.parse(
         File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
-        attacksPerVillage = 15, appendTo = demolition)
+        attacksPerVillage = 15, appendTo = demolition, world = world)
 
     val fakeA = mutableListOf<TargetVillage>()
     TargetParser.parse(
         File("/home/stivens/rozpiski/tpk11/fakeA40.txt").readText(),
-        attacksPerVillage = 40, appendTo = fakeA)
+        attacksPerVillage = 40, appendTo = fakeA, world = world)
 
     val fakeB = mutableListOf<TargetVillage>()
     TargetParser.parse(
         File("/home/stivens/rozpiski/tpk11/fakeB10.txt").readText(),
-        attacksPerVillage = 10, appendTo = fakeB)
+        attacksPerVillage = 10, appendTo = fakeB, world = world)
 
     val fakeC = mutableListOf<TargetVillage>()
     TargetParser.parse(
         File("/home/stivens/rozpiski/tpk11/fakeC10.txt").readText(),
-        attacksPerVillage = 10, appendTo = fakeC)
+        attacksPerVillage = 10, appendTo = fakeC, world = world)
 
     val fakeD = mutableListOf<TargetVillage>()
     TargetParser.parse(
         File("/home/stivens/rozpiski/tpk11/fakeD16.txt").readText(),
-        attacksPerVillage = 16, appendTo = fakeD)
+        attacksPerVillage = 16, appendTo = fakeD, world = world)
 
     val fakeE = mutableListOf<TargetVillage>()
     TargetParser.parse(
         File("/home/stivens/rozpiski/tpk11/fakeE13.txt").readText(),
-        attacksPerVillage = 13, appendTo = fakeE)
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
-    val idInits = setOf(
-        concreteResources.villages,
-        fakeResources.villages,
-        demolitionResources.villages,
-        off,
-        fakeA,
-        fakeB,
-        fakeC,
-        fakeD,
-        fakeE,
-    ).map { villages -> idInitializer(villages, world) }
+        attacksPerVillage = 13, appendTo = fakeE, world = world)
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -114,6 +97,8 @@ fun main(): Unit = runBlocking {
             when (msg) {
                 is Info ->
                     println(msg.text)
+                is Warn ->
+                    println("!!! ${msg.text}")
                 is Report ->
                     println("${msg.assignerReport.name} failed to assign ${msg.assignerReport.numberOfMissingResources} attacks")
                 else -> print("")
@@ -123,12 +108,16 @@ fun main(): Unit = runBlocking {
     Logger.subscribe(Info::class, infoActor)
     Logger.subscribe(Report::class, infoActor)
 
-    Executor(uow, Dispatchers.Default).execute().join()
+    val assignments = Executor(uow).executeAsync().await()
 
-    idInits.forEach { it.join() }
+    Logger.unSubscribe(Info::class, infoActor)
+    Logger.unSubscribe(Report::class, infoActor)
     infoActor.close()
 
-    Serializer.save(uow.getAllPlayers() as List<Player>, "/home/stivens/rozpiski/tpk11/rozpiska.json.asd")
+    File("/home/stivens/rozpiski/tpk11/rozpiska.json.bis").printWriter().use { pw ->
+        pw.print(Serializer.toJson(assignments))
+    }
+
 
     File("/home/stivens/rozpiski/tpk11/rozpiska.txt").printWriter().use { pw ->
         val formatter = PMFormatter(
@@ -137,9 +126,9 @@ fun main(): Unit = runBlocking {
             localization = PL_PMFormatterLocalization
         )
 
-        uow.getAllPlayers().forEach { player ->
+        PlayerAssignments.fromAssignments(assignments).forEach { playerAssignment ->
             pw.println(
-                """${player.nickname}
+                """${playerAssignment.nickname}
                 |Cześć, oto Twoja rozpiska.
                 |Ataki mają wchodzić na 29 sierpnia. Obok rozkazu jest podany czas T0 pierwszego możliwego terminu wysyłki.
                 |
@@ -155,7 +144,7 @@ fun main(): Unit = runBlocking {
                 |    https://pl150.plemiona.pl/game.php?screen=forum&screenmode=view_thread&forum_id=617&thread_id=44897
                 |
                 |
-                |${formatter.getFormattedMsgFor(player)}
+                |${formatter.format(playerAssignment)}
                 |
                 |Ave (T)PK!
                 |==============================================================================

@@ -9,4 +9,19 @@ data class Resources(
     val villageCount get() = villages.size
     val playerCount get() = players.size
     val nobleCount get() = players.map { it.numberOfNobles }.sum()
+
+    companion object {
+        fun empty(): Resources =
+            Resources(players = listOf(), villages = listOf())
+
+        fun fromVillageCollection(villages: Collection<AllyVillage>): Resources =
+            Resources(
+                villages = villages,
+                players =
+                    villages
+                    .groupBy { it.ownerNickname }
+                    .keys
+                    .map { nick -> Player(nick) }
+            )
+    }
 }

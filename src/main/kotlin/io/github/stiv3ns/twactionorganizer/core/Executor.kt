@@ -7,55 +7,75 @@ import io.github.stiv3ns.twactionorganizer.logging.Logger
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
+typealias DeferredAssignments = Deferred<List<Assignment>>
+typealias DeferredReport = Deferred<AssignerReport>
+
 @ObsoleteCoroutinesApi
 class Executor(
     val uow: UnitOfWork,
-    override val coroutineContext: CoroutineContext
+    override val coroutineContext: CoroutineContext = Dispatchers.Default
 ) : CoroutineScope
 {
-    fun execute(): Job = launch { launchExecutors() }
+    fun executeAsync(): DeferredAssignments =
+        async { launchExecutors() }
 
-    private suspend fun launchExecutors() {
+    private suspend fun launchExecutors(): List<Assignment> {
         Logger.info("Execution started")
 
-        val jobs = mutableListOf<Job>()
+        val result = mutableListOf<Assignment>()
+        val jobs = mutableListOf<DeferredReport>()
 
         startFakeRamAssigners(jobs)
         startDemolitionAssigners(jobs)
         startConcreteAssigners(jobs)
 
-        jobs.forEach { it.join() }
+        jobs.forEach {
+            val report = it.await()
+            result.addAll(report.result)
+        }
+
         jobs.clear()
 
         startFakeNobleAssigners(jobs)
 
-        jobs.forEach { it.join() }
+        jobs.forEach {
+            val report = it.await()
+            result.addAll(report.result)
+        }
 
         Logger.info("Execution finished")
+
+        return result
     }
 
-    private fun startFakeRamAssigners(jobs: MutableList<Job>) {
+    private fun startFakeRamAssigners(jobs: MutableList<DeferredReport>) {
         uow.getTargetGroups(
             AssignerType.RANDOMIZED_FAKE_RAM,
             AssignerType.FAKE_RAM,
         )
         .forEach { group ->
-            jobs += GlobalScope.launch(CoroutineName(group.name)) {
+            jobs += GlobalScope.async(CoroutineName(group.name)) {
                 Logger.info("Assigner for ${group.name} called")
+
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
-                    .resources(uow.getFakeResourceVillages())
+                    .resources(uow.getFakeResources())
                     .type(group.type)
                     .build()
                     .call()
-                    .let { sendReport(it, name = group.name) }
+                    .let { report ->
+                        report.name = group.name
+                        sendReportLog(report)
+
+                        report
+                    }
             }
         }
     }
 
-    private suspend fun startDemolitionAssigners(jobs: MutableList<Job>) {
-        var sharedResourceVillages = uow.getDemolitionResourceVillages()
+    private suspend fun startDemolitionAssigners(jobs: MutableList<DeferredReport>) {
+        var sharedResourceVillages = uow.getDemolitionResources()
 
         uow.getTargetGroups(
             AssignerType.RANDOMIZED_DEMOLITION,
@@ -63,6 +83,7 @@ class Executor(
         ).forEach { group ->
             val job = GlobalScope.async(CoroutineName(group.name)) {
                 Logger.info("Assigner for ${group.name} called")
+
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
@@ -71,18 +92,20 @@ class Executor(
                     .build()
                     .call()
                     .let { report ->
-                        sendReport(report, name = group.name)
-                        report.unusedResourceVillages
+                        report.name = group.name
+                        sendReportLog(report)
+
+                        report
                     }
             }
 
-            jobs += job
-            sharedResourceVillages = job.await()
+            jobs.add(job)
+            sharedResourceVillages = job.await().unusedResources
         }
     }
 
-    private suspend fun startConcreteAssigners(jobs: MutableList<Job>) {
-        var sharedResourceVillages = uow.getConcreteResourceVillages()
+    private suspend fun startConcreteAssigners(jobs: MutableList<DeferredReport>) {
+        var sharedResourceVillages = uow.getConcreteResources()
 
         uow.getTargetGroups(
             AssignerType.NOBLE,
@@ -92,6 +115,7 @@ class Executor(
         ).forEach { group ->
             val job = GlobalScope.async(CoroutineName(group.name)) {
                 Logger.info("Assigner for ${group.name} called")
+
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
@@ -101,38 +125,46 @@ class Executor(
                     .build()
                     .call()
                     .let { report ->
-                        sendReport(report, name = group.name)
-                        report.unusedResourceVillages
+                        report.name = group.name
+                        sendReportLog(report)
+
+                        report
                     }
             }
 
-            jobs += job
-            sharedResourceVillages = job.await()
+            jobs.add(job)
+            sharedResourceVillages = job.await().unusedResources
         }
     }
 
-    private fun startFakeNobleAssigners(jobs: MutableList<Job>) {
+    private fun startFakeNobleAssigners(jobs: MutableList<DeferredReport>) {
         uow.getTargetGroups(
             AssignerType.FAKE_NOBLE
         ).forEach { group ->
-            val job = launch {
+            val job = async {
                 Logger.info("Assigner for ${group.name} called")
+
                 AssignerBuilder()
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
-                    .resources(uow.getFakeResourceVillages())
+                    .resources(uow.getFakeResources())
                     .type(group.type)
                     .maxNobleRange(uow.getWorld().maxNobleRange)
                     .build()
                     .call()
-                    .let { sendReport(it, name = group.name) }
+                    .let { report ->
+                        report.name = group.name
+                        sendReportLog(report)
+
+                        report
+                    }
             }
 
-            jobs += job
+            jobs.add(job)
         }
     }
 
-    private suspend fun sendReport(report: AssignerReport, name: String) {
-        Logger.report(report.apply { this.name = name })
+    private suspend fun sendReportLog(report: AssignerReport) {
+        Logger.report(report)
     }
 }

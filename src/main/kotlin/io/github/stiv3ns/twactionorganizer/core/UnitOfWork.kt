@@ -32,53 +32,30 @@ class UnitOfWork {
         demolitionResources = resources
     }
 
-    fun getConcreteResourceVillages(): Collection<AllyVillage> = when (concreteResources) {
-        null -> listOf()
-        else -> concreteResources!!.villages
-    }
+    fun getConcreteResources() = concreteResources ?: Resources.empty()
 
-    fun getFakeResourceVillages(): Collection<AllyVillage> = when (fakeResources) {
-        null -> listOf()
-        else -> fakeResources!!.villages
-    }
+    fun getFakeResources() = fakeResources ?: Resources.empty()
 
-    fun getDemolitionResourceVillages(): Collection<AllyVillage> = when (demolitionResources) {
-        null -> listOf()
-        else -> demolitionResources!!.villages
-    }
-
-    fun getAllPlayers(): Collection<Player> {
-        val players = mutableListOf<Player>()
-
-        concreteResources?.players?.let { players.addAll(it) }
-        fakeResources?.players?.let { players.addAll(it) }
-        demolitionResources?.players?.let { players.addAll(it) }
-
-        return players
-    }
+    fun getDemolitionResources() = demolitionResources ?: Resources.empty()
 
     fun dropPlayer(player: Player) {
         concreteResources = concreteResources
             ?.copy(
                 players = concreteResources?.players?.minusElement(player) ?: listOf(),
-                villages = concreteResources?.villages?.filter { it.owner != player } ?: listOf()
+                villages = concreteResources?.villages?.filter { it.ownerNickname != player.nickname } ?: listOf()
             )
 
         fakeResources = fakeResources
             ?.copy(
                 players = fakeResources?.players?.minusElement(player) ?: listOf(),
-                villages = fakeResources?.villages?.filterNot { it.owner != player } ?: listOf()
+                villages = fakeResources?.villages?.filterNot { it.ownerNickname != player.nickname } ?: listOf()
             )
 
         demolitionResources = demolitionResources
             ?.copy(
                 players = demolitionResources?.players?.minusElement(player) ?: listOf(),
-                villages = demolitionResources?.villages?.filterNot { it.owner != player } ?: listOf()
+                villages = demolitionResources?.villages?.filterNot { it.ownerNickname != player.nickname } ?: listOf()
             )
-    }
-
-    fun setPlayerNumberOfNobles(player: Player, newValue: Int) {
-        player.numberOfNobles = newValue
     }
 
     fun addTargetGroup(group: TargetGroup) {

@@ -8,62 +8,62 @@ import kotlin.math.sqrt
 class PMFormatter(
     private val world: World,
     private val dateOfArrival: LocalDateTime,
-    private val localization: PMFormatterLocalization
+    private val localization: PMFormatterLocalization,
+    var batchSize: Int = 5
 ) : PMFormatterLocalization by localization
 {
-    var batchSize = 5
-
     private enum class TroopType {
         RAM,
         NOBLE,
         CATAPULT
     }
 
-    private fun troopTravelTime(type: TroopType) = when (type) {
-        TroopType.RAM -> 30
-        TroopType.NOBLE -> 35
-        TroopType.CATAPULT -> 30
-    } / world.speed
+    private fun troopTravelTime(type: TroopType) =
+        when (type) {
+            TroopType.RAM -> 30
+            TroopType.NOBLE -> 35
+            TroopType.CATAPULT -> 30
+        } / world.speed
 
-    fun getFormattedMsgFor(player: Player): String {
+    fun format(playerAssignments: PlayerAssignments): String {
         val msg = StringBuilder()
 
-        if (player.nobleAssignments.isNotEmpty() || player.fakeNobleAssignments.isNotEmpty()) {
+        if (playerAssignments.nobleAssignments.isNotEmpty() || playerAssignments.fakeNobleAssignments.isNotEmpty()) {
             msg.append(REQUIREMENTS_HEADER, "\n")
-            appendNobleRequirements(msg, player)
+            appendNobleRequirements(msg, playerAssignments)
         }
 
-        if (player.nobleAssignments.isNotEmpty()) {
+        if (playerAssignments.nobleAssignments.isNotEmpty()) {
             msg.append(NOBLE_HEADER, "\n")
-            appendAssignments(msg, player.nobleAssignments, TroopType.NOBLE)
+            appendAssignments(msg, playerAssignments.nobleAssignments, TroopType.NOBLE)
         }
 
-        if (player.offAssignments.isNotEmpty()) {
+        if (playerAssignments.offAssignments.isNotEmpty()) {
             msg.append(OFF_HEADER, "\n")
-            appendAssignments(msg, player.offAssignments, TroopType.RAM)
+            appendAssignments(msg, playerAssignments.offAssignments, TroopType.RAM)
         }
 
-        if (player.fakeNobleAssignments.isNotEmpty()) {
+        if (playerAssignments.fakeNobleAssignments.isNotEmpty()) {
             msg.append(FAKENOBLE_HEADER, "\n")
-            appendAssignments(msg, player.fakeNobleAssignments, TroopType.NOBLE)
+            appendAssignments(msg, playerAssignments.fakeNobleAssignments, TroopType.NOBLE)
         }
 
-        if (player.fakeAssignments.isNotEmpty()) {
+        if (playerAssignments.fakeAssignments.isNotEmpty()) {
             msg.append(FAKE_HEADER, "\n")
-            appendAssignments(msg, player.fakeAssignments, TroopType.RAM)
+            appendAssignments(msg, playerAssignments.fakeAssignments, TroopType.RAM)
         }
 
-        if (player.demolitionAssignments.isNotEmpty()) {
+        if (playerAssignments.demolitionAssignments.isNotEmpty()) {
             msg.append(DEMOLITION_HEADER, "\n")
-            appendAssignments(msg, player.demolitionAssignments, TroopType.CATAPULT)
+            appendAssignments(msg, playerAssignments.demolitionAssignments, TroopType.CATAPULT)
         }
 
         return msg.toString()
     }
 
-    private fun appendNobleRequirements(msg: StringBuilder, player: Player) {
+    private fun appendNobleRequirements(msg: StringBuilder, playerAssignments: PlayerAssignments) {
         val allNobleAssignments =
-            player.nobleAssignments + player.fakeNobleAssignments
+            playerAssignments.nobleAssignments + playerAssignments.fakeNobleAssignments
 
         val requirementsByVillage =
             allNobleAssignments.groupBy { it.departure }.mapValues { it.value.size }
@@ -88,10 +88,9 @@ class PMFormatter(
         msg.append(OPEN_SPOILER, "\n")
 
         val sortedAssignments = assignments.sortedByDescending { it.squaredDistance }
-        var counter = 0
         var previousDayOfMonth = -1
 
-        for (assignment in sortedAssignments) {
+        for ((counter, assignment) in sortedAssignments.withIndex()) {
             val departureTime = designateDepartureTime(
                 assignment.squaredDistance,
                 slowestTroop,
@@ -105,10 +104,10 @@ class PMFormatter(
 
             val verticalSpaceIfNextBatch = if (counter % batchSize == 0) "\n" else ""
 
-            msg.append("$verticalSpaceIfNextDay ${++counter}. ${formatDepartureTime(departureTime)} $assignment \n")
+            msg.append("$verticalSpaceIfNextDay ${counter + 1}. ${formatDepartureTime(departureTime)} $assignment \n")
                 .append("[url=${world.domain}/game.php")
-                .append("?village=${assignment.departure.id ?: 0}")
-                .append("&screen=place&target=${assignment.destination.id ?: 0}]")
+                .append("?village=${assignment.departure.id}")
+                .append("&screen=place&target=${assignment.destination.id}]")
                 .append("$EXECUTION_TEXT[/url]\n")
                 .append(verticalSpaceIfNextBatch)
 
