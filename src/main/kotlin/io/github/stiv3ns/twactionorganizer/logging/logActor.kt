@@ -6,7 +6,7 @@ import kotlinx.coroutines.channels.actor
 import kotlin.reflect.KClass
 
 @ObsoleteCoroutinesApi
-internal fun CoroutineScope.logActor() = actor<LogMessage> {
+internal fun CoroutineScope.logActor() = actor<LogMessage>(capacity = 128) {
     val subscriptions =
         mutableMapOf<KClass<out LogMessage>, MutableList<SendChannel<LogMessage>>>()
 
