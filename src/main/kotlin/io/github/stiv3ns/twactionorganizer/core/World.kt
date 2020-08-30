@@ -53,39 +53,32 @@ class World(domain: String) {
         return URL("$domain/map/village.txt")
             .openStream()
             .reader()
-            .use { r ->
-                r.readLines()
-                .mapNotNull { line ->
-                    line.split(",")
-                        .let { arr ->
-                            val (x, y) = listOf(arr[2], arr[3]).map { it.toInt() }
-                            val coords = "$x|$y"
-                            val id = arr[0].toInt()
-                            val ownerId = arr[4].toInt()
-                            val ownerNickname = playerIdToNicknameMap[ownerId]
+            .use { r -> r.readLines() }
+            .map { line -> line.split(",") }
+            .mapNotNull { arr ->
+                val (x, y) = listOf(arr[2], arr[3]).map { it.toInt() }
+                val coords = "$x|$y"
+                val id = arr[0].toInt()
+                val ownerId = arr[4].toInt()
+                val ownerNickname = playerIdToNicknameMap[ownerId]
 
-                            if (ownerNickname != null)
-                                coords to Village(x, y, id, ownerNickname)
-                            else null
-                        }
-                }.toMap()
-            }
+                if (ownerNickname != null)
+                    coords to Village(x, y, id, ownerNickname)
+                else null
+            }.toMap()
+
     }
 
     private fun getPlayerIdToNicknameMap(): Map<Int, String> =
         URL("$domain/map/player.txt")
             .openStream()
             .reader()
-            .use { r ->
-                r.readLines()
-                .map { line ->
-                    line.split(",")
-                        .let { arr ->
-                            val id = arr[0].toInt()
-                            val nickname = arr[1].let { URLDecoder.decode(it) }
+            .use { r -> r.readLines() }
+            .map { line -> line.split(",") }
+            .map { arr ->
+                val id = arr[0].toInt()
+                val nickname = arr[1].let { URLDecoder.decode(it) }
 
-                            id to nickname
-                        }
-                }.toMap()
-            }
+                id to nickname
+            }.toMap()
 }
