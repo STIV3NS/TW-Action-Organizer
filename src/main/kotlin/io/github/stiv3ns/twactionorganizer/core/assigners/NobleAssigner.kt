@@ -58,12 +58,10 @@ open class NobleAssigner internal constructor(
             unusedResources = Resources(villages = allyVillages,
                                         players =
                                             playerAvailableNobles
-                                                .map { kv ->
-                                                    val nickname = kv.key.nickname
-                                                    val availableNobles = kv.value
-
-                                                    Player(nickname, availableNobles)
-                                                })
+                                            .map { (player, availableNobles) ->
+                                                Player(player.nickname, availableNobles)
+                                            }
+                                        )
         )
 
     override fun call(): AssignerReport {
