@@ -22,7 +22,7 @@ open class NobleAssigner internal constructor(
         allyPlayers[ ownerNickname ]
             ?: throw IllegalArgumentException("Invalid Resources.")
 
-    protected fun Player.hasNoble(): Boolean =
+    protected open fun Player.hasNoble(): Boolean =
         (playerAvailableNobles[this] ?: 0) > 0
 
     protected open fun Player.delegateNoble() {
