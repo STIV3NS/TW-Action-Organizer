@@ -16,14 +16,27 @@ abstract class Assigner internal constructor(
     val type: AssignerType
 ) {
     protected val targets: MutableCollection<TargetVillage>
+    protected val attacksNeeded: MutableMap<TargetVillage, Int>
+
     protected val allyVillages: MutableCollection<AllyVillage>
     protected val allyPlayers: Map<String, Player>
 
     init {
         this.targets = targets.toMutableList()
+        this.attacksNeeded = targets.map { target -> target to target.numberOfAttacks }.toMap().toMutableMap()
+
         this.allyVillages = resources.villages.toMutableList()
         this.allyPlayers = resources.players.associateBy { it.nickname }
     }
+
+
+    protected fun TargetVillage.attack() {
+        attacksNeeded[this] = attacksNeeded[this]?.minus(1)
+            ?: throw IllegalStateException("What the heck just happened actually?")
+    }
+
+    protected fun TargetVillage.isAssignCompleted() =
+        (attacksNeeded[this] ?: 0) < 1
 
 
 
@@ -87,6 +100,11 @@ abstract class Assigner internal constructor(
             name = name,
             result = assignments,
             unusedResources = Resources(players = allyPlayers.values, villages = allyVillages),
-            unassignedTargets = targets
+            unassignedTargets = attacksNeeded.mapNotNull { (target, numberOfMissingAttacks) ->
+                if (numberOfMissingAttacks < 1)
+                    null
+                else
+                    target.copy(numberOfAttacks = numberOfMissingAttacks)
+            }.toList()
         )
 }

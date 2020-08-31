@@ -54,7 +54,12 @@ open class NobleAssigner internal constructor(
         AssignerReport(
             name = name,
             result = assignments,
-            unassignedTargets = targets,
+            unassignedTargets = attacksNeeded.mapNotNull { (target, numberOfMissingAttacks) ->
+                if (numberOfMissingAttacks < 1)
+                    null
+                else
+                    target.copy(numberOfAttacks = numberOfMissingAttacks)
+            }.toList(),
             unusedResources = Resources(villages = allyVillages,
                                         players =
                                             playerAvailableNobles
