@@ -17,6 +17,7 @@ open class NobleAssigner internal constructor(
 ) : Assigner(name, targets, resources, mainReferencePoint, type)
 {
     protected val playerAvailableNobles: MutableMap<Player, Int>
+    protected val villagesWithAvailableNobles: MutableCollection<AllyVillage>
 
     protected fun AllyVillage.owner(): Player =
         allyPlayers[ ownerNickname ]
@@ -30,11 +31,12 @@ open class NobleAssigner internal constructor(
     }
 
     init {
-        allyVillages.removeAll { it.owner().hasNoble() == false }
+        villagesWithAvailableNobles = allyVillages.filter { it.owner().hasNoble() }.toMutableList()
 
         playerAvailableNobles = resources
-            .players.map { player -> player to player.numberOfNobles }
-            .toMap().toMutableMap()
+                                .players
+                                .map { player -> player to player.numberOfNobles }
+                                .toMap().toMutableMap()
     }
 
 
@@ -54,19 +56,20 @@ open class NobleAssigner internal constructor(
         AssignerReport(
             name = name,
             result = assignments,
-            unassignedTargets = attacksNeeded.mapNotNull { (target, numberOfMissingAttacks) ->
-                if (numberOfMissingAttacks < 1)
-                    null
-                else
-                    target.copy(numberOfAttacks = numberOfMissingAttacks)
-            }.toList(),
+
+            unassignedTargets = attacksNeeded
+                                .mapNotNull { (target, numberOfMissingAttacks) ->
+                                    if (numberOfMissingAttacks < 1)
+                                        null
+                                    else
+                                        target.copy(numberOfAttacks = numberOfMissingAttacks)
+                                }.toList(),
+
             unusedResources = Resources(villages = allyVillages,
-                                        players =
-                                            playerAvailableNobles
-                                            .map { (player, availableNobles) ->
-                                                Player(player.nickname, availableNobles)
-                                            }
-                                        )
+                                        players = playerAvailableNobles
+                                                    .map { (player, availableNobles) ->
+                                                        Player(player.nickname, availableNobles)
+                                                    })
         )
 
     override fun call(): AssignerReport {
@@ -109,9 +112,10 @@ open class NobleAssigner internal constructor(
         nearestAllyVillage.owner().delegateNoble()
 
         allyVillages.remove(nearestAllyVillage)
+        villagesWithAvailableNobles.remove(nearestAllyVillage)
 
         val owner = nearestAllyVillage.owner()
         if (owner.hasNoble() == false)
-            allyVillages.removeAll { it.owner() == owner }
+            villagesWithAvailableNobles.removeAll { it.owner() == owner }
     }
 }
