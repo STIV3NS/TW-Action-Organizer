@@ -5,7 +5,8 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 open class RandomizedDemolitionAssigner internal constructor(
+    name: String,
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
-) : RandomizedRamAssigner(targets, resources, mainReferencePoint, type = AssignerType.RANDOMIZED_DEMOLITION)
+) : RandomizedRamAssigner(name, targets, resources, mainReferencePoint, type = AssignerType.RANDOMIZED_DEMOLITION)

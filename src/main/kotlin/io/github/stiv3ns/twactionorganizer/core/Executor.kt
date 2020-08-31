@@ -55,21 +55,17 @@ class Executor(
         )
         .forEach { group ->
             jobs += GlobalScope.async(CoroutineName(group.name)) {
-                Logger.info("Assigner for ${group.name} called")
+                logAssignerCalled(group.name)
 
                 AssignerBuilder()
+                    .name(group.name)
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
                     .resources(uow.getFakeResources())
                     .type(group.type)
                     .build()
                     .call()
-                    .let { report ->
-                        report.name = group.name
-                        sendReportLog(report)
-
-                        report
-                    }
+                    .also { report -> logReport(report) }
             }
         }
     }
@@ -82,21 +78,17 @@ class Executor(
             AssignerType.DEMOLITION,
         ).forEach { group ->
             val job = GlobalScope.async(CoroutineName(group.name)) {
-                Logger.info("Assigner for ${group.name} called")
+                logAssignerCalled(group.name)
 
                 AssignerBuilder()
+                    .name(group.name)
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
                     .resources(sharedResourceVillages)
                     .type(group.type)
                     .build()
                     .call()
-                    .let { report ->
-                        report.name = group.name
-                        sendReportLog(report)
-
-                        report
-                    }
+                    .also { report -> logReport(report) }
             }
 
             jobs.add(job)
@@ -114,9 +106,10 @@ class Executor(
             AssignerType.RAM,
         ).forEach { group ->
             val job = GlobalScope.async(CoroutineName(group.name)) {
-                Logger.info("Assigner for ${group.name} called")
+                logAssignerCalled(group.name)
 
                 AssignerBuilder()
+                    .name(group.name)
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
                     .resources(sharedResourceVillages)
@@ -124,12 +117,7 @@ class Executor(
                     .maxNobleRange(uow.getWorld().maxNobleRange)
                     .build()
                     .call()
-                    .let { report ->
-                        report.name = group.name
-                        sendReportLog(report)
-
-                        report
-                    }
+                    .also { report -> logReport(report) }
             }
 
             jobs.add(job)
@@ -142,9 +130,10 @@ class Executor(
             AssignerType.FAKE_NOBLE
         ).forEach { group ->
             val job = async {
-                Logger.info("Assigner for ${group.name} called")
+                logAssignerCalled(group.name)
 
                 AssignerBuilder()
+                    .name(group.name)
                     .mainReferencePoint(group.averagedCoordsAsVillage)
                     .targets(group.villages)
                     .resources(uow.getFakeResources())
@@ -152,19 +141,18 @@ class Executor(
                     .maxNobleRange(uow.getWorld().maxNobleRange)
                     .build()
                     .call()
-                    .let { report ->
-                        report.name = group.name
-                        sendReportLog(report)
-
-                        report
-                    }
+                    .also { report -> logReport(report) }
             }
 
             jobs.add(job)
         }
     }
 
-    private suspend fun sendReportLog(report: AssignerReport) {
+    private suspend fun logAssignerCalled(name: String) {
+        Logger.info("Assigner for $name called")
+    }
+
+    private suspend fun logReport(report: AssignerReport) {
         Logger.report(report)
     }
 }

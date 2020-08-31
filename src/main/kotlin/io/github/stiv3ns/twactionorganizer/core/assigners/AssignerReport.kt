@@ -5,10 +5,10 @@ import io.github.stiv3ns.twactionorganizer.core.Resources
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 
 class AssignerReport(
+    val name: String,
     val result: List<Assignment>,
     val unusedResources: Resources,
-    val unassignedTargets: Collection<TargetVillage>,
-    var name: String = ""
+    val unassignedTargets: Collection<TargetVillage>
 )
 {
     val numberOfUnassignedTargets get() =

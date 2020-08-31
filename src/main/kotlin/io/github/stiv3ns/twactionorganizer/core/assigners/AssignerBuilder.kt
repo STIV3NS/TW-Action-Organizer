@@ -6,6 +6,7 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 data class AssignerBuilder(
+    val name: String? = null,
     val targets: Collection<TargetVillage>? = null,
     val resources: Resources? = null,
     val mainReferencePoint: Village? = null,
@@ -14,7 +15,7 @@ data class AssignerBuilder(
     val minNobleRange: Int = -1
 ) {
     /**
-     * Requires [targets], [resources], [mainReferencePoint], [type] to be set.
+     * Requires [name], [targets], [resources], [mainReferencePoint], [type] to be set.
      * When assigning (fake)nobles [maxNobleRange] is also obligatory.
      */
     private val obligatoryHeadersAreNotSet
@@ -38,36 +39,42 @@ data class AssignerBuilder(
 
         val assigner = when (type!!) {
             AssignerType.RAM -> StandardRamAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
                 type,
             )
             AssignerType.REVERSED_RAM -> ReversedRamAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
                 type,
             )
             AssignerType.RANDOMIZED_RAM -> RandomizedRamAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
                 type,
             )
             AssignerType.FAKE_RAM -> StandardRamAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
                 type,
             )
             AssignerType.RANDOMIZED_FAKE_RAM -> RandomizedRamAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
                 type,
             )
             AssignerType.NOBLE -> NobleAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
@@ -76,6 +83,7 @@ data class AssignerBuilder(
                 minNobleRange,
             )
             AssignerType.FAKE_NOBLE -> NobleAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
@@ -84,11 +92,13 @@ data class AssignerBuilder(
                 minNobleRange,
             )
             AssignerType.DEMOLITION -> StandardDemolitionAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
             )
             AssignerType.RANDOMIZED_DEMOLITION -> RandomizedDemolitionAssigner(
+                name!!,
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
@@ -98,6 +108,8 @@ data class AssignerBuilder(
         return assigner
     }
 
+    fun name(newName: String) =
+        copy(name = newName)
 
     fun targets(newTargets: Collection<TargetVillage>) =
         copy(targets = newTargets)

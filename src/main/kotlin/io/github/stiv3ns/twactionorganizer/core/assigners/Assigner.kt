@@ -9,10 +9,11 @@ import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.util.PriorityQueue
 
 abstract class Assigner internal constructor(
+    val name: String,
     targets: Collection<TargetVillage>,
     resources: Resources,
-    protected val mainReferencePoint: Village,
-    private val type: AssignerType
+    val mainReferencePoint: Village,
+    val type: AssignerType
 ) {
     protected val targets: MutableCollection<TargetVillage>
     protected val allyVillages: MutableCollection<AllyVillage>
@@ -83,6 +84,7 @@ abstract class Assigner internal constructor(
 
     open fun prepareReport(): AssignerReport =
         AssignerReport(
+            name = name,
             result = assignments,
             unusedResources = Resources(players = allyPlayers.values, villages = allyVillages),
             unassignedTargets = targets

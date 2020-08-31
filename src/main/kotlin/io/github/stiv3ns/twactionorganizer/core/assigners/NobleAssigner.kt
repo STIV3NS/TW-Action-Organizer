@@ -7,13 +7,14 @@ import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 
 open class NobleAssigner internal constructor(
+    name: String,
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
     type: AssignerType,
-    protected val maxNobleRange: Int,
-    protected val minNobleRange: Int
-) : Assigner(targets, resources, mainReferencePoint, type)
+    val maxNobleRange: Int,
+    val minNobleRange: Int
+) : Assigner(name, targets, resources, mainReferencePoint, type)
 {
     protected val playerAvailableNobles: MutableMap<Player, Int>
 
@@ -51,6 +52,7 @@ open class NobleAssigner internal constructor(
 
     override fun prepareReport(): AssignerReport =
         AssignerReport(
+            name = name,
             result = assignments,
             unassignedTargets = targets,
             unusedResources = Resources(villages = allyVillages,

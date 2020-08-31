@@ -7,11 +7,12 @@ import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.util.*
 
 open class StandardRamAssigner internal constructor(
+    name: String,
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
     type: AssignerType = AssignerType.RAM
-) : Assigner(targets, resources, mainReferencePoint, type)
+) : Assigner(name, targets, resources, mainReferencePoint, type)
 {
     override val resourcesQueue = PriorityQueue<Pair<AllyVillage, Int>>(
         resources.villageCount,
