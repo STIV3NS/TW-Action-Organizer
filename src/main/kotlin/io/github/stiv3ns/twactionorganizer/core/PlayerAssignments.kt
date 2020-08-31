@@ -45,10 +45,10 @@ class PlayerAssignments private constructor(
         fun fromAssignments(allAssignments: Collection<Assignment>): Collection<PlayerAssignments> =
             allAssignments
                 .groupBy { a -> a.departure.ownerNickname }
-                .map { kv ->
+                .map { (nickname, allAssignments) ->
                     PlayerAssignments(
-                        nickname = kv.key,
-                        assignments = kv.value.groupBy { assignment -> assignment.type }
+                        nickname,
+                        assignments = allAssignments.groupBy { assignment -> assignment.type }
                     )
                 }
     }
