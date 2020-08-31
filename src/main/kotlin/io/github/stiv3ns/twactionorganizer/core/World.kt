@@ -54,6 +54,7 @@ class World(domain: String) {
             .openStream()
             .reader()
             .use { r -> r.readLines() }
+            .asSequence()
             .map { line -> line.split(",") }
             .mapNotNull { arr ->
                 val (x, y) = listOf(arr[2], arr[3]).map { it.toInt() }
@@ -74,6 +75,7 @@ class World(domain: String) {
             .openStream()
             .reader()
             .use { r -> r.readLines() }
+            .asSequence()
             .map { line -> line.split(",") }
             .map { arr ->
                 val id = arr[0].toInt()
