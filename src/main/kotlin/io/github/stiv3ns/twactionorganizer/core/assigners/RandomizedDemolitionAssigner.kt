@@ -8,4 +8,4 @@ open class RandomizedDemolitionAssigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
-) : RandomizedRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes = true, type = AssignerType.RANDOMIZED_DEMOLITION)
+) : RandomizedRamAssigner(targets, resources, mainReferencePoint, type = AssignerType.RANDOMIZED_DEMOLITION)

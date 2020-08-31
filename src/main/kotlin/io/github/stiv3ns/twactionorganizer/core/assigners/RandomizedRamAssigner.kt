@@ -9,9 +9,8 @@ open class RandomizedRamAssigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
-    isAssigningFakes: Boolean,
     type: AssignerType
-) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes, type)
+) : StandardRamAssigner(targets, resources, mainReferencePoint, type)
 {
     override fun processAllyVillage(allyVillage: AllyVillage) {
         val randomTarget = targets.random()

@@ -10,9 +10,8 @@ open class StandardRamAssigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
-    isAssigningFakes: Boolean,
     type: AssignerType = AssignerType.RAM
-) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes, type)
+) : Assigner(targets, resources, mainReferencePoint, type)
 {
     override val resourcesQueue = PriorityQueue<Pair<AllyVillage, Int>>(
         resources.villageCount,

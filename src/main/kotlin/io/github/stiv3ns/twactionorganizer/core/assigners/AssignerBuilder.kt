@@ -41,54 +41,47 @@ data class AssignerBuilder(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
-                isAssigningFakes = false,
-                type = type,
+                type,
             )
             AssignerType.REVERSED_RAM -> ReversedRamAssigner(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
-                isAssigningFakes = false,
-                type = type,
+                type,
             )
             AssignerType.RANDOMIZED_RAM -> RandomizedRamAssigner(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
-                isAssigningFakes = false,
-                type = type,
+                type,
             )
             AssignerType.FAKE_RAM -> StandardRamAssigner(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
-                isAssigningFakes = true,
-                type = type,
+                type,
             )
             AssignerType.RANDOMIZED_FAKE_RAM -> RandomizedRamAssigner(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
-                isAssigningFakes = true,
-                type = type,
+                type,
             )
             AssignerType.NOBLE -> NobleAssigner(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
-                isAssigningFakes = false,
-                type = type,
-                maxNobleRange = maxNobleRange!!,
-                minNobleRange = minNobleRange,
+                type!!,
+                maxNobleRange!!,
+                minNobleRange,
             )
             AssignerType.FAKE_NOBLE -> NobleAssigner(
                 targets!!,
                 resources!!,
                 mainReferencePoint!!,
-                isAssigningFakes = true,
-                type = type,
-                maxNobleRange = maxNobleRange!!,
-                minNobleRange = minNobleRange,
+                type!!,
+                maxNobleRange!!,
+                minNobleRange,
             )
             AssignerType.DEMOLITION -> StandardDemolitionAssigner(
                 targets!!,

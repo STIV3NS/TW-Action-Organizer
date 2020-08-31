@@ -8,9 +8,8 @@ open class ReversedRamAssigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
-    isAssigningFakes: Boolean,
     type: AssignerType = AssignerType.REVERSED_RAM
-) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes, type)
+) : Assigner(targets, resources, mainReferencePoint, type)
 {
     override fun call(): AssignerReport {
         putTargetsToQueue(referencePoint = mainReferencePoint)

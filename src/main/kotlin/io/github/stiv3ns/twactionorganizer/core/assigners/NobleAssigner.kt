@@ -10,11 +10,10 @@ open class NobleAssigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
-    isAssigningFakes: Boolean,
     type: AssignerType,
     protected val maxNobleRange: Int,
     protected val minNobleRange: Int
-) : Assigner(targets, resources, mainReferencePoint, isAssigningFakes, type)
+) : Assigner(targets, resources, mainReferencePoint, type)
 {
     protected val playerAvailableNobles: MutableMap<Player, Int>
 

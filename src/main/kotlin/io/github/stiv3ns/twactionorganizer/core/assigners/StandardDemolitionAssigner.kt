@@ -9,4 +9,4 @@ open class StandardDemolitionAssigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Resources,
     mainReferencePoint: Village,
-) : StandardRamAssigner(targets, resources, mainReferencePoint, isAssigningFakes = true, type = AssignerType.DEMOLITION)
+) : StandardRamAssigner(targets, resources, mainReferencePoint, type = AssignerType.DEMOLITION)

@@ -7,13 +7,11 @@ import io.github.stiv3ns.twactionorganizer.core.villages.AllyVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
 import java.util.PriorityQueue
-import kotlin.IllegalArgumentException
 
 abstract class Assigner internal constructor(
     targets: Collection<TargetVillage>,
     resources: Resources,
     protected val mainReferencePoint: Village,
-    private val isAssigningFakes: Boolean,
     private val type: AssignerType
 ) {
     protected val targets: MutableCollection<TargetVillage>
