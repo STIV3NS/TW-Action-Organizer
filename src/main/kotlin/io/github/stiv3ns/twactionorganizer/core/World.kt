@@ -17,11 +17,11 @@ class World(domain: String) {
     val villages: Map<String, Village>
 
     init {
-        if (!domain.startsWith("https://")) {
+        if (!domain.startsWith("https://"))
             this.domain = "https://$domain"
-        } else {
+        else
             this.domain = domain
-        }
+
         try {
             val doc = getXMLDocumentWithConfig(this.domain)
 
