@@ -100,11 +100,13 @@ abstract class Assigner internal constructor(
             name = name,
             result = assignments,
             unusedResources = Resources(players = allyPlayers.values, villages = allyVillages),
-            unassignedTargets = attacksNeeded.mapNotNull { (target, numberOfMissingAttacks) ->
-                if (numberOfMissingAttacks < 1)
-                    null
-                else
-                    target.copy(numberOfAttacks = numberOfMissingAttacks)
-            }.toList()
+
+            unassignedTargets = attacksNeeded
+                                .mapNotNull { (target, numberOfMissingAttacks) ->
+                                    if (numberOfMissingAttacks < 1)
+                                        null
+                                    else
+                                        target.copy(numberOfAttacks = numberOfMissingAttacks)
+                                }.toList()
         )
 }
