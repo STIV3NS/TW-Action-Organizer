@@ -81,7 +81,7 @@ class PMFormatter(
                 msg.append("\n")
         }
 
-        msg.append(CLOSE_SPOILER, "\n")
+        msg.append(CLOSE_SPOILER, "\n\n\n")
     }
 
     private fun appendAssignments(msg: StringBuilder, assignments: List<Assignment>, slowestTroop: TroopType) {
@@ -114,7 +114,7 @@ class PMFormatter(
             previousDayOfMonth = departureTime.dayOfMonth
         }
 
-        msg.append(CLOSE_SPOILER, "\n")
+        msg.append(CLOSE_SPOILER, "\n\n\n")
     }
 
     private fun designateDepartureTime(squaredDistance: Int, slowestTroop: TroopType, delayInMinutes: Long): LocalDateTime {
