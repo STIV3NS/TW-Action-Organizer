@@ -1,18 +1,21 @@
 package io.github.stiv3ns.twactionorganizer.core
 
 import io.github.stiv3ns.twactionorganizer.core.villages.StubVillageFactory
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 
 class ResourcesTest : WordSpec({
     "Resources::empty" should {
         "return Resources instance with empty collections" {
             val res = Resources.empty()
 
-            res.players.shouldBeEmpty()
-            res.villages.shouldBeEmpty()
+            assertSoftly {
+                res.players.shouldBeEmpty()
+                res.villages.shouldBeEmpty()
+            }
         }
     }
 
@@ -34,14 +37,16 @@ class ResourcesTest : WordSpec({
         "return proper Resource instance" {
             val result = Resources.fromVillageCollection(villages)
 
-            result.playerCount shouldBe 3
-            result.villageCount shouldBe 5
-            result.nobleCount shouldBe 0
+            assertSoftly {
+                result.playerCount shouldBe 3
+                result.villageCount shouldBe 5
+                result.nobleCount shouldBe 0
 
-            result.players.map { player -> player.nickname }
-                .shouldContainExactly("TestPlayer1", "Foobar", "Ryan")
+                result.players.map { player -> player.nickname }
+                    .shouldContainExactly("TestPlayer1", "Foobar", "Ryan")
 
-            result.villages.shouldContainExactly(villages)
+                result.villages.shouldContainExactly(villages)
+            }
         }
     }
 })

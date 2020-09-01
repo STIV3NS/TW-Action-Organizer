@@ -3,9 +3,10 @@ package io.github.stiv3ns.twactionorganizer.core
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerType
 import io.github.stiv3ns.twactionorganizer.core.villages.StubVillageFactory
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
-import io.kotlintest.matchers.types.shouldNotBeSameInstanceAs
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 
 class TargetGroupTest : WordSpec({
     "TargetGroup" When {
@@ -23,8 +24,10 @@ class TargetGroupTest : WordSpec({
         "invoked ::averagedCoordsAsVillage" should {
             "return proper Village instance" {
                 val result = targetGroup.averagedCoordsAsVillage
-                result.x shouldBe 550
-                result.y shouldBe 700
+                assertSoftly {
+                    result.x shouldBe 550
+                    result.y shouldBe 700
+                }
             }
         }
 

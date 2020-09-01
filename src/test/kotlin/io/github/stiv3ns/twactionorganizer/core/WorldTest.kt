@@ -1,12 +1,14 @@
-import io.github.stiv3ns.twactionorganizer.core.World
+package io.github.stiv3ns.twactionorganizer.core
+
 import io.github.stiv3ns.twactionorganizer.core.utils.exceptions.BadDomainException
 import io.github.stiv3ns.twactionorganizer.core.villages.Village
-import io.kotlintest.data.forall
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.WordSpec
-import io.kotlintest.tables.row
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 class WorldTest : WordSpec({
     "World" When {
@@ -24,12 +26,14 @@ class WorldTest : WordSpec({
             val world2 = World("https://plp6.plemiona.pl")
 
             "set proper domain" {
-                world.domain shouldBe "https://plp6.plemiona.pl"
-                world2.domain shouldBe "https://plp6.plemiona.pl"
+                assertSoftly {
+                    world.domain shouldBe "https://plp6.plemiona.pl"
+                    world2.domain shouldBe "https://plp6.plemiona.pl"
+                }
             }
 
             "fetch proper settings" {
-                with(world) {
+                assertSoftly(world) {
                     maxNobleRange shouldBe 1000000
                     nightBonusEndHour shouldBe 8
                     speed shouldBe 1.0
@@ -37,7 +41,7 @@ class WorldTest : WordSpec({
             }
 
             "fetch proper village id and owner /* this test may (and will) randomly crash when village changes owner... */" {
-                forall(
+                forAll(
                     row("500|499",
                         Village(x = 500, y = 499, id = 15, ownerNickname = "Lucky1369")),
                     row("497|506",

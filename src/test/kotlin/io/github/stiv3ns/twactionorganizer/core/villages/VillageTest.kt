@@ -1,8 +1,9 @@
-import io.github.stiv3ns.twactionorganizer.core.villages.StubVillageFactory
-import io.kotlintest.data.forall
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
-import io.kotlintest.tables.row
+package io.github.stiv3ns.twactionorganizer.core.villages
+
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
+import io.kotest.matchers.shouldBe
 
 class VillageTest : WordSpec({
     "Village.toString" should {
@@ -14,7 +15,7 @@ class VillageTest : WordSpec({
 
     "Village.distance" should {
         "return proper squared distance between given villages" {
-            forall(
+            forAll(
                 row(
                     StubVillageFactory.getVillage(500, 500),
                     StubVillageFactory.getVillage(500, 501),
