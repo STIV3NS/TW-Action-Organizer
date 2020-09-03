@@ -16,8 +16,14 @@ open class NobleAssigner internal constructor(
     val minNobleRange: Int
 ) : Assigner(name, targets, resources, mainReferencePoint, type)
 {
-    protected val playerAvailableNobles: MutableMap<Player, Int>
-    protected val villagesWithAvailableNobles: MutableCollection<AllyVillage>
+    protected val playerAvailableNobles: MutableMap<Player, Int> =
+        resources
+            .players
+            .map { player -> player to player.numberOfNobles }
+            .toMap().toMutableMap()
+
+    protected val villagesWithAvailableNobles: MutableCollection<AllyVillage> =
+        allyVillages.filter { it.owner().hasNoble() }.toMutableList()
 
     protected fun AllyVillage.owner(): Player =
         allyPlayers[ ownerNickname ]
@@ -28,15 +34,6 @@ open class NobleAssigner internal constructor(
 
     protected open fun Player.delegateNoble() {
         playerAvailableNobles[this] = (playerAvailableNobles[this] ?: 0 ) - 1
-    }
-
-    init {
-        villagesWithAvailableNobles = allyVillages.filter { it.owner().hasNoble() }.toMutableList()
-
-        playerAvailableNobles = resources
-                                .players
-                                .map { player -> player to player.numberOfNobles }
-                                .toMap().toMutableMap()
     }
 
 
