@@ -8,38 +8,37 @@ class PlayerAssignments private constructor(
     val nickname: String,
     val assignments: Map<AssignerType, List<Assignment>>
 ) {
-    private fun List<AssignerType>.assignmentsFlatMap(): List<Assignment> =
-        mapNotNull { type -> assignments[type] }
-            .flatten()
-
-    val offAssignments: List<Assignment> get() =
-        listOf(
+    val offAssignments: List<Assignment> =
+        getAssignmentsOfType(
             AssignerType.RAM,
             AssignerType.RANDOMIZED_RAM,
             AssignerType.REVERSED_RAM
-        ).assignmentsFlatMap()
+        )
 
-    val fakeAssignments: List<Assignment> get() =
-        listOf(
+    val fakeAssignments: List<Assignment> =
+        getAssignmentsOfType(
             AssignerType.FAKE_RAM,
             AssignerType.RANDOMIZED_FAKE_RAM
-        ).assignmentsFlatMap()
+        )
 
-    val nobleAssignments get() =
-        listOf(
+    val nobleAssignments =
+        getAssignmentsOfType(
             AssignerType.NOBLE
-        ).assignmentsFlatMap()
+        )
 
-    val fakeNobleAssignments get() =
-        listOf(
+    val fakeNobleAssignments =
+        getAssignmentsOfType(
             AssignerType.FAKE_NOBLE
-        ).assignmentsFlatMap()
+        )
 
-    val demolitionAssignments get() =
-        listOf(
+    val demolitionAssignments =
+        getAssignmentsOfType(
             AssignerType.DEMOLITION,
             AssignerType.RANDOMIZED_DEMOLITION
-        ).assignmentsFlatMap()
+        )
+
+    fun getAssignmentsOfType(vararg type: AssignerType): List<Assignment> =
+        type.mapNotNull { t -> assignments[t] }.flatten()
 
     companion object {
         fun fromAssignments(assignments: Collection<Assignment>): Collection<PlayerAssignments> =
