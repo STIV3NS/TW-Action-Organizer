@@ -42,14 +42,12 @@ class PlayerAssignments private constructor(
         ).assignmentsFlatMap()
 
     companion object {
-        fun fromAssignments(allAssignments: Collection<Assignment>): Collection<PlayerAssignments> =
-            allAssignments
-                .groupBy { a -> a.departure.ownerNickname }
+        fun fromAssignments(assignments: Collection<Assignment>): Collection<PlayerAssignments> =
+            assignments
+                .groupBy { it.departure.ownerNickname }
                 .map { (nickname, allAssignments) ->
-                    PlayerAssignments(
-                        nickname,
-                        assignments = allAssignments.groupBy { assignment -> assignment.type }
-                    )
+                    PlayerAssignments(nickname,
+                                      allAssignments.groupBy { it.type })
                 }
     }
 }
