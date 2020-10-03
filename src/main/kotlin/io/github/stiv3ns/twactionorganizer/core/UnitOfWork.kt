@@ -32,37 +32,44 @@ class UnitOfWork {
         demolitionResources = resources
     }
 
-    fun getConcreteResources() = concreteResources ?: Resources.empty()
+    fun getConcreteResources() =
+        concreteResources ?: Resources.empty()
 
-    fun getFakeResources() = fakeResources ?: Resources.empty()
+    fun getFakeResources() =
+        fakeResources ?: Resources.empty()
 
-    fun getDemolitionResources() = demolitionResources ?: Resources.empty()
+    fun getDemolitionResources() =
+        demolitionResources ?: Resources.empty()
 
     fun dropPlayer(player: Player) {
-        concreteResources = concreteResources
-            ?.copy(
-                players = concreteResources?.players?.minusElement(player) ?: listOf(),
-                villages = concreteResources?.villages?.filter { it.ownerNickname != player.nickname } ?: listOf()
-            )
+        concreteResources =
+            concreteResources
+                ?.copy(
+                    players = concreteResources?.players?.minusElement(player) ?: listOf(),
+                    villages = concreteResources?.villages?.filter { it.ownerNickname != player.nickname } ?: listOf()
+                )
 
-        fakeResources = fakeResources
-            ?.copy(
-                players = fakeResources?.players?.minusElement(player) ?: listOf(),
-                villages = fakeResources?.villages?.filterNot { it.ownerNickname != player.nickname } ?: listOf()
-            )
+        fakeResources =
+            fakeResources
+                ?.copy(
+                    players = fakeResources?.players?.minusElement(player) ?: listOf(),
+                    villages = fakeResources?.villages?.filterNot { it.ownerNickname != player.nickname } ?: listOf()
+                )
 
-        demolitionResources = demolitionResources
-            ?.copy(
-                players = demolitionResources?.players?.minusElement(player) ?: listOf(),
-                villages = demolitionResources?.villages?.filterNot { it.ownerNickname != player.nickname } ?: listOf()
-            )
+        demolitionResources =
+            demolitionResources
+                ?.copy(
+                    players = demolitionResources?.players?.minusElement(player) ?: listOf(),
+                    villages = demolitionResources?.villages?.filterNot { it.ownerNickname != player.nickname } ?: listOf()
+                )
     }
 
     fun addTargetGroup(group: TargetGroup) {
         targetGroups.getOrPut(
             key = group.type,
             defaultValue = { mutableListOf() }
-        ).add(group)
+        )
+        .add(group)
     }
 
     fun dropTargetGroup(group: TargetGroup) {
@@ -73,7 +80,8 @@ class UnitOfWork {
         targetGroups.getOrDefault(
             key = type,
             defaultValue = listOf()
-        ).toList()
+        )
+        .toList()
 
     fun getTargetGroups(vararg types: AssignerType): Collection<TargetGroup> =
         types.flatMap { type -> getTargetGroups(type) }

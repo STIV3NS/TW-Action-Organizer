@@ -66,8 +66,8 @@ class World(domain: String) {
                 if (ownerNickname != null)
                     coords to Village(x, y, id, ownerNickname)
                 else null
-            }.toMap()
-
+            }
+            .toMap()
     }
 
     private fun getPlayerIdToNicknameMap(): Map<Int, String> =
@@ -82,5 +82,6 @@ class World(domain: String) {
                 val nickname = arr[1].let { URLDecoder.decode(it) }
 
                 id to nickname
-            }.toMap()
+            }
+            .toMap()
 }

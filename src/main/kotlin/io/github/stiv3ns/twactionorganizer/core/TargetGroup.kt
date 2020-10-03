@@ -23,7 +23,9 @@ data class TargetGroup(
     }
 
     fun withDelayInMinutes(delay: Long) =
-        copy(villages = villages.map { village ->
-            village.copy(delayInMinutes = delay)
-        })
+        copy(
+            villages = villages.map { village ->
+                village.copy(delayInMinutes = delay)
+            }
+        )
 }
