@@ -1,4 +1,6 @@
-package io.github.stiv3ns.twactionorganizer.localization
+package io.github.stiv3ns.twactionorganizer.localization.en
+
+import io.github.stiv3ns.twactionorganizer.localization.interfaces.PMFormatterLocalization
 
 object EN_PMFormatterLocalization
     : PMFormatterLocalization

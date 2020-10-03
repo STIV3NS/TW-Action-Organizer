@@ -1,4 +1,4 @@
-package io.github.stiv3ns.twactionorganizer.localization
+package io.github.stiv3ns.twactionorganizer.localization.interfaces
 
 interface PMFormatterLocalization {
     val OPEN_SPOILER: String

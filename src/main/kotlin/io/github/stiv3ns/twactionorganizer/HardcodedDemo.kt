@@ -7,7 +7,7 @@ import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
 import io.github.stiv3ns.twactionorganizer.core.PMFormatter
 import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
-import io.github.stiv3ns.twactionorganizer.localization.PL_PMFormatterLocalization
+import io.github.stiv3ns.twactionorganizer.localization.pl.PL_PMFormatterLocalization
 import io.github.stiv3ns.twactionorganizer.logging.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor

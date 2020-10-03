@@ -1,6 +1,6 @@
 package io.github.stiv3ns.twactionorganizer.core
 
-import io.github.stiv3ns.twactionorganizer.localization.PMFormatterLocalization
+import io.github.stiv3ns.twactionorganizer.localization.interfaces.PMFormatterLocalization
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.sqrt
