@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class PlayerAssignments private constructor(
     val nickname: String,
-    private val assignments: Map<AssignerType, List<Assignment>>
+    val assignments: Map<AssignerType, List<Assignment>>
 ) {
     private fun List<AssignerType>.assignmentsFlatMap(): List<Assignment> =
         mapNotNull { type -> assignments[type] }
