@@ -29,33 +29,23 @@ class PMFormatter(
         val msg = StringBuilder()
 
         if (playerAssignments.nobleAssignments.isNotEmpty() || playerAssignments.fakeNobleAssignments.isNotEmpty()) {
-            msg.append(REQUIREMENTS_HEADER, "\n")
             appendNobleRequirements(msg, playerAssignments)
         }
 
-        if (playerAssignments.nobleAssignments.isNotEmpty()) {
-            msg.append(NOBLE_HEADER, "\n")
-            appendAssignments(msg, playerAssignments.nobleAssignments, TroopType.NOBLE)
-        }
 
-        if (playerAssignments.offAssignments.isNotEmpty()) {
-            msg.append(OFF_HEADER, "\n")
-            appendAssignments(msg, playerAssignments.offAssignments, TroopType.RAM)
-        }
+        class Description(val slowestTroop: TroopType, val header: String)
 
-        if (playerAssignments.fakeNobleAssignments.isNotEmpty()) {
-            msg.append(FAKENOBLE_HEADER, "\n")
-            appendAssignments(msg, playerAssignments.fakeNobleAssignments, TroopType.NOBLE)
-        }
-
-        if (playerAssignments.fakeAssignments.isNotEmpty()) {
-            msg.append(FAKE_HEADER, "\n")
-            appendAssignments(msg, playerAssignments.fakeAssignments, TroopType.RAM)
-        }
-
-        if (playerAssignments.demolitionAssignments.isNotEmpty()) {
-            msg.append(DEMOLITION_HEADER, "\n")
-            appendAssignments(msg, playerAssignments.demolitionAssignments, TroopType.CATAPULT)
+        mapOf(
+            playerAssignments.offAssignments to Description(TroopType.RAM, OFF_HEADER),
+            playerAssignments.fakeAssignments to Description(TroopType.RAM, FAKE_HEADER),
+            playerAssignments.nobleAssignments to Description(TroopType.NOBLE, NOBLE_HEADER),
+            playerAssignments.fakeNobleAssignments to Description(TroopType.NOBLE, FAKENOBLE_HEADER),
+            playerAssignments.demolitionAssignments to Description(TroopType.CATAPULT, DEMOLITION_HEADER)
+        )
+        .forEach { (assignmentClass, description) ->
+            if (assignmentClass.isNotEmpty()) {
+                appendAssignmentClass(msg, assignmentClass, description.header, description.slowestTroop)
+            }
         }
 
         return msg.toString()
@@ -71,7 +61,7 @@ class PMFormatter(
         val sortedRequirements =
             requirementsByVillage.toList().sortedByDescending { (_, cnt) -> cnt }.toMap()
 
-        msg.append(OPEN_SPOILER, "\n")
+        msg.append(REQUIREMENTS_HEADER, "\n", OPEN_SPOILER, "\n")
 
         var iteratorCounter = 0
         for ((village, numberOfRequiredNobles) in sortedRequirements) {
@@ -84,8 +74,8 @@ class PMFormatter(
         msg.append(CLOSE_SPOILER, "\n\n\n")
     }
 
-    private fun appendAssignments(msg: StringBuilder, assignments: List<Assignment>, slowestTroop: TroopType) {
-        msg.append(OPEN_SPOILER, "\n")
+    private fun appendAssignmentClass(msg: StringBuilder, assignments: List<Assignment>, header: String, slowestTroop: TroopType) {
+        msg.append(header, "\n", OPEN_SPOILER, "\n")
 
         val sortedAssignments = assignments.sortedByDescending { it.squaredDistance }
         var previousDayOfMonth = -1
