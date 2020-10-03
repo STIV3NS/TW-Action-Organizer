@@ -8,9 +8,10 @@ import io.github.stiv3ns.twactionorganizer.core.PMFormatter
 import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
 import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.localization.pl.PL_PMFormatterLocalization
-import io.github.stiv3ns.twactionorganizer.logging.*
+import io.github.stiv3ns.twactionorganizer.logging.logs.InfoLog
+import io.github.stiv3ns.twactionorganizer.logging.logs.ReportLog
+import io.github.stiv3ns.twactionorganizer.logging.logs.WarnLog
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.actor
 import java.io.File
 import java.time.LocalDateTime
 
@@ -23,10 +24,8 @@ fun main(): Unit = runBlocking {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     suspend fun parseAllies(filePath: String) =
-        AllyParserWithDynamicOwnerResolution.parse(
-            plainText = File(filePath).readText(),
-            world = world
-        )
+        AllyParserWithDynamicOwnerResolution.parse(world = world,
+                                                   plainText = File(filePath).readText())
 
     val concreteResources = parseAllies("/home/stivens/rozpiski/tpk11/res_concrete.txt")
     uow.setConcreteResources(Resources.fromVillageCollection(concreteResources))
@@ -92,27 +91,13 @@ fun main(): Unit = runBlocking {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    val infoActor = actor<LogMessage> {
-        for (msg in channel) {
-            when (msg) {
-                is Info ->
-                    println(msg.text)
-                is Warn ->
-                    println("!!! ${msg.text}")
-                is Report ->
-                    println("${msg.assignerReport.name} failed to assign ${msg.assignerReport.numberOfMissingResources} attacks")
-                else -> print("")
-            }
-        }
-    }
-    Logger.subscribe(Info::class, infoActor)
-    Logger.subscribe(Report::class, infoActor)
+    WarnLog.subscribe { log -> println("Warning: ${log.text}") }
+    InfoLog.subscribe { log -> println("Info: ${log.text}") }
+    ReportLog.subscribe { log -> println("${log.report.name} failed to assign ${log.report.numberOfUnassignedTargets} targets.") }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
     val assignments = Executor(uow).executeAsync().await()
-
-    Logger.unSubscribe(Info::class, infoActor)
-    Logger.unSubscribe(Report::class, infoActor)
-    infoActor.close()
 
     File("/home/stivens/rozpiski/tpk11/rozpiska.json.bis").printWriter().use { pw ->
         pw.print(Serializer.toJson(assignments))

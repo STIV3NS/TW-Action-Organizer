@@ -1,40 +1,29 @@
 package io.github.stiv3ns.twactionorganizer.logging
 
 import io.github.stiv3ns.twactionorganizer.core.assigners.AssignerReport
+import io.github.stiv3ns.twactionorganizer.logging.logs.ErrorLog
+import io.github.stiv3ns.twactionorganizer.logging.logs.InfoLog
+import io.github.stiv3ns.twactionorganizer.logging.logs.ReportLog
+import io.github.stiv3ns.twactionorganizer.logging.logs.WarnLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.channels.SendChannel
-import logActor
-import kotlin.reflect.KClass
 
-@ObsoleteCoroutinesApi
 object Logger : CoroutineScope {
     override val coroutineContext = Dispatchers.Default
 
-    private val log = logActor()
-
     suspend fun info(text: String) {
-        log.send(Info(text))
+        InfoLog.trigger(text)
     }
 
     suspend fun warn(text: String) {
-        log.send(Warn(text))
+        WarnLog.trigger(text)
     }
 
     suspend fun error(text: String) {
-        log.send(Error(text))
+        ErrorLog.trigger(text)
     }
 
     suspend fun report(assignerReport: AssignerReport) {
-        log.send(Report(assignerReport))
-    }
-
-    suspend fun subscribe(messageType: KClass<out LogMessage>, channel: SendChannel<LogMessage>) {
-        log.send( SubscribeRequest(messageType, channel) )
-    }
-
-    suspend fun unSubscribe(messageType: KClass<out LogMessage>, channel: SendChannel<LogMessage>) {
-        log.send( UnsubscribeRequest(messageType, channel) )
+        ReportLog.trigger(assignerReport)
     }
 }
