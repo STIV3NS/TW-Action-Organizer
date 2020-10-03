@@ -1,7 +1,6 @@
 package io.github.stiv3ns.twactionorganizer.core.parsers
 
 import io.github.stiv3ns.twactionorganizer.core.World
-import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -10,8 +9,6 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 class TargetParserTest : WordSpec({
     "TargetParser::parse" should {
         val world = World("plp6.plemiona.pl")
-
-        val outputList = mutableListOf<TargetVillage>()
 
         val attacksPerFirstGroup = 5
         val attacksPerSecondGroup = 17
@@ -32,8 +29,9 @@ class TargetParserTest : WordSpec({
         val plainText_2 = villages_2.map { "[coord]$it$[/coord]" }.joinToString(separator = "\n")
 
         "properly parse the data and add villages to given list /* test may fail due to domain expiration */" {
-            TargetParser.parse(plainText_1, attacksPerFirstGroup, appendTo = outputList, world = world)
-            TargetParser.parse(plainText_2, attacksPerSecondGroup, appendTo = outputList, world = world)
+            val outputList =
+                TargetParser.parse(plainText_1, attacksPerFirstGroup, world = world) +
+                TargetParser.parse(plainText_2, attacksPerSecondGroup, world = world)
 
             val result = outputList.map { targetVillage ->
                 targetVillage.toString() to targetVillage.numberOfAttacks

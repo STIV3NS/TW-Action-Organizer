@@ -6,7 +6,6 @@ import io.github.stiv3ns.twactionorganizer.core.parsers.AllyParserWithDynamicOwn
 import io.github.stiv3ns.twactionorganizer.core.parsers.TargetParser
 import io.github.stiv3ns.twactionorganizer.core.PMFormatter
 import io.github.stiv3ns.twactionorganizer.core.utils.Serializer
-import io.github.stiv3ns.twactionorganizer.core.villages.TargetVillage
 import io.github.stiv3ns.twactionorganizer.localization.pl.PL_PMFormatterLocalization
 import io.github.stiv3ns.twactionorganizer.logging.logs.InfoLog
 import io.github.stiv3ns.twactionorganizer.logging.logs.ReportLog
@@ -38,40 +37,40 @@ fun main(): Unit = runBlocking {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    val off = mutableListOf<TargetVillage>()
-    TargetParser.parse(
-        File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
-        attacksPerVillage = 3, appendTo = off, world = world)
+    val off =
+        TargetParser.parse(
+            File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
+            attacksPerVillage = 3, world = world)
 
-    val demolition = mutableListOf<TargetVillage>()
-    TargetParser.parse(
-        File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
-        attacksPerVillage = 15, appendTo = demolition, world = world)
+    val demolition =
+        TargetParser.parse(
+            File("/home/stivens/rozpiski/tpk11/off3.txt").readText(),
+            attacksPerVillage = 15, world = world)
 
-    val fakeA = mutableListOf<TargetVillage>()
-    TargetParser.parse(
-        File("/home/stivens/rozpiski/tpk11/fakeA40.txt").readText(),
-        attacksPerVillage = 40, appendTo = fakeA, world = world)
+    val fakeA =
+        TargetParser.parse(
+            File("/home/stivens/rozpiski/tpk11/fakeA40.txt").readText(),
+            attacksPerVillage = 40, world = world)
 
-    val fakeB = mutableListOf<TargetVillage>()
-    TargetParser.parse(
-        File("/home/stivens/rozpiski/tpk11/fakeB10.txt").readText(),
-        attacksPerVillage = 10, appendTo = fakeB, world = world)
+    val fakeB =
+        TargetParser.parse(
+            File("/home/stivens/rozpiski/tpk11/fakeB10.txt").readText(),
+            attacksPerVillage = 10, world = world)
 
-    val fakeC = mutableListOf<TargetVillage>()
-    TargetParser.parse(
-        File("/home/stivens/rozpiski/tpk11/fakeC10.txt").readText(),
-        attacksPerVillage = 10, appendTo = fakeC, world = world)
+    val fakeC =
+        TargetParser.parse(
+            File("/home/stivens/rozpiski/tpk11/fakeC10.txt").readText(),
+            attacksPerVillage = 10, world = world)
 
-    val fakeD = mutableListOf<TargetVillage>()
-    TargetParser.parse(
-        File("/home/stivens/rozpiski/tpk11/fakeD16.txt").readText(),
-        attacksPerVillage = 16, appendTo = fakeD, world = world)
+    val fakeD =
+        TargetParser.parse(
+            File("/home/stivens/rozpiski/tpk11/fakeD16.txt").readText(),
+            attacksPerVillage = 16, world = world)
 
-    val fakeE = mutableListOf<TargetVillage>()
-    TargetParser.parse(
-        File("/home/stivens/rozpiski/tpk11/fakeE13.txt").readText(),
-        attacksPerVillage = 13, appendTo = fakeE, world = world)
+    val fakeE =
+        TargetParser.parse(
+            File("/home/stivens/rozpiski/tpk11/fakeE13.txt").readText(),
+            attacksPerVillage = 13, world = world)
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
