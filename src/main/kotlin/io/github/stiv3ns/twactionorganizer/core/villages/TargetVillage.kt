@@ -1,10 +1,10 @@
 package io.github.stiv3ns.twactionorganizer.core.villages
 
-data class TargetVillage(
-    override val x: Int,
-    override val y: Int,
-    override val id: Int,
-    override val ownerNickname: String,
+class TargetVillage(
+    x: Int,
+    y: Int,
+    id: Int,
+    ownerNickname: String,
     val numberOfAttacks: Int,
     val delayInMinutes: Long = 0
 ) : Village(x, y, id, ownerNickname)
@@ -12,5 +12,9 @@ data class TargetVillage(
     constructor(village: Village, numberOfAttacks: Int, delayInMinutes: Long = 0)
         : this(village.x, village.y, village.id, village.ownerNickname, numberOfAttacks, delayInMinutes)
 
-    override fun toString() = "$x|$y"
+    fun withDelayInMinutes(delay: Long): TargetVillage =
+        TargetVillage(village = this, numberOfAttacks, delay)
+
+    fun withNumberOfAttacks(newNumber: Int): TargetVillage =
+        TargetVillage(village = this, numberOfAttacks = newNumber, delayInMinutes = delayInMinutes)
 }

@@ -19,10 +19,10 @@ data class TargetGroup(
                 id = -1,
                 ownerNickname = "--$name avg--")
 
-    fun withDelayInMinutes(delay: Long) =
+    fun withDelayInMinutes(delay: Long): TargetGroup =
         copy(
             villages = villages.map { village ->
-                village.copy(delayInMinutes = delay)
+                village.withDelayInMinutes(delay)
             }
         )
 }

@@ -106,7 +106,7 @@ abstract class Assigner internal constructor(
                                     if (numberOfMissingAttacks < 1)
                                         null
                                     else
-                                        target.copy(numberOfAttacks = numberOfMissingAttacks)
+                                        target.withNumberOfAttacks(numberOfMissingAttacks)
                                 }.toList()
         )
 }

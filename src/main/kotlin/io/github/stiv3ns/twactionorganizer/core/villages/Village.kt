@@ -4,10 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 open class Village(
-    open val x: Int,
-    open val y: Int,
-    open val id: Int,
-    open val ownerNickname: String
+    val x: Int,
+    val y: Int,
+    val id: Int,
+    val ownerNickname: String
 ) {
     infix fun distanceTo(v2: Village): Int {
         fun Int.squared(): Int = this * this
