@@ -6,9 +6,9 @@ data class Resources(
     val players: Collection<Player>,
     val villages: Collection<AllyVillage>
 ) {
-    val villageCount get() = villages.size
-    val playerCount get() = players.size
-    val nobleCount get() = players.map { it.numberOfNobles }.sum()
+    val villageCount = villages.size
+    val playerCount = players.size
+    val nobleCount = players.map { it.numberOfNobles }.sum()
 
     companion object {
         fun empty(): Resources =

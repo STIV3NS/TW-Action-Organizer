@@ -10,17 +10,14 @@ data class TargetGroup(
     val type: AssignerType,
     val villages: Collection<TargetVillage>
 ) {
-    val villageCount get() = villages.size
-    val totalAttackCount get() = villages.map { it.numberOfAttacks }.sum()
+    val villageCount = villages.size
+    val totalAttackCount = villages.map { it.numberOfAttacks }.sum()
 
-    val averagedCoordsAsVillage by lazy {
-        Village(
-            x = villages.map { it.x }.average().roundToInt(),
-            y = villages.map { it.y }.average().roundToInt(),
-            id = -1,
-            ownerNickname = "--$name avg--"
-        )
-    }
+    val averagedCoordsAsVillage =
+        Village(x = villages.map { it.x }.average().roundToInt(),
+                y = villages.map { it.y }.average().roundToInt(),
+                id = -1,
+                ownerNickname = "--$name avg--")
 
     fun withDelayInMinutes(delay: Long) =
         copy(
