@@ -9,9 +9,7 @@ class AssignerReport(
     val result: List<Assignment>,
     val unusedResources: Resources,
     val unassignedTargets: Collection<TargetVillage>
-)
-{
+) {
     val numberOfUnassignedTargets = unassignedTargets.size
-
     val numberOfMissingResources = unassignedTargets.map { it.numberOfAttacks }.sum()
 }
