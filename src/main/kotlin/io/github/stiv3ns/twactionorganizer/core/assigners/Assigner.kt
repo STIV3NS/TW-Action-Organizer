@@ -95,7 +95,7 @@ abstract class Assigner internal constructor(
 
     abstract fun call(): AssignerReport
 
-    open fun prepareReport(): AssignerReport =
+    protected open fun prepareReport(): AssignerReport =
         AssignerReport(
             name = name,
             result = assignments,
